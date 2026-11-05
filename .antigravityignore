@@ -1,0 +1,15 @@
+# Build & Cache
+build/
+.dart_tool/
+.gradle/
+node_modules/
+
+# Binaries & Bundles
+*.apk
+*.aab
+*.jar
+*.keystore
+*.jks
+
+# Logs
+*.log

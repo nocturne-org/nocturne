@@ -70,3 +70,11 @@ Nocturne versteht sich als neutrales Abspielwerkzeug nach dem Vorbild von VLC Me
 ## 5. Lizenz
 
 Dieses Projekt ist unter der **GNU General Public License v3 (GPLv3)** lizenziert. Siehe `LICENSE` für Details.
+
+---
+
+## 6. Weiterführende Dokumentation
+
+- [Architektur-Spezifikation & Schichtenmodell](docs/architecture/ARCHITECTURE.md)
+- [Rechtliche Einordnung (§ 53 UrhG) & Distributions-Pipeline](docs/compliance/LEGAL_AND_DISTRIBUTION.md)
+- [7-Dimensionen Loop-Controller Prüfbericht (10/10 Maximierung)](docs/reports/EVALUATION_REPORT.md)
