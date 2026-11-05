@@ -14,12 +14,13 @@ Nocturne ist ein allgemeiner, medienneutraler Audio-Player. Die Software selbst:
 
 Die Rechtslage ist analog zu bewährten Open-Source-Tools wie **VLC Media Player**, **NewPipe**, **Kodi** oder **yt-dlp**: Ein Werkzeug, das universelle Datenübertragungs- und Abspielprotokolle (HTTP, HLS, DASH, RSS) unterstützt, ist rechtmäßig. Die Verantwortung für die abgerufenen Inhalte liegt beim Endnutzer.
 
-### 1.2 Gesetzliche Privatkopie (§ 53 UrhG im DACH-Raum / EU-Recht)
-Nach § 53 des deutschen Urheberrechtsgesetzes (sowie vergleichbaren Bestimmungen in Österreich und der EU) sind einzelne Vervielfältigungen eines Werkes durch eine natürliche Person zum **rein privaten, nicht-kommerziellen Gebrauch** gesetzlich zulässig, sofern:
-1. Keine "offensichtlich rechtswidrig hergestellte oder öffentlich zugänglich gemachte Vorlage" verwendet wird.
-2. Kein wirksamer technischer Kopierschutz (§ 95a UrhG) umgangen wird.
+### 1.2 Gesetzliche Privatkopie (§ 53 dUrhG in Deutschland & § 42 öUrhG in Österreich)
+Im gesamten DACH- und EU-Rechtsraum ist das Anfertigen einzelner Vervielfältigungen zum **rein privaten, nicht-kommerziellen Eigengebrauch** gesetzlich geschützt:
+- **Deutschland (§ 53 Abs. 1 dUrhG):** Zulässig, solange keine offensichtlich rechtswidrig hergestellte Vorlage verwendet wird und kein wirksamer technischer Kopierschutz (§ 95a dUrhG) umgangen wird.
+- **Österreich (§ 42 Abs. 4 öUrhG):** Jedermann darf von einem Werk einzelne Vervielfältigungen auf beliebigen Trägern zum privaten Gebrauch herstellen (Freie Werknutzung).
+- **Europäischer Kontext (InfoSoc-Richtlinie 2001/29/EG, Art. 5 Abs. 2 lit. b):** Harmonisiert die Schranke der Privatkopie für digitale Medien.
 
-Öffentlich auf YouTube oder per Podcast bereitgestellte Streams verfügen über keinen technischen Kopierschutz (DRM). Das private Herunterladen zur Offline-Wiedergabe beim Einschlafen fällt unter die Schranke der Privatkopie (bestätigt durch ständige BGH-Rechtsprechung zu Online-Videorecordern).
+Da frei abrufbare Audio- und Video-Streams auf YouTube oder in offenen RSS-Feeds ohne wirksame technische Zugangssperre (DRM wie Widevine) ausgesendet werden, fällt das lokale Cachen für die persönliche Nachtruhe eindeutig unter die gesetzliche Privatkopie-Schranke (bestätigt durch die gefestigte BGH-Rechtsprechung zu Online-Videorecordern).
 
 ### 1.3 Plattform-Nutzungsbedingungen (ToS) vs. Drittanbieter-Entwickler
 Googles Nutzungsbedingungen (Terms of Service) verbieten das Herunterladen von Inhalten und die Hintergrundwiedergabe ohne YouTube Premium. 

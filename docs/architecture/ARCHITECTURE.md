@@ -65,13 +65,16 @@ flowchart TD
 ### 2.4 Platform Layer (Treiber & Android Services)
 - **Audio-Architektur:**
   - Basiert auf `audio_service` und `just_audio`.
-  - Android Foreground Service (`FOREGROUND_SERVICE_MEDIA_PLAYBACK`) mit kontinuierlichem Audiofokus.
+  - Android Foreground Service (`FOREGROUND_SERVICE_MEDIA_PLAYBACK`) mit kontinuierlichem Audiofokus (`PARTIAL_WAKE_LOCK` und `WIFI_MODE_FULL_LOW_LATENCY`).
   - Verhindert das Einfrieren der Wiedergabe durch aggressive Hersteller-Energiesparmodi (Samsung, Xiaomi, Google Pixel Doze Mode).
-- **Sensor-Signalverarbeitung:**
+  - Bluetooth-Auto-Disconnect: Nach Ablauf der Shake-Grace-Period vollständige Freigabe der AudioSession (`abandonAudioFocus()`), damit In-Ear-Kopfhörer in den Stromsparmodus gehen.
+- **Sensor-Signalverarbeitung & Dual-Profile:**
   - `sensors_plus` liest die X-, Y- und Z-Achsen des Beschleunigungssensors aus.
-  - Ein Tiefpassfilter (Low-Pass Filter) filtert normale Schlaf- und Atembewegungen heraus.
-  - Nur eine gezielte Schüttelbewegung (Schwelle: Beschleunigungsvektor > 12 m/s² mit Vorzeichenwechsel innerhalb von 600 ms) löst den Timer-Reset aus.
-  - Kurzes, sanftes Vibrationsfeedback bestätigt den Reset, ohne den Raum mit Ton zu stören.
+  - Software-Tiefpassfilter filtert normale Schlaf- und Atembewegungen heraus.
+  - **Zweistufiges Sensor-Profil:**
+    - *Nachttisch- / Hand-Modus:* Schwellenwert > 12 m/s² mit Vorzeichenwechsel innerhalb von 600 ms.
+    - *Matratzen- / Kissen-Modus:* Sensitiver Schwellenwert > 7.5 m/s² zum Ausgleich von Dämpfungen durch Schaumstoff und Bettdecken.
+  - Sanftes Vibrationsfeedback bestätigt den Reset, ohne das Zimmer mit Licht oder Ton zu stören.
 
 ---
 
@@ -84,18 +87,23 @@ stateDiagram-v2
     Zaehlend --> Ausblendend : Restzeit <= 60 Sekunden
     Zaehlend --> Zaehlend : Schütteln erkannt (+15 Min Verlängerung)
     Ausblendend --> Zaehlend : Schütteln erkannt (Lautstärke sofort 100%, +15 Min)
-    Ausblendend --> Gestoppt : Restzeit = 0 Sekunden
-    Gestoppt --> [*] : Auto-Rewind Bookmark gesetzt
+    Ausblendend --> GracePeriod : Restzeit = 0 Sekunden (Audio stumm)
+    GracePeriod --> Zaehlend : Schütteln innerhalb von 120s (+15 Min & sanftes Fade-In)
+    GracePeriod --> Gestoppt : 120s Grace-Period abgelaufen
+    Gestoppt --> [*] : WakeLock freigegeben, AudioSession geschlossen
 ```
 
-### Logik des Lautstärke-Fade-Outs
+### 3.1 Logik des Lautstärke-Fade-Outs & Grace-Period
 In den letzten 60 Sekunden sinkt die Lautstärke nicht linear, sondern logarithmisch gemäß menschlichem Hörempfinden:
 $$Volume(t) = Volume_{start} \times \left(\frac{t_{rest}}{60}\right)^2$$
-Sobald der Timer 0 erreicht:
-1. Audio wird pausiert.
-2. Der WakeLock wird freigegeben.
-3. Der Beschleunigungssensor wird deaktiviert, um den Akku im Tiefschlaf nicht zu belasten.
-4. Ein automatischer Bookmark wird exakt 45 Sekunden *vor* Beginn des Fade-Outs gespeichert.
+Ablauf beim Erreichen von $t = 0$:
+1. Audio wird pausiert und ein Lesezeichen exakt 45 Sekunden *vor* Beginn des Fade-Outs gespeichert.
+2. **120-Sekunden Shake-Grace-Period:** Der Sensor und WakeLock bleiben für 2 Minuten aktiv. Reagiert der Hörer im Moment der eintretenden Stille, genügt eine leichte Bewegung, um das Hören ohne Displayaktivierung fortzusetzen.
+3. Nach Ablauf der Grace-Period: Freigabe des WakeLocks, Abschalten des Sensors und Schließen der AudioSession (Bluetooth-Kopfhörer schalten sich ab).
+
+### 3.2 Whisper-Dynamics (DSP Audio-Filter)
+- **Dynamik-Kompression:** Kompressor-Ratio 4:1 mit schnellem Attack (< 10 ms) und sanftem Make-up-Gain. Begrenzt plötzliche Lautstärkesprünge bei Sprache auf maximal -3 dBFS.
+- **Sibilanten-Filter:** Sanfter High-Shelf-Cut ab 4.5 kHz (-6 dB) zur Dämpfung scharfer Zischlaute ("S", "Z") bei niedriger Nachtlautstärke.
 
 ---
 

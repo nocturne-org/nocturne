@@ -63,7 +63,7 @@ Im Bereich [Releases](https://github.com/<user>/nocturne/releases) die aktuellst
 
 ## 4. Rechtlicher Hinweis (Compliance)
 
-Nocturne versteht sich als neutrales Abspielwerkzeug nach dem Vorbild von VLC Media Player und NewPipe. Die Software enthält keine urheberrechtlich geschützten Werke, hostet keine Streams und umgeht keine wirksamen technischen Kopierschutzmaßnahmen (DRM). Die private Speicherung von Streams erfolgt im Rahmen der gesetzlichen Privatkopie (§ 53 UrhG).
+Nocturne versteht sich als neutrales Abspielwerkzeug nach dem Vorbild von VLC Media Player und NewPipe. Die Software enthält keine urheberrechtlich geschützten Werke, hostet keine Streams und umgeht keine wirksamen technischen Kopierschutzmaßnahmen (DRM). Die private Speicherung von Streams erfolgt im Rahmen der gesetzlichen Privatkopie (§ 53 dUrhG / § 42 öUrhG im DACH-Raum).
 
 ---
 
@@ -76,5 +76,6 @@ Dieses Projekt ist unter der **GNU General Public License v3 (GPLv3)** lizenzier
 ## 6. Weiterführende Dokumentation
 
 - [Architektur-Spezifikation & Schichtenmodell](docs/architecture/ARCHITECTURE.md)
-- [Rechtliche Einordnung (§ 53 UrhG) & Distributions-Pipeline](docs/compliance/LEGAL_AND_DISTRIBUTION.md)
+- [Rechtliche Einordnung (§ 53 dUrhG / § 42 öUrhG) & Distributions-Pipeline](docs/compliance/LEGAL_AND_DISTRIBUTION.md)
 - [7-Dimensionen Loop-Controller Prüfbericht (10/10 Maximierung)](docs/reports/EVALUATION_REPORT.md)
+- [Argon Hoch (Gemini 4 Web) System-Audit & Freigabe](docs/reports/ARGON_AUDIT_VERDICT.md)
