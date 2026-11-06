@@ -191,6 +191,65 @@ class PlaybackQueueEntry {
   }
 }
 
+/// Data entity for a user playlist or imported folder.
+class PlaylistEntry {
+  const PlaylistEntry({
+    required this.id,
+    required this.name,
+    this.kind = 'custom',
+    this.sourcePath,
+    required this.createdAt,
+  });
+
+  final String id;
+  final String name;
+  final String kind;
+  final String? sourcePath;
+  final DateTime createdAt;
+
+  PlaylistEntry copyWith({
+    String? id,
+    String? name,
+    String? kind,
+    String? sourcePath,
+    DateTime? createdAt,
+  }) {
+    return PlaylistEntry(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      kind: kind ?? this.kind,
+      sourcePath: sourcePath ?? this.sourcePath,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+}
+
+/// Data entity mapping an item to a playlist.
+class PlaylistItemEntry {
+  const PlaylistItemEntry({
+    required this.playlistId,
+    required this.mediaItemId,
+    required this.addedAt,
+    this.sortOrder = 0,
+  });
+
+  final String playlistId;
+  final String mediaItemId;
+  final DateTime addedAt;
+  final int sortOrder;
+}
+
+/// Data entity for a favorite item.
+class FavoriteEntry {
+  const FavoriteEntry({
+    required this.mediaItemId,
+    required this.addedAt,
+  });
+
+  final String mediaItemId;
+  final DateTime addedAt;
+}
+
 /// Typensicheres Data Access Object (DAO) fuer Medien, Lesezeichen,
 /// Historie und Sleep-Presets mit reaktiven Streams (watch).
 class MediaDao {
@@ -214,6 +273,14 @@ class MediaDao {
   final Map<String, PlaybackHistoryEntry> _historyStore = {};
   final Map<String, SleepPresetEntry> _presetStore = {};
   final Map<String, PlaybackQueueEntry> _queueStore = {};
+  final Map<String, PlaylistEntry> _playlistStore = {};
+  final List<PlaylistItemEntry> _playlistItemStore = [];
+  final Map<String, FavoriteEntry> _favoriteStore = {};
+
+  final StreamController<List<PlaylistEntry>> _playlistsController =
+      StreamController<List<PlaylistEntry>>.broadcast();
+  final StreamController<Set<String>> _favoritesController =
+      StreamController<Set<String>>.broadcast();
 
   final StreamController<List<MediaItem>> _mediaListController =
       StreamController<List<MediaItem>>.broadcast();
@@ -549,10 +616,136 @@ class MediaDao {
     }
   }
 
+  // ==================== PLAYLISTS & FAVORITES (TICK-V2-09) ====================
+
+  /// Creates a new playlist.
+  Future<PlaylistEntry> createPlaylist(
+    String name, {
+    String kind = 'custom',
+    String? sourcePath,
+    String? id,
+  }) async {
+    final playlistId = id ?? 'playlist_${DateTime.now().microsecondsSinceEpoch}';
+    final entry = PlaylistEntry(
+      id: playlistId,
+      name: name,
+      kind: kind,
+      sourcePath: sourcePath,
+      createdAt: DateTime.now(),
+    );
+    _playlistStore[playlistId] = entry;
+    _notifyPlaylistsChanged();
+    return entry;
+  }
+
+  /// Returns all playlists.
+  Future<List<PlaylistEntry>> getPlaylists() async {
+    return _playlistStore.values.toList();
+  }
+
+  /// Returns all playlists sorted by creation time descending (most recent first).
+  Future<List<PlaylistEntry>> getPlaylistsSortedByRecent() async {
+    final list = _playlistStore.values.toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return list;
+  }
+
+  /// Deletes a playlist and its associated items.
+  Future<void> deletePlaylist(String playlistId) async {
+    _playlistStore.remove(playlistId);
+    _playlistItemStore.removeWhere((item) => item.playlistId == playlistId);
+    _notifyPlaylistsChanged();
+  }
+
+  /// Adds items to a playlist.
+  Future<void> addItemsToPlaylist(String playlistId, List<String> mediaItemIds) async {
+    for (var i = 0; i < mediaItemIds.length; i++) {
+      _playlistItemStore.add(PlaylistItemEntry(
+        playlistId: playlistId,
+        mediaItemId: mediaItemIds[i],
+        addedAt: DateTime.now(),
+        sortOrder: i,
+      ));
+    }
+    _notifyPlaylistsChanged();
+  }
+
+  /// Removes items from a playlist.
+  Future<void> removeItemsFromPlaylist(String playlistId, List<String> mediaItemIds) async {
+    final idSet = mediaItemIds.toSet();
+    _playlistItemStore.removeWhere((item) =>
+        item.playlistId == playlistId && idSet.contains(item.mediaItemId));
+    _notifyPlaylistsChanged();
+  }
+
+  /// Retrieves media item IDs for a given playlist in sort order.
+  Future<List<String>> getPlaylistItems(String playlistId) async {
+    final items = _playlistItemStore
+        .where((item) => item.playlistId == playlistId)
+        .toList()
+      ..sort((a, b) => a.sortOrder.compareTo(b.sortOrder));
+    return items.map((i) => i.mediaItemId).toList();
+  }
+
+  /// Watches all playlists reactively.
+  Stream<List<PlaylistEntry>> watchPlaylists() async* {
+    yield await getPlaylistsSortedByRecent();
+    yield* _playlistsController.stream;
+  }
+
+  void _notifyPlaylistsChanged() {
+    if (!_playlistsController.isClosed) {
+      final list = _playlistStore.values.toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      _playlistsController.add(list);
+    }
+  }
+
+  /// Toggles favorite status of a media item.
+  Future<bool> toggleFavorite(String mediaItemId) async {
+    final isFav = _favoriteStore.containsKey(mediaItemId);
+    if (isFav) {
+      _favoriteStore.remove(mediaItemId);
+    } else {
+      _favoriteStore[mediaItemId] = FavoriteEntry(
+        mediaItemId: mediaItemId,
+        addedAt: DateTime.now(),
+      );
+    }
+    _notifyFavoritesChanged();
+    return !isFav;
+  }
+
+  /// Checks if a media item is marked as favorite.
+  Future<bool> isFavorite(String mediaItemId) async {
+    return _favoriteStore.containsKey(mediaItemId);
+  }
+
+  /// Returns all favorite media item IDs sorted by addedAt descending.
+  Future<List<String>> getFavorites() async {
+    final list = _favoriteStore.values.toList()
+      ..sort((a, b) => b.addedAt.compareTo(a.addedAt));
+    return list.map((f) => f.mediaItemId).toList();
+  }
+
+  /// Watches favorites reactively as a set of mediaItemIds.
+  Stream<Set<String>> watchFavorites() async* {
+    yield _favoriteStore.keys.toSet();
+    yield* _favoritesController.stream;
+  }
+
+  void _notifyFavoritesChanged() {
+    if (!_favoritesController.isClosed) {
+      _favoritesController.add(_favoriteStore.keys.toSet());
+    }
+  }
+
   /// Schliesst alle offenen Stream-Controller.
   Future<void> close() async {
     await _mediaListController.close();
     await _queueController.close();
+    await _playlistsController.close();
+    await _favoritesController.close();
     for (final ctrl in _singleMediaControllers.values) {
       await ctrl.close();
     }

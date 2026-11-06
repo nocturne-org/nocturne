@@ -5,6 +5,9 @@ import '../controllers/library_browser_controller.dart';
 import '../providers/library_providers.dart';
 import '../providers/queue_providers.dart';
 import '../state/library_browser_state.dart';
+import '../../domain/usecases/import_folder_usecase.dart';
+import '../providers/database_provider.dart';
+import '../widgets/add_to_playlist_dialog.dart';
 import '../theme/amoled_colors.dart';
 import '../theme/amoled_typography.dart';
 
@@ -37,7 +40,7 @@ class LibraryBrowserScreen extends ConsumerWidget {
               child: state.isLoading
                   ? const Center(
                       child: CircularProgressIndicator(
-                        color: AmoledColors.amberAccent,
+                        color: AmoledColors.midnightBlue,
                       ),
                     )
                   : state.groupedByAuthor.isEmpty
@@ -57,39 +60,152 @@ class LibraryBrowserScreen extends ConsumerWidget {
   ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AmoledColors.surfaceElevated,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AmoledColors.divider),
-        ),
-        child: TextField(
-          style: AmoledTypography.bodyLarge,
-          cursorColor: AmoledColors.amberAccent,
-          decoration: InputDecoration(
-            hintText: 'Bibliothek durchsuchen...',
-            hintStyle: AmoledTypography.bodyMedium.copyWith(
-              color: AmoledColors.textTertiary,
-            ),
-            prefixIcon: const Icon(
-              Icons.search_rounded,
-              color: AmoledColors.amberAccent,
-            ),
-            suffixIcon: state.searchQuery.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear_rounded, size: 20),
-                    color: AmoledColors.textSecondary,
-                    onPressed: () => controller.setSearchQuery(''),
-                  )
-                : null,
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: AmoledColors.surfaceElevated,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AmoledColors.divider),
+              ),
+              child: TextField(
+                style: AmoledTypography.bodyLarge,
+                cursorColor: AmoledColors.midnightBlue,
+                decoration: InputDecoration(
+                  hintText: 'Search library...',
+                  hintStyle: AmoledTypography.bodyMedium.copyWith(
+                    color: AmoledColors.textTertiary,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.search_rounded,
+                    color: AmoledColors.midnightBlue,
+                  ),
+                  suffixIcon: state.searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear_rounded, size: 20),
+                          color: AmoledColors.textSecondary,
+                          onPressed: () => controller.setSearchQuery(''),
+                        )
+                      : null,
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+                onChanged: (val) => controller.setSearchQuery(val),
+              ),
             ),
           ),
-          onChanged: (val) => controller.setSearchQuery(val),
+          const SizedBox(width: 8),
+          IconButton(
+            key: const Key('library_import_folder_button'),
+            icon: const Icon(
+              Icons.create_new_folder_outlined,
+              color: AmoledColors.midnightBlue,
+              size: 26,
+            ),
+            tooltip: 'Import Folder',
+            onPressed: () => _showImportFolderDialog(context),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showImportFolderDialog(BuildContext context) {
+    final pathController = TextEditingController();
+    showDialog<void>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        backgroundColor: AmoledColors.surfaceElevated,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AmoledColors.divider),
         ),
+        title: Text(
+          'Import Audio Folder',
+          style: AmoledTypography.titleLarge.copyWith(
+            color: AmoledColors.textPrimary,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Enter path to audio directory (8 formats supported):',
+              style: AmoledTypography.bodyMedium.copyWith(
+                color: AmoledColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: pathController,
+              style: AmoledTypography.bodyLarge,
+              cursorColor: AmoledColors.midnightBlue,
+              decoration: InputDecoration(
+                hintText: '/storage/emulated/0/Audiobooks',
+                hintStyle: AmoledTypography.bodyMedium.copyWith(
+                  color: AmoledColors.textTertiary,
+                ),
+                filled: true,
+                fillColor: AmoledColors.surfaceCard,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AmoledColors.divider),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AmoledColors.midnightBlue),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogCtx).pop(),
+            child: const Text('Cancel', style: TextStyle(color: AmoledColors.textSecondary)),
+          ),
+          ElevatedButton(
+            key: const Key('import_folder_confirm_button'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AmoledColors.midnightBlue,
+              foregroundColor: AmoledColors.pureBlack,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () async {
+              final path = pathController.text.trim();
+              if (path.isEmpty) return;
+              Navigator.of(dialogCtx).pop();
+              try {
+                final result = await const ImportFolderUseCase().execute(path);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Imported ${result.itemsCount} items to playlist "${result.playlistName}".'),
+                      backgroundColor: AmoledColors.surfaceElevated,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Import failed: $e'),
+                      backgroundColor: AmoledColors.error,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Import'),
+          ),
+        ],
       ),
     );
   }
@@ -125,13 +241,13 @@ class LibraryBrowserScreen extends ConsumerWidget {
                 ),
               ),
               selected: isSelected,
-              selectedColor: AmoledColors.amberAccent,
+              selectedColor: AmoledColors.midnightBlue,
               backgroundColor: AmoledColors.surfaceCard,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
                 side: BorderSide(
                   color: isSelected
-                      ? AmoledColors.amberAccent
+                      ? AmoledColors.midnightBlue
                       : AmoledColors.divider,
                 ),
               ),
@@ -190,11 +306,11 @@ class LibraryBrowserScreen extends ConsumerWidget {
             initiallyExpanded: state.searchQuery.isNotEmpty ||
                 state.groupedByAuthor.length == 1,
             collapsedIconColor: AmoledColors.textSecondary,
-            iconColor: AmoledColors.amberAccent,
+            iconColor: AmoledColors.midnightBlue,
             leading: const CircleAvatar(
               backgroundColor: AmoledColors.surfaceElevated,
               child:
-                  Icon(Icons.person_rounded, color: AmoledColors.amberAccent),
+                  Icon(Icons.person_rounded, color: AmoledColors.midnightBlue),
             ),
             title: Text(
               author.authorName,
@@ -228,7 +344,7 @@ class LibraryBrowserScreen extends ConsumerWidget {
       child: ExpansionTile(
         initiallyExpanded: true,
         collapsedIconColor: AmoledColors.textTertiary,
-        iconColor: AmoledColors.amberAccent,
+        iconColor: AmoledColors.midnightBlue,
         leading: const Icon(
           Icons.album_rounded,
           color: AmoledColors.textSecondary,
@@ -256,6 +372,8 @@ class LibraryBrowserScreen extends ConsumerWidget {
     MediaItem item,
   ) {
     final queueController = ref.read(unifiedQueueControllerProvider.notifier);
+    final favoritesAsync = ref.watch(favoritesProvider);
+    final isFavorite = favoritesAsync.value?.contains(item.id) ?? false;
 
     return ListTile(
       dense: true,
@@ -263,8 +381,8 @@ class LibraryBrowserScreen extends ConsumerWidget {
       leading: Icon(
         item.source.isLocal ? Icons.audiotrack_rounded : Icons.stream_rounded,
         color: item.source.isLocal
-            ? AmoledColors.amberAccent
-            : AmoledColors.cyanAccent,
+            ? AmoledColors.midnightBlue
+            : AmoledColors.violet,
         size: 20,
       ),
       title: Text(
@@ -275,54 +393,90 @@ class LibraryBrowserScreen extends ConsumerWidget {
         _formatDuration(item.durationMs ?? 0),
         style: AmoledTypography.caption,
       ),
-      trailing: PopupMenuButton<String>(
-        color: AmoledColors.surfaceElevated,
-        icon: const Icon(Icons.more_vert_rounded,
-            color: AmoledColors.textSecondary),
-        onSelected: (action) {
-          if (action == 'play_now') {
-            queueController.addItem(item);
-          } else if (action == 'play_next') {
-            queueController.insertNext(item);
-          } else if (action == 'add_queue') {
-            queueController.addItem(item);
-          }
-        },
-        itemBuilder: (context) => [
-          const PopupMenuItem(
-            value: 'play_now',
-            child: Row(
-              children: [
-                Icon(Icons.play_arrow_rounded,
-                    color: AmoledColors.amberAccent, size: 20),
-                SizedBox(width: 8),
-                Text('Jetzt abspielen', style: TextStyle(color: Colors.white)),
-              ],
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Heart icon for favorites toggle
+          IconButton(
+            key: Key('favorite_button_\${item.id}'),
+            icon: Icon(
+              isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+              color: isFavorite ? AmoledColors.violet : AmoledColors.textTertiary,
+              size: 20,
             ),
+            tooltip: isFavorite ? 'Remove Favorite' : 'Add to Favorites',
+            onPressed: () {
+              ref.read(mediaDaoProvider).toggleFavorite(item.id);
+            },
           ),
-          const PopupMenuItem(
-            value: 'play_next',
-            child: Row(
-              children: [
-                Icon(Icons.playlist_play_rounded,
-                    color: AmoledColors.cyanAccent, size: 20),
-                SizedBox(width: 8),
-                Text('Als naechstes abspielen',
-                    style: TextStyle(color: Colors.white)),
-              ],
+          // Plus button for playlist picker
+          IconButton(
+            key: Key('add_to_playlist_button_\${item.id}'),
+            icon: const Icon(
+              Icons.playlist_add_rounded,
+              color: AmoledColors.midnightBlue,
+              size: 22,
             ),
+            tooltip: 'Add to Playlist',
+            onPressed: () {
+              AddToPlaylistDialog.show(
+                context: context,
+                mediaItemId: item.id,
+                itemTitle: item.title,
+                mediaDao: ref.read(mediaDaoProvider),
+              );
+            },
           ),
-          const PopupMenuItem(
-            value: 'add_queue',
-            child: Row(
-              children: [
-                Icon(Icons.queue_rounded,
-                    color: AmoledColors.textPrimary, size: 20),
-                SizedBox(width: 8),
-                Text('Zur Warteschlange hinzufuegen',
-                    style: TextStyle(color: Colors.white)),
-              ],
-            ),
+          PopupMenuButton<String>(
+            color: AmoledColors.surfaceElevated,
+            icon: const Icon(Icons.more_vert_rounded,
+                color: AmoledColors.textSecondary),
+            onSelected: (action) {
+              if (action == 'play_now') {
+                queueController.addItem(item);
+              } else if (action == 'play_next') {
+                queueController.insertNext(item);
+              } else if (action == 'add_queue') {
+                queueController.addItem(item);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'play_now',
+                child: Row(
+                  children: [
+                    Icon(Icons.play_arrow_rounded,
+                        color: AmoledColors.midnightBlue, size: 20),
+                    SizedBox(width: 8),
+                    Text('Jetzt abspielen', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'play_next',
+                child: Row(
+                  children: [
+                    Icon(Icons.playlist_play_rounded,
+                        color: AmoledColors.violet, size: 20),
+                    SizedBox(width: 8),
+                    Text('Als naechstes abspielen',
+                        style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'add_queue',
+                child: Row(
+                  children: [
+                    Icon(Icons.queue_rounded,
+                        color: AmoledColors.textPrimary, size: 20),
+                    SizedBox(width: 8),
+                    Text('Zur Warteschlange hinzufuegen',
+                        style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

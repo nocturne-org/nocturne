@@ -40,7 +40,7 @@ class VideoAudioToggleButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color:
-                  isVideo ? AmoledColors.cyanAccent : AmoledColors.amberAccent,
+                  isVideo ? AmoledColors.violet : AmoledColors.midnightBlue,
               width: 1.2,
             ),
           ),
@@ -50,8 +50,8 @@ class VideoAudioToggleButton extends StatelessWidget {
               Icon(
                 isVideo ? Icons.videocam_rounded : Icons.headphones_rounded,
                 color: isVideo
-                    ? AmoledColors.cyanAccent
-                    : AmoledColors.amberAccent,
+                    ? AmoledColors.violet
+                    : AmoledColors.midnightBlue,
                 size: 18,
               ),
               const SizedBox(width: 6),
@@ -59,8 +59,8 @@ class VideoAudioToggleButton extends StatelessWidget {
                 isVideo ? 'VIDEO' : 'AUDIO',
                 style: AmoledTypography.caption.copyWith(
                   color: isVideo
-                      ? AmoledColors.cyanAccent
-                      : AmoledColors.amberAccent,
+                      ? AmoledColors.violet
+                      : AmoledColors.midnightBlue,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.8,
                 ),

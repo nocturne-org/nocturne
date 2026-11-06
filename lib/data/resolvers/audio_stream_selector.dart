@@ -77,6 +77,7 @@ class AudioOnlyStreamSelector {
   AudioStreamCandidate? selectBestAudioStream(
     List<Map<String, dynamic>> rawFormats, {
     bool preferOpus = true,
+    bool forDownload = false,
   }) {
     final candidates = <AudioStreamCandidate>[];
 
@@ -117,32 +118,48 @@ class AudioOnlyStreamSelector {
     // 2. M4A mit 128-160 kbps
     // 3. Andere Raten am naechsten zu 128 kbps
     candidates.sort((a, b) {
-      final aScore = _scoreCandidate(a, preferOpus: preferOpus);
-      final bScore = _scoreCandidate(b, preferOpus: preferOpus);
-      return bScore.compareTo(aScore); // Hoechste Punktzahl zuerst
+      final aScore = _scoreCandidate(a, preferOpus: preferOpus, forDownload: forDownload);
+      final bScore = _scoreCandidate(b, preferOpus: preferOpus, forDownload: forDownload);
+      return bScore.compareTo(aScore); // Highest score first
     });
 
     return candidates.first;
   }
 
-  int _scoreCandidate(AudioStreamCandidate c, {required bool preferOpus}) {
+  int _scoreCandidate(
+    AudioStreamCandidate c, {
+    required bool preferOpus,
+    bool forDownload = false,
+  }) {
     var score = 0;
 
-    // Bevorzugtes Format
+    // Minimal storage footprint for offline downloads (TICK-V2-11)
+    if (forDownload) {
+      if (c.container == 'opus' && c.bitrateKbps >= 48 && c.bitrateKbps <= 72) {
+        score += 250; // Ideal Opus ~64kbps match (minimal ~28 MB/hour)
+      } else if (c.container == 'opus' && c.bitrateKbps <= 96) {
+        score += 180;
+      } else if (c.bitrateKbps <= 96) {
+        score += 120;
+      } else {
+        score += (300 - c.bitrateKbps).clamp(10, 100);
+      }
+      return score;
+    }
+
+    // Standard streaming quality preference
     if (c.container == 'opus' && preferOpus) {
       score += 50;
     } else if (c.container == 'm4a') {
       score += 40;
     }
 
-    // Ideale Bitrate: 128 bis 160 kbps
+    // Ideal streaming bitrate: 128 to 160 kbps
     if (c.bitrateKbps >= 128 && c.bitrateKbps <= 160) {
       score += 100;
     } else if (c.bitrateKbps > 160) {
-      // Zu hohe Bitrate verschwendet Bandbreite ohne Hoervorteil beim Einschlafen
       score += 60;
     } else {
-      // < 128 kbps
       score += c.bitrateKbps;
     }
 

@@ -26,12 +26,18 @@ void main() {
       expect(db.bookmarksTable.tableName, 'bookmarks');
       expect(db.playbackHistoryTable.tableName, 'playback_history');
       expect(db.sleepPresetsTable.tableName, 'sleep_presets');
+      expect(db.playlistsTable.tableName, 'playlists');
+      expect(db.playlistItemsTable.tableName, 'playlist_items');
+      expect(db.favoritesTable.tableName, 'favorites');
 
       // Primaerschluessel und Tabellen-Instanzen pruefen
       expect(db.mediaItemsTable, isNotNull);
       expect(db.bookmarksTable, isNotNull);
       expect(db.playbackHistoryTable, isNotNull);
       expect(db.sleepPresetsTable, isNotNull);
+      expect(db.playlistsTable, isNotNull);
+      expect(db.playlistItemsTable, isNotNull);
+      expect(db.favoritesTable, isNotNull);
     });
 
     test('MediaItem CRUD-Operationen funktionieren asynchron und zuverlaessig',
@@ -299,6 +305,47 @@ void main() {
 
       await dao.deleteSleepPreset('preset-15');
       expect((await dao.getSleepPresets()).length, 1);
+    });
+    test('Playlist CRUD and sorting by recent works reliably (TICK-V2-09)', () async {
+      final p1 = await dao.createPlaylist('Bedtime Audiobooks', kind: 'folder');
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      final p2 = await dao.createPlaylist('Night Ambient', kind: 'custom');
+
+      final playlists = await dao.getPlaylistsSortedByRecent();
+      expect(playlists.length, 2);
+      expect(playlists.first.name, 'Night Ambient'); // Most recent first
+      expect(playlists.last.name, 'Bedtime Audiobooks');
+
+      // Add items
+      await dao.addItemsToPlaylist(p1.id, ['track-1', 'track-2']);
+      final items = await dao.getPlaylistItems(p1.id);
+      expect(items, ['track-1', 'track-2']);
+
+      // Remove item
+      await dao.removeItemsFromPlaylist(p1.id, ['track-1']);
+      final itemsAfter = await dao.getPlaylistItems(p1.id);
+      expect(itemsAfter, ['track-2']);
+
+      // Delete playlist
+      await dao.deletePlaylist(p1.id);
+      final remaining = await dao.getPlaylists();
+      expect(remaining.length, 1);
+      expect(remaining.first.id, p2.id);
+    });
+
+    test('Favorites toggle and reactive stream work reliably (TICK-V2-09)', () async {
+      expect(await dao.isFavorite('track-100'), isFalse);
+
+      final isFav1 = await dao.toggleFavorite('track-100');
+      expect(isFav1, isTrue);
+      expect(await dao.isFavorite('track-100'), isTrue);
+
+      final favs = await dao.getFavorites();
+      expect(favs, contains('track-100'));
+
+      final isFav2 = await dao.toggleFavorite('track-100');
+      expect(isFav2, isFalse);
+      expect(await dao.isFavorite('track-100'), isFalse);
     });
   });
 }

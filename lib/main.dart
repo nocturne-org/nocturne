@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'presentation/screens/bedtime_screen.dart';
+import 'presentation/screens/main_shell_screen.dart';
 import 'presentation/theme/amoled_theme.dart';
 
 void main() {
@@ -11,7 +11,7 @@ void main() {
   );
 }
 
-/// Nocturne Hauptanwendung.
+/// Nocturne main application widget.
 class NocturneApp extends StatelessWidget {
   const NocturneApp({super.key});
 
@@ -21,7 +21,7 @@ class NocturneApp extends StatelessWidget {
       title: 'Nocturne',
       debugShowCheckedModeBanner: false,
       theme: AmoledTheme.themeData,
-      home: const BedtimeScreen(),
+      home: const MainShellScreen(),
     );
   }
 }

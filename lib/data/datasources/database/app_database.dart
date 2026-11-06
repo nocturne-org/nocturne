@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'daos/media_dao.dart';
 import 'tables/bookmarks_table.dart';
+import 'tables/favorites_table.dart';
 import 'tables/media_items_table.dart';
 import 'tables/playback_history_table.dart';
 import 'tables/playback_queue_table.dart';
+import 'tables/playlist_items_table.dart';
+import 'tables/playlists_table.dart';
 import 'tables/sleep_presets_table.dart';
 
 /// Zentrale SQLite-Datenbank fuer Nocturne basierend auf Drift-Architektur.
@@ -39,6 +42,9 @@ class AppDatabase {
   final PlaybackHistoryTable playbackHistoryTable = PlaybackHistoryTable();
   final PlaybackQueueTable playbackQueueTable = PlaybackQueueTable();
   final SleepPresetsTable sleepPresetsTable = SleepPresetsTable();
+  final PlaylistsTable playlistsTable = PlaylistsTable();
+  final PlaylistItemsTable playlistItemsTable = PlaylistItemsTable();
+  final FavoritesTable favoritesTable = FavoritesTable();
 
   bool _inTransaction = false;
 

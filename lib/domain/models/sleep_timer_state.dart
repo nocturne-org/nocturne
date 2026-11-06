@@ -18,6 +18,8 @@ enum SleepTimerStatus {
 
 /// Vordefinierte Countdown-Presets fuer den Schlaftimer.
 enum SleepTimerPreset {
+  m5,
+  m10,
   m15,
   m30,
   m45,
@@ -25,9 +27,13 @@ enum SleepTimerPreset {
   untilChapterEnd,
   custom;
 
-  /// Liefert die feste Zeitdauer des Presets (null bei dynamischen Presets).
+  /// Fixed duration of preset (null for dynamic presets).
   Duration? get fixedDuration {
     switch (this) {
+      case SleepTimerPreset.m5:
+        return const Duration(minutes: 5);
+      case SleepTimerPreset.m10:
+        return const Duration(minutes: 10);
       case SleepTimerPreset.m15:
         return const Duration(minutes: 15);
       case SleepTimerPreset.m30:
@@ -42,21 +48,25 @@ enum SleepTimerPreset {
     }
   }
 
-  /// Lesbare deutsche Beschriftung fuer die UI.
+  /// Label for UI.
   String get label {
     switch (this) {
+      case SleepTimerPreset.m5:
+        return '5 min';
+      case SleepTimerPreset.m10:
+        return '10 min';
       case SleepTimerPreset.m15:
-        return '15 Min';
+        return '15 min';
       case SleepTimerPreset.m30:
-        return '30 Min';
+        return '30 min';
       case SleepTimerPreset.m45:
-        return '45 Min';
+        return '45 min';
       case SleepTimerPreset.m60:
-        return '60 Min';
+        return '60 min';
       case SleepTimerPreset.untilChapterEnd:
-        return 'Bis Kapitelende';
+        return 'End of chapter';
       case SleepTimerPreset.custom:
-        return 'Benutzerdefiniert';
+        return 'Custom';
     }
   }
 }

@@ -1,20 +1,23 @@
-/// Unterstuetzte Audioformate fuer den lokalen Bibliotheks-Scan.
+/// Supported audio formats for local file and folder imports.
 enum AudioFormat {
   mp3('mp3', 'audio/mpeg'),
   m4b('m4b', 'audio/mp4'),
   m4a('m4a', 'audio/mp4'),
+  aac('aac', 'audio/aac'),
   flac('flac', 'audio/flac'),
-  opus('opus', 'audio/ogg');
+  opus('opus', 'audio/ogg'),
+  ogg('ogg', 'audio/ogg'),
+  wav('wav', 'audio/wav');
 
   const AudioFormat(this.extension, this.mimeType);
 
-  /// Dateiendung in Kleinbuchstaben (ohne fuehrenden Punkt).
+  /// Lowercase file extension (without leading dot).
   final String extension;
 
-  /// MIME-Type des Audioformats.
+  /// MIME type of the audio format.
   final String mimeType;
 
-  /// Ermittelt das Audioformat anhand der Dateiendung oder des Dateipfads.
+  /// Determines the audio format from the file path extension.
   static AudioFormat? fromPath(String path) {
     final dotIndex = path.lastIndexOf('.');
     if (dotIndex == -1 || dotIndex == path.length - 1) {
@@ -29,6 +32,6 @@ enum AudioFormat {
     return null;
   }
 
-  /// Prueft, ob ein Dateipfad eine unterstuetzte Audioendung besitzt.
+  /// Checks whether a given file path is a supported audio format.
   static bool isSupported(String path) => fromPath(path) != null;
 }

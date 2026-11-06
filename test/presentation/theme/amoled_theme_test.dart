@@ -18,14 +18,16 @@ void main() {
       expect(theme.bottomSheetTheme.backgroundColor?.toARGB32(), 0xFF000000);
     });
 
-    test('Gedaempfte Akzentfarben (Bernstein #F59E0B und Nacht-Cyan #06B6D4)',
+    test('Gedaempfte Akzentfarben (Midnight Blue #3B82F6, Indigo #6366F1, Violett #8B5CF6)',
         () {
-      expect(AmoledColors.amberAccent.toARGB32(), 0xFFF59E0B);
-      expect(AmoledColors.cyanAccent.toARGB32(), 0xFF06B6D4);
+      expect(AmoledColors.midnightBlue.toARGB32(), 0xFF3B82F6);
+      expect(AmoledColors.indigo.toARGB32(), 0xFF6366F1);
+      expect(AmoledColors.violet.toARGB32(), 0xFF8B5CF6);
 
       final theme = AmoledTheme.themeData;
-      expect(theme.colorScheme.primary.toARGB32(), 0xFFF59E0B);
-      expect(theme.colorScheme.secondary.toARGB32(), 0xFF06B6D4);
+      expect(theme.colorScheme.primary.toARGB32(), 0xFF3B82F6);
+      expect(theme.colorScheme.secondary.toARGB32(), 0xFF6366F1);
+      expect(theme.colorScheme.tertiary.toARGB32(), 0xFF8B5CF6);
     });
 
     test('Typografie verwendet blendfreie Off-White-Toene statt grelles Weiss',

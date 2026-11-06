@@ -134,7 +134,7 @@ class BedtimeActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg =
-        isAccent ? AmoledColors.amberAccent : AmoledColors.surfaceElevated;
+        isAccent ? AmoledColors.midnightBlue : AmoledColors.surfaceElevated;
     final fg = isAccent ? AmoledColors.pureBlack : AmoledColors.textPrimary;
     final border = isAccent ? Colors.transparent : AmoledColors.divider;
 

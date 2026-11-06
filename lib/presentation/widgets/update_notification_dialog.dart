@@ -30,7 +30,7 @@ class UpdateNotificationDialog extends StatelessWidget {
         children: [
           const Icon(
             Icons.system_update_rounded,
-            color: AmoledColors.amberAccent,
+            color: AmoledColors.midnightBlue,
             size: 26,
           ),
           const SizedBox(width: 12),
@@ -50,7 +50,7 @@ class UpdateNotificationDialog extends StatelessWidget {
                 'Version: ${updateInfo.tagName}',
                 style: AmoledTypography.bodyLarge.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AmoledColors.amberAccent,
+                  color: AmoledColors.midnightBlue,
                 ),
               ),
               const Spacer(),
@@ -93,7 +93,7 @@ class UpdateNotificationDialog extends StatelessWidget {
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: AmoledColors.amberAccent,
+            backgroundColor: AmoledColors.midnightBlue,
             foregroundColor: Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),

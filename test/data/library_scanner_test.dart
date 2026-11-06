@@ -49,8 +49,11 @@ void main() {
       expect(AudioFormat.fromPath('/path/to/file.mp3'), AudioFormat.mp3);
       expect(AudioFormat.fromPath('/path/to/file.M4B'), AudioFormat.m4b);
       expect(AudioFormat.fromPath('/path/to/file.m4a'), AudioFormat.m4a);
+      expect(AudioFormat.fromPath('/path/to/file.aac'), AudioFormat.aac);
       expect(AudioFormat.fromPath('/path/to/file.flac'), AudioFormat.flac);
       expect(AudioFormat.fromPath('/path/to/file.opus'), AudioFormat.opus);
+      expect(AudioFormat.fromPath('/path/to/file.ogg'), AudioFormat.ogg);
+      expect(AudioFormat.fromPath('/path/to/file.wav'), AudioFormat.wav);
 
       expect(AudioFormat.fromPath('/path/to/cover.jpg'), isNull);
       expect(AudioFormat.fromPath('/path/to/notes.txt'), isNull);

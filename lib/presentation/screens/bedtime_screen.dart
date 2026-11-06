@@ -8,6 +8,8 @@ import '../theme/amoled_colors.dart';
 import '../widgets/bed_lock_overlay.dart';
 import '../widgets/bedtime_touch_target.dart';
 import '../widgets/sleep_timer_circular_hud.dart';
+import '../widgets/sleep_timer_picker_sheet.dart';
+import '../widgets/seek_button.dart';
 
 /// Haupt-Bedtime-Player-Screen fuer die Nacht gemaess Nocturne-Architektur (TICK-027 & TICK-028).
 ///
@@ -76,7 +78,7 @@ class BedtimeScreen extends ConsumerWidget {
                             const Icon(
                               Icons.vibration,
                               size: 16.0,
-                              color: AmoledColors.amberAccent,
+                              color: AmoledColors.midnightBlue,
                             ),
                             const SizedBox(width: 8.0),
                             Text(
@@ -94,15 +96,39 @@ class BedtimeScreen extends ConsumerWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Bed-Lock Aktivierungstaste (TICK-028)
+                        // Dedicated Sleep Timer Button
+                        IconButton(
+                          key: const Key('sleep_timer_menu_button'),
+                          icon: Icon(
+                            timerState.isActive
+                                ? Icons.timer_rounded
+                                : Icons.timer_outlined,
+                            color: timerState.isActive
+                                ? AmoledColors.violet
+                                : AmoledColors.textSecondary,
+                            size: 22.0,
+                          ),
+                          tooltip: 'Sleep Timer',
+                          onPressed: () {
+                            SleepTimerPickerSheet.show(
+                              context: context,
+                              currentState: timerState,
+                              onDurationSelected: (d) =>
+                                  timerNotifier.startTimer(d),
+                              onCancelTimer: () => timerNotifier.cancelTimer(),
+                            );
+                          },
+                        ),
+
+                        // Touch Lock Aktivierungstaste (TICK-028 & TICK-V2-02)
                         IconButton(
                           key: const Key('bed_lock_activate_button'),
                           icon: const Icon(
                             Icons.lock_outline,
-                            color: AmoledColors.amberAccent,
+                            color: AmoledColors.midnightBlue,
                             size: 22.0,
                           ),
-                          tooltip: 'Bed-Lock aktivieren',
+                          tooltip: 'Touch Lock',
                           onPressed: () => lockNotifier.lock(),
                         ),
 
@@ -158,11 +184,12 @@ class BedtimeScreen extends ConsumerWidget {
                   key: const Key('sleep_timer_circular_hud'),
                   timerState: timerState,
                   onTap: () {
-                    if (!timerState.isActive) {
-                      timerNotifier.startTimer(const Duration(minutes: 30));
-                    } else {
-                      timerNotifier.add15Minutes();
-                    }
+                    SleepTimerPickerSheet.show(
+                      context: context,
+                      currentState: timerState,
+                      onDurationSelected: (d) => timerNotifier.startTimer(d),
+                      onCancelTimer: () => timerNotifier.cancelTimer(),
+                    );
                   },
                 ),
 
@@ -183,44 +210,14 @@ class BedtimeScreen extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    // 30s Rueckwaerts-Taste
-                    BedtimeTouchTarget(
-                      key: const Key('rewind_30_button'),
-                      minWidth: 72.0,
-                      minHeight: 72.0,
-                      borderRadius: 36.0,
-                      tooltip: '30 Sekunden zurueck',
-                      onTap: () => playerNotifier.rewind30(),
-                      child: Container(
-                        width: 64.0,
-                        height: 64.0,
-                        decoration: BoxDecoration(
-                          color: AmoledColors.surfaceElevated,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AmoledColors.divider,
-                            width: 1.0,
-                          ),
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.replay_30,
-                              size: 28.0,
-                              color: AmoledColors.textPrimary,
-                            ),
-                            Text(
-                              '30s',
-                              style: TextStyle(
-                                color: AmoledColors.textSecondary,
-                                fontSize: 10.0,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    // 15s Rueckwaerts-Taste mit Hold-Seek
+                    SeekButton(
+                      key: const Key('rewind_15_button'),
+                      isForward: false,
+                      tooltip: '15 Sekunden zurueck (Halten zum Schnellspulen)',
+                      onSingleSeek: () => playerNotifier.rewind15(),
+                      onContinuousTick: () =>
+                          playerNotifier.seekRelative(const Duration(seconds: -5)),
                     ),
 
                     // Grosse zentrale Play / Pause Taste
@@ -235,7 +232,7 @@ class BedtimeScreen extends ConsumerWidget {
                         width: 84.0,
                         height: 84.0,
                         decoration: const BoxDecoration(
-                          color: AmoledColors.amberAccent,
+                          color: AmoledColors.midnightBlue,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -248,44 +245,14 @@ class BedtimeScreen extends ConsumerWidget {
                       ),
                     ),
 
-                    // 30s Vorwaerts-Taste
-                    BedtimeTouchTarget(
-                      key: const Key('forward_30_button'),
-                      minWidth: 72.0,
-                      minHeight: 72.0,
-                      borderRadius: 36.0,
-                      tooltip: '30 Sekunden vorwaerts',
-                      onTap: () => playerNotifier.forward30(),
-                      child: Container(
-                        width: 64.0,
-                        height: 64.0,
-                        decoration: BoxDecoration(
-                          color: AmoledColors.surfaceElevated,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AmoledColors.divider,
-                            width: 1.0,
-                          ),
-                        ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.forward_30,
-                              size: 28.0,
-                              color: AmoledColors.textPrimary,
-                            ),
-                            Text(
-                              '30s',
-                              style: TextStyle(
-                                color: AmoledColors.textSecondary,
-                                fontSize: 10.0,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    // 15s Vorwaerts-Taste mit Hold-Seek
+                    SeekButton(
+                      key: const Key('forward_15_button'),
+                      isForward: true,
+                      tooltip: '15 Sekunden vorwaerts (Halten zum Schnellspulen)',
+                      onSingleSeek: () => playerNotifier.forward15(),
+                      onContinuousTick: () =>
+                          playerNotifier.seekRelative(const Duration(seconds: 5)),
                     ),
                   ],
                 ),

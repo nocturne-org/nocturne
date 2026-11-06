@@ -95,5 +95,38 @@ void main() {
       expect(config.minBufferDurationSec, 15);
       expect(config.maxBufferDurationSec, 60);
     });
+    test(
+        'forDownload waehlt minimale Opus-64 Audiospur (~28 MB/h) zur Speicherplatzschonung (TICK-V2-11)',
+        () {
+      final formats = [
+        {
+          'mimeType': 'audio/webm; codecs="opus"',
+          'bitrate': 160000,
+          'url': 'https://audio.example.com/160k.opus',
+        },
+        {
+          'mimeType': 'audio/webm; codecs="opus"',
+          'bitrate': 64000,
+          'url': 'https://audio.example.com/64k.opus',
+        },
+        {
+          'mimeType': 'audio/mp4; codecs="mp4a.40.2"',
+          'bitrate': 128000,
+          'url': 'https://audio.example.com/128k.m4a',
+        },
+      ];
+
+      // Streaming chooses 160k
+      final streamCandidate = selector.selectBestAudioStream(formats, forDownload: false);
+      expect(streamCandidate!.bitrateKbps, 160);
+
+      // Download chooses 64k minimal compression
+      final downloadCandidate = selector.selectBestAudioStream(formats, forDownload: true);
+      expect(downloadCandidate!.bitrateKbps, 64);
+      expect(downloadCandidate.container, 'opus');
+
+      final savings = selector.calculateSavings(64);
+      expect(savings.megabytesPerHourAudio, closeTo(28.1, 0.5));
+    });
   });
 }

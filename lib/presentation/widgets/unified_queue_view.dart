@@ -53,7 +53,7 @@ class UnifiedQueueView extends ConsumerWidget {
         children: [
           const Icon(
             Icons.queue_music_rounded,
-            color: AmoledColors.amberAccent,
+            color: AmoledColors.midnightBlue,
             size: 24,
           ),
           const SizedBox(width: 12),
@@ -182,7 +182,7 @@ class _QueueItemTile extends StatelessWidget {
             isPlaying ? AmoledColors.surfaceElevated : AmoledColors.surfaceCard,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isPlaying ? AmoledColors.amberAccent : AmoledColors.divider,
+          color: isPlaying ? AmoledColors.midnightBlue : AmoledColors.divider,
           width: isPlaying ? 1.5 : 1.0,
         ),
       ),
@@ -195,7 +195,7 @@ class _QueueItemTile extends StatelessWidget {
             if (isPlaying)
               const Icon(
                 Icons.play_arrow_rounded,
-                color: AmoledColors.amberAccent,
+                color: AmoledColors.midnightBlue,
                 size: 24,
               )
             else
@@ -215,7 +215,7 @@ class _QueueItemTile extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: AmoledTypography.bodyMedium.copyWith(
             color:
-                isPlaying ? AmoledColors.amberAccent : AmoledColors.textPrimary,
+                isPlaying ? AmoledColors.midnightBlue : AmoledColors.textPrimary,
             fontWeight: isPlaying ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
@@ -290,9 +290,9 @@ class _QueueItemTile extends StatelessWidget {
   Color _getBadgeColor(String badge) {
     switch (badge) {
       case 'AUDIOBUCH':
-        return AmoledColors.amberAccent;
+        return AmoledColors.midnightBlue;
       case 'PODCAST':
-        return AmoledColors.cyanAccent;
+        return AmoledColors.violet;
       case 'YOUTUBE':
         return const Color(0xFFFF5252);
       default:

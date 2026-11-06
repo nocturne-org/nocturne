@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/amoled_colors.dart';
 
-/// Vollbild-Touchsperre (Bed Lock) gemaess Nocturne-Spezifikation (TICK-028).
+/// Vollbild-Touchsperre (Touch Lock) gemaess Nocturne-Spezifikation (TICK-028 & TICK-V2-02).
 ///
 /// Schuetzt den Bedtime-Player vor versehentlichen Eingaben durch Bettdecke, Kissen
 /// oder unwillkuerliche Koerperbewegungen im Halbschlaf.
 ///
 /// Merkmale:
-/// - Gedaempfte AMOLED-Bildschirmanzeige.
+/// - 95% AMOLED-Bildschirmabdunklung fuer minimales Schlafzimmer-Licht.
 /// - Blockiert ausnahmslos alle darunterliegenden Touch-Ereignisse.
 /// - Entsperren erfordert eine bewusste Geste:
 ///   1. 2-Sekunden-Gedrueckthalten (Long-Press mit animiertem Fortschrittsring) ODER
@@ -47,6 +47,17 @@ class _BedLockOverlayState extends State<BedLockOverlay>
   }
 
   @override
+  void didUpdateWidget(covariant BedLockOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.isLocked && widget.isLocked) {
+      _verticalDragDistance = 0.0;
+      _holdTimer?.cancel();
+      _holdTimer = null;
+      _unlockAnimationController.reset();
+    }
+  }
+
+  @override
   void dispose() {
     _holdTimer?.cancel();
     _unlockAnimationController.dispose();
@@ -56,6 +67,7 @@ class _BedLockOverlayState extends State<BedLockOverlay>
   void _triggerUnlock() {
     _holdTimer?.cancel();
     _holdTimer = null;
+    _verticalDragDistance = 0.0;
     HapticFeedback.mediumImpact();
     widget.onUnlock();
     _unlockAnimationController.reset();
@@ -81,13 +93,17 @@ class _BedLockOverlayState extends State<BedLockOverlay>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 1. Darunterliegender Inhalt (wird bei Sperre komplett vor Beruehrungen geschuetzt)
+        // 1. Darunterliegender Inhalt (wird bei Sperre komplett vor Beruehrungen geschuetzt und um 95% abgedunkelt)
         AbsorbPointer(
           absorbing: widget.isLocked,
-          child: widget.child,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            opacity: widget.isLocked ? 0.05 : 1.0,
+            child: widget.child,
+          ),
         ),
 
-        // 2. Sperr-Ebene & Gedaempfter Schleier
+        // 2. Sperr-Ebene & 95% abgedunkelter Schleier
         if (widget.isLocked)
           Positioned.fill(
             child: Listener(
@@ -110,7 +126,7 @@ class _BedLockOverlayState extends State<BedLockOverlay>
                 },
                 child: Container(
                   key: const Key('bed_lock_dimmed_scrim'),
-                  color: AmoledColors.pureBlack.withValues(alpha: 0.85),
+                  color: AmoledColors.bedLockScrim,
                   child: SafeArea(
                     child: Center(
                       child: Padding(
@@ -135,14 +151,14 @@ class _BedLockOverlayState extends State<BedLockOverlay>
                                             AmoledColors.surfaceElevated,
                                         valueColor:
                                             const AlwaysStoppedAnimation<Color>(
-                                          AmoledColors.amberAccent,
+                                          AmoledColors.midnightBlue,
                                         ),
                                       ),
                                     ),
                                     const Icon(
                                       Icons.lock_rounded,
                                       size: 38.0,
-                                      color: AmoledColors.amberAccent,
+                                      color: AmoledColors.midnightBlue,
                                     ),
                                   ],
                                 );
@@ -150,7 +166,7 @@ class _BedLockOverlayState extends State<BedLockOverlay>
                             ),
                             const SizedBox(height: 24.0),
                             const Text(
-                              'Bed-Lock aktiv',
+                              'Touch Lock',
                               style: TextStyle(
                                 color: AmoledColors.textPrimary,
                                 fontSize: 18.0,
@@ -160,7 +176,7 @@ class _BedLockOverlayState extends State<BedLockOverlay>
                             ),
                             const SizedBox(height: 8.0),
                             const Text(
-                              'Gesperrt gegen Bettdecke und Kissen\n2s gedrueckt halten oder nach oben wischen',
+                              '2s gedrueckt halten oder nach oben wischen',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: AmoledColors.textSecondary,

@@ -88,7 +88,7 @@ class MockAudioPlayerRepository implements AudioPlayerRepository {
 }
 
 void main() {
-  group('Bed-Lock Touch-Sperre Widget Tests (TICK-028)', () {
+  group('Bed-Lock Touch-Sperre Widget Tests (TICK-028 & TICK-V2-02)', () {
     late MockAudioPlayerRepository mockAudio;
 
     setUp(() {
@@ -128,7 +128,7 @@ void main() {
 
       // Bed-Lock ist nun aktiv: Gedaempfte Bildschirmanzeige sichtbar
       expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsOneWidget);
-      expect(find.text('Bed-Lock aktiv'), findsOneWidget);
+      expect(find.text('Touch Lock'), findsOneWidget);
     });
 
     testWidgets(
@@ -213,6 +213,42 @@ void main() {
 
       // Durch Wischgeste entsperrt!
       expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsNothing);
+    });
+
+    testWidgets('Re-locking after unlock does not instantly unlock on single tap',
+        (tester) async {
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      // 1. Lock screen
+      await tester.tap(find.byKey(const Key('bed_lock_activate_button')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsOneWidget);
+
+      // 2. Unlock via swipe up
+      final lockGestureArea =
+          find.byKey(const Key('bed_lock_gesture_detector'));
+      await tester.drag(lockGestureArea, const Offset(0.0, -200.0));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsNothing);
+
+      // 3. Re-lock screen
+      await tester.tap(find.byKey(const Key('bed_lock_activate_button')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsOneWidget);
+
+      // 4. Simulate small tap/touch (accidental touch in bed)
+      final reGestureArea =
+          find.byKey(const Key('bed_lock_gesture_detector'));
+      final tapGesture =
+          await tester.startGesture(tester.getCenter(reGestureArea));
+      await tester.pump(const Duration(milliseconds: 100));
+      await tapGesture.up();
+      await tester.pumpAndSettle();
+
+      // MUST STAY LOCKED! (Regression test for TICK-V2-02 bug)
+      expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsOneWidget);
+      expect(find.text('Touch Lock'), findsOneWidget);
     });
   });
 }

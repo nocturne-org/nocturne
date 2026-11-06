@@ -134,23 +134,23 @@ class SleepTimerCircularHud extends StatelessWidget {
 
   Color _getArcColor() {
     if (timerState.isGracePeriod) {
-      return Colors.lightBlueAccent;
+      return AmoledColors.progressGrace;
     }
     if (timerState.isFadingOut) {
-      return Colors.orangeAccent;
+      return AmoledColors.progressFading;
     }
     if (timerState.isActive) {
-      return AmoledColors.amberAccent;
+      return AmoledColors.progressActive;
     }
     return AmoledColors.disabled;
   }
 
   Color _getStatusTextColor() {
     if (timerState.isGracePeriod) {
-      return Colors.lightBlueAccent;
+      return AmoledColors.progressGrace;
     }
     if (timerState.isFadingOut) {
-      return Colors.orangeAccent;
+      return AmoledColors.progressFading;
     }
     if (timerState.isActive) {
       return AmoledColors.textSecondary;

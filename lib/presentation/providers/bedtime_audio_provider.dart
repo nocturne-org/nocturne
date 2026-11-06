@@ -70,6 +70,29 @@ class BedtimeAudioNotifier extends Notifier<BedtimePlaybackState> {
     }
   }
 
+  /// Spult exakt 15 Sekunden zurueck.
+  Future<void> rewind15() async {
+    await seekRelative(const Duration(seconds: -15));
+  }
+
+  /// Spult exakt 15 Sekunden vor.
+  Future<void> forward15() async {
+    await seekRelative(const Duration(seconds: 15));
+  }
+
+  /// Spult um ein relatives Delta mit Randwertpruefung (0 bis Gesamtlaenge).
+  Future<void> seekRelative(Duration delta) async {
+    final cur = state.position;
+    final target = cur + delta;
+    if (target < Duration.zero) {
+      await _player.seek(Duration.zero);
+    } else if (state.totalDuration > Duration.zero && target > state.totalDuration) {
+      await _player.seek(state.totalDuration);
+    } else {
+      await _player.seek(target);
+    }
+  }
+
   /// Spult exakt 30 Sekunden zurueck.
   Future<void> rewind30() async {
     final cur = state.position;
