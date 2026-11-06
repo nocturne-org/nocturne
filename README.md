@@ -51,10 +51,12 @@ flowchart LR
 Da Nocturne freie Audio-Downloads unterstützt, erfolgt der Vertrieb außerhalb des Google Play Stores über offene Distributionskanäle:
 
 ### Option A: Automatisierte Updates mit Obtainium (Empfohlen)
-1. Die Open-Source-App [Obtainium](https://github.com/ImranR98/Obtainium) auf dem Android-Gerät installieren.
-2. In Obtainium auf *"Add App"* tippen und die URL dieses Repositories eintragen:
-   `https://github.com/<user>/nocturne`
-3. Obtainium installiert die passende APK (`arm64-v8a`) und benachrichtigt automatisch über Updates.
+1. Die Open-Source-App [Obtainium](https://github.com/ImranR98/Obtainium) auf dem Android-Geraet installieren.
+2. In Obtainium auf *"Add App"* tippen und die Repository-URL einfuegen:
+   `https://github.com/roger/nocturne`
+3. Optional unter *"Filter APKs by regular expression"* den Filter fuer dein Geraet setzen:
+   `arm64-v8a` (laedt automatisch die schlanke ~18 MB Split-APK).
+4. Auf *"Add"* tippen. Obtainium installiert die App, prueft Release-Tags nach dem SemVer-Standard (`vX.Y.Z`) und haelt Nocturne automatisch aktuell.
 
 ### Option B: Direkter APK-Download
 Im Bereich [Releases](https://github.com/<user>/nocturne/releases) die aktuellste Version als APK herunterladen und auf dem Smartphone installieren.

@@ -38,7 +38,14 @@ $allowedRootItems = @(
     "android",
     "web",
     "assets",
-    ".scratch"
+    ".scratch",
+    "analysis_options.yaml",
+    ".metadata",
+    ".flutter-plugins-dependencies",
+    ".dart_tool",
+    ".idea",
+    "build",
+    "nocturne.iml"
 )
 
 # 2. Root-Verzeichnis pruefen
