@@ -93,7 +93,7 @@ void main() {
     });
 
     test('Initialer Status und Lifecycle lassen sich steuern', () async {
-      final source = AudioSourceRef.file('/sandbox/chapter1.m4b', title: 'Kapitel 1');
+      const source = AudioSourceRef.file('/sandbox/chapter1.m4b', title: 'Kapitel 1');
       expect(source.type, AudioSourceType.file);
       expect(source.title, 'Kapitel 1');
 

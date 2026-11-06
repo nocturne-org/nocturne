@@ -45,16 +45,16 @@ void main() {
     });
 
     test('updateMediaItemFromDomain uebertraegt Metadaten vollstaendig', () async {
-      final domainItem = domain.MediaItem(
+      const domainItem = domain.MediaItem(
         id: 'item-1',
         title: 'Schlaf-Meditation Teil 1',
         type: domain.MediaType.audiobook,
         source: AudioSourceRef.file('/data/audio.mp3'),
         author: 'Dr. Nachtigall',
         album: 'Besser Einschlafen',
-        duration: const Duration(minutes: 45),
+        duration: Duration(minutes: 45),
         coverArtUri: 'https://example.com/cover.jpg',
-        lastPosition: const PlaybackPosition(duration: Duration(minutes: 5)),
+        lastPosition: PlaybackPosition(duration: Duration(minutes: 5)),
       );
 
       handler.updateMediaItemFromDomain(domainItem);

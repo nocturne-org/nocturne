@@ -364,7 +364,7 @@ void main() {
     late AudioSourceRef testSource;
 
     setUp(() {
-      testSource = AudioSourceRef.file('/storage/audiobook.m4b', title: 'Buch 1');
+      testSource = const AudioSourceRef.file('/storage/audiobook.m4b', title: 'Buch 1');
     });
 
     test('Alle Medientypen werden unterstuetzt', () {
