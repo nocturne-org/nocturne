@@ -35,7 +35,6 @@ abstract class AmoledTheme {
       scaffoldBackgroundColor: AmoledColors.pureBlack,
       canvasColor: AmoledColors.pureBlack,
       cardColor: AmoledColors.surfaceElevated,
-      dialogBackgroundColor: AmoledColors.surfaceElevated,
       dividerColor: AmoledColors.divider,
       textTheme: textTheme,
       materialTapTargetSize: MaterialTapTargetSize.padded,
@@ -63,31 +62,31 @@ abstract class AmoledTheme {
       ),
 
       // Card Konfiguration
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData(
         color: AmoledColors.surfaceCard,
         elevation: 0.0,
-        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-          side: const BorderSide(color: AmoledColors.divider, width: 1.0),
+          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          side: BorderSide(color: AmoledColors.divider, width: 1.0),
         ),
       ),
 
       // Dialog Konfiguration
-      dialogTheme: DialogTheme(
+      dialogTheme: const DialogThemeData(
         backgroundColor: AmoledColors.surfaceElevated,
         surfaceTintColor: Colors.transparent,
         elevation: 0.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-          side: const BorderSide(color: AmoledColors.divider, width: 1.0),
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          side: BorderSide(color: AmoledColors.divider, width: 1.0),
         ),
-        titleTextStyle: const TextStyle(
+        titleTextStyle: TextStyle(
           color: AmoledColors.textPrimary,
           fontSize: 18.0,
           fontWeight: FontWeight.w600,
         ),
-        contentTextStyle: const TextStyle(
+        contentTextStyle: TextStyle(
           color: AmoledColors.textSecondary,
           fontSize: 14.0,
         ),

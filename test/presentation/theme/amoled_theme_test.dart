@@ -8,28 +8,28 @@ import 'package:nocturne/presentation/widgets/bedtime_touch_target.dart';
 void main() {
   group('AMOLED Pure Black Theme Tests (TICK-026)', () {
     test('Hintergruende sind zu 100% #000000 fuer OLED-Pixelabschaltung', () {
-      expect(AmoledColors.pureBlack.value, 0xFF000000);
+      expect(AmoledColors.pureBlack.toARGB32(), 0xFF000000);
 
       final theme = AmoledTheme.themeData;
-      expect(theme.scaffoldBackgroundColor.value, 0xFF000000);
-      expect(theme.canvasColor.value, 0xFF000000);
-      expect(theme.colorScheme.surface.value, 0xFF000000);
-      expect(theme.appBarTheme.backgroundColor?.value, 0xFF000000);
-      expect(theme.bottomSheetTheme.backgroundColor?.value, 0xFF000000);
+      expect(theme.scaffoldBackgroundColor.toARGB32(), 0xFF000000);
+      expect(theme.canvasColor.toARGB32(), 0xFF000000);
+      expect(theme.colorScheme.surface.toARGB32(), 0xFF000000);
+      expect(theme.appBarTheme.backgroundColor?.toARGB32(), 0xFF000000);
+      expect(theme.bottomSheetTheme.backgroundColor?.toARGB32(), 0xFF000000);
     });
 
     test('Gedaempfte Akzentfarben (Bernstein #F59E0B und Nacht-Cyan #06B6D4)', () {
-      expect(AmoledColors.amberAccent.value, 0xFFF59E0B);
-      expect(AmoledColors.cyanAccent.value, 0xFF06B6D4);
+      expect(AmoledColors.amberAccent.toARGB32(), 0xFFF59E0B);
+      expect(AmoledColors.cyanAccent.toARGB32(), 0xFF06B6D4);
 
       final theme = AmoledTheme.themeData;
-      expect(theme.colorScheme.primary.value, 0xFFF59E0B);
-      expect(theme.colorScheme.secondary.value, 0xFF06B6D4);
+      expect(theme.colorScheme.primary.toARGB32(), 0xFFF59E0B);
+      expect(theme.colorScheme.secondary.toARGB32(), 0xFF06B6D4);
     });
 
     test('Typografie verwendet blendfreie Off-White-Toene statt grelles Weiss', () {
-      expect(AmoledColors.textPrimary.value, 0xFFE2E8F0);
-      expect(AmoledColors.textSecondary.value, 0xFF94A3B8);
+      expect(AmoledColors.textPrimary.toARGB32(), 0xFFE2E8F0);
+      expect(AmoledColors.textSecondary.toARGB32(), 0xFF94A3B8);
 
       final textTheme = AmoledTypography.createTextTheme();
 
@@ -47,7 +47,7 @@ void main() {
       ];
 
       for (final s in styles) {
-        expect(s?.color?.value, isNot(0xFFFFFFFF));
+        expect(s?.color?.toARGB32(), isNot(0xFFFFFFFF));
       }
     });
 

@@ -1,4 +1,4 @@
-# Rechtliche Einordnung & Distributions-Strategie
+﻿# Rechtliche Einordnung & Distributions-Strategie
 
 Dieses Dokument erläutert die juristische Schutzstrategie für Nocturne und beschreibt die vollständige Distributions-Pipeline an Dritte ohne Abhängigkeit vom Google Play Store.
 

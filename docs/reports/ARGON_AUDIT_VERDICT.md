@@ -1,4 +1,4 @@
-# Argon Hoch (Gemini 4 Web) - Finales Audit-Gutachten: Nocturne
+﻿# Argon Hoch (Gemini 4 Web) - Finales Audit-Gutachten: Nocturne
 
 Dieses Gutachten wurde autonom über den Chrome CDP-Runner von **Google Gemini 4 Argon im Modus "Hoch" (Denkaufwand: Hoch / Besonders gründlich)** erstellt.
 
