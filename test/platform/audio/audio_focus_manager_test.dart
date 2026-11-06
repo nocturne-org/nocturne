@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nocturne/platform/audio/audio_focus_manager.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('AudioFocusManager Unit Tests (TICK-006)', () {
     var pauseCount = 0;
     final duckFactors = <double>[];
@@ -55,6 +57,12 @@ void main() {
     test('Becoming Noisy pausiert Wiedergabe sofort (Schutz vor Lautsprecher-Lied)', () async {
       await manager.handleBecomingNoisy();
       expect(pauseCount, 1);
+    });
+
+    test('abandonFocus setzt Fokus zurueck fuer Bluetooth Auto-Disconnect (TICK-018)', () async {
+      expect(manager.isFocusActive, isFalse);
+      await manager.abandonFocus();
+      expect(manager.isFocusActive, isFalse);
     });
   });
 }

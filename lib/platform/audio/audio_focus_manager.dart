@@ -22,6 +22,7 @@ class AudioFocusManager {
   StreamSubscription<void>? _becomingNoisySub;
 
   bool _isDucked = false;
+  bool _isFocusActive = false;
 
   AudioFocusManager({
     AudioSession? session,
@@ -29,6 +30,9 @@ class AudioFocusManager {
     this.onPauseRequested,
     this.onVolumeDuckRequested,
   }) : _session = session;
+
+  /// Ob der Audiofokus aktuell aktiv gehalten wird.
+  bool get isFocusActive => _isFocusActive;
 
   /// Initialisiert die AudioSession mit Sprach- und Medien-Optimierung (AUDIOFOCUS_GAIN).
   Future<void> initialize() async {
@@ -47,6 +51,30 @@ class AudioFocusManager {
 
     _interruptionSub = session.interruptionEventStream.listen(handleInterruption);
     _becomingNoisySub = session.becomingNoisyEventStream.listen((_) => handleBecomingNoisy());
+  }
+
+  /// Fordert den Audiofokus aktiv an.
+  Future<bool> activateFocus() async {
+    final session = _session ?? await AudioSession.instance;
+    final granted = await session.setActive(true);
+    _isFocusActive = granted;
+    return granted;
+  }
+
+  /// Gibt den Audiofokus vollstaendig frei (Bluetooth Auto-Disconnect, TICK-018).
+  ///
+  /// Wird nach Ablauf der Grace-Period aufgerufen, damit verbundene
+  /// Bluetooth-Kopfhoerer erkennen, dass kein Audio mehr aktiv ist,
+  /// und selbststaendig in den Standby-/Energiesparmodus wechseln.
+  Future<void> abandonFocus() async {
+    try {
+      final session = _session ?? await AudioSession.instance;
+      await session.setActive(false);
+    } catch (_) {
+      // Ignorieren falls die Session bereits inaktiv ist oder in Testumgebung ohne Plattform-Channel
+    }
+    _isFocusActive = false;
+    _isDucked = false;
   }
 
   /// Verarbeitet externe AudioFocus-Unterbrechungen.
