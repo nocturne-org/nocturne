@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
+import '../../domain/models/sensor_profile.dart';
 import 'haptic_feedback_service.dart';
 import 'models/accelerometer_sample.dart';
 import 'shake_filter.dart';
@@ -33,6 +34,14 @@ class AccelerometerShakeDetector {
 
   /// Zugriff auf den zugrundeliegenden [ShakeFilter].
   ShakeFilter get filter => _filter;
+
+  /// Aktives Sensorprofil.
+  SensorProfileConfig get currentProfile => _filter.profile;
+
+  /// Wendet ein neues Profil auf den laufenden Detektor an.
+  void applyProfile(SensorProfileConfig profile) {
+    _filter.applyProfile(profile);
+  }
 
   /// Broadcast-Stream aller bestaetigten Schuettel-Events.
   Stream<DateTime> get onShakeStream => _shakeEventController.stream;

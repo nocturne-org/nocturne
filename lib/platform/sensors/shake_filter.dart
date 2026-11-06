@@ -1,12 +1,14 @@
+import '../../domain/models/sensor_profile.dart';
 import 'models/accelerometer_sample.dart';
 
-/// Filter- und Erkennungslogik fuer Beschleunigungssensor-Schuettelgesten (TICK-016).
+/// Filter- und Erkennungslogik fuer Beschleunigungssensor-Schuettelgesten (TICK-016 & TICK-017).
 ///
 /// 1. Software-Tiefpassfilter: Trennt die konstante Erdbeschleunigung (~9.81 m/s^2)
 ///    sowie niederfrequente Atembewegungen (<0.5 Hz) von dynamischen Benutzerbewegungen.
 /// 2. Zeitfenster-Analyse: Erkennt Beschleunigungsspitzen mit Vorzeichenwechsel
 ///    innerhalb eines konfigurierbaren Zeitfensters (Standard: 600 ms).
 /// 3. Debounce-Schutz: Verhindert Mehrfachausloesungen waehrend einer Schuettelbewegung.
+/// 4. Profilunterstuetzung: Unterstuetzt Profil A (Nachttisch 12.0 m/s²) und Profil B (Matratze 7.5 m/s²).
 class ShakeFilter {
   /// Standard-Glaettungsfaktor fuer den Tiefpassfilter (0.85).
   static const double defaultAlpha = 0.85;
@@ -21,9 +23,10 @@ class ShakeFilter {
   static const Duration defaultCooldown = Duration(milliseconds: 1000);
 
   final double alpha;
-  final Duration windowDuration;
-  final Duration cooldownDuration;
+  Duration windowDuration;
+  Duration cooldownDuration;
 
+  SensorProfileConfig _profile;
   double _threshold;
   double _gravityX = 0.0;
   double _gravityY = 0.0;
@@ -33,11 +36,26 @@ class ShakeFilter {
   DateTime? _lastShakeTimestamp;
 
   ShakeFilter({
-    double threshold = defaultThreshold,
+    SensorProfileConfig profile = SensorProfileConfig.nightstand,
+    double? threshold,
     this.alpha = defaultAlpha,
-    this.windowDuration = defaultWindowDuration,
-    this.cooldownDuration = defaultCooldown,
-  }) : _threshold = threshold;
+    Duration? windowDuration,
+    Duration? cooldownDuration,
+  })  : _profile = profile,
+        _threshold = threshold ?? profile.threshold,
+        windowDuration = windowDuration ?? profile.windowDuration,
+        cooldownDuration = cooldownDuration ?? profile.cooldownDuration;
+
+  /// Aktuelles Sensorprofil.
+  SensorProfileConfig get profile => _profile;
+
+  /// Wendet ein neues Sensorprofil dynamisch an (z. B. Wechsel zu Matratzen-Modus).
+  void applyProfile(SensorProfileConfig newProfile) {
+    _profile = newProfile;
+    _threshold = newProfile.threshold;
+    windowDuration = newProfile.windowDuration;
+    cooldownDuration = newProfile.cooldownDuration;
+  }
 
   /// Aktueller Schwellenwert in m/s^2.
   double get threshold => _threshold;
@@ -121,8 +139,8 @@ class ShakeFilter {
     var hasPositivePeak = false;
     var hasNegativePeak = false;
 
-    // Erforderlicher Mindestwert fuer den Gegenschwung (mind. 50% des Schwellenwerts)
-    final reversalThreshold = _threshold * 0.5;
+    // Erforderlicher Mindestwert fuer den Gegenschwung gemaess Profil
+    final reversalThreshold = _threshold * _profile.reversalThresholdFactor;
 
     for (final sample in _recentSamples) {
       final value = axisSelector(sample);
