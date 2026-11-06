@@ -18,16 +18,20 @@ class MockPlatformInterface implements SafPlatformInterface {
   Future<bool> takePersistableUriPermission(String uri) async => true;
 
   @override
-  Future<bool> releasePersistableUriPermission(String uri) async => releaseResult;
+  Future<bool> releasePersistableUriPermission(String uri) async =>
+      releaseResult;
 
   @override
-  Future<List<SafNativeDirectoryPayload>> getPersistedUriPermissions() async => persistedList;
+  Future<List<SafNativeDirectoryPayload>> getPersistedUriPermissions() async =>
+      persistedList;
 
   @override
   Future<bool> isUriAccessible(String uri) async => isAccessible;
 
   @override
-  Future<List<SafNativeFilePayload>> listFiles(String uri, List<String> extensions) async => files;
+  Future<List<SafNativeFilePayload>> listFiles(
+          String uri, List<String> extensions) async =>
+      files;
 }
 
 void main() {
@@ -42,7 +46,8 @@ void main() {
       repository = SafStorageRepositoryImpl(adapter: adapter);
     });
 
-    test('pickDirectory delegiert an Adapter und liefert SafDirectory', () async {
+    test('pickDirectory delegiert an Adapter und liefert SafDirectory',
+        () async {
       mockPlatform.pickResult = const SafNativeDirectoryPayload(
         treeUri: 'content://tree/audio',
         displayName: 'Audiobooks',
@@ -57,7 +62,9 @@ void main() {
       expect(dir.isPersisted, isTrue);
     });
 
-    test('verifyDirectoryAccess erkennt SD-Karten-Verlust anhand Persistenzdaten', () async {
+    test(
+        'verifyDirectoryAccess erkennt SD-Karten-Verlust anhand Persistenzdaten',
+        () async {
       mockPlatform.persistedList = [
         const SafNativeDirectoryPayload(
           treeUri: 'content://tree/sdcard',
@@ -68,7 +75,8 @@ void main() {
       ];
       mockPlatform.isAccessible = false;
 
-      final status = await repository.verifyDirectoryAccess('content://tree/sdcard');
+      final status =
+          await repository.verifyDirectoryAccess('content://tree/sdcard');
 
       expect(status, SafDirectoryStatus.storageUnmounted);
     });

@@ -201,14 +201,17 @@ class MediaItem {
       ),
       author: map['author'] as String?,
       album: map['album'] as String?,
-      duration: durationMs != null ? Duration(milliseconds: durationMs.toInt()) : null,
+      duration: durationMs != null
+          ? Duration(milliseconds: durationMs.toInt())
+          : null,
       coverArtUri: map['coverArtUri'] as String?,
       chapters: List.unmodifiable(chapters),
       lastPosition: PlaybackPosition.fromMap(
         (map['lastPosition'] as Map<String, dynamic>?) ?? {},
       ),
       isCompleted: map['isCompleted'] as bool? ?? false,
-      lastPlayedAt: lastPlayedStr != null ? DateTime.tryParse(lastPlayedStr) : null,
+      lastPlayedAt:
+          lastPlayedStr != null ? DateTime.tryParse(lastPlayedStr) : null,
       metadata: Map<String, dynamic>.unmodifiable(
         (map['metadata'] as Map<String, dynamic>?) ?? const {},
       ),

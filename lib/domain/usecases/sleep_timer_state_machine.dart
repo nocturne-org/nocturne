@@ -3,7 +3,8 @@ import '../models/sleep_timer_state.dart';
 
 /// Typdefinitionen fuer Ereignis-Rueckrufe der Schlaftimer-Zustandsmaschine.
 typedef VolumeChangedCallback = void Function(double volumeFactor);
-typedef GracePeriodStartedCallback = void Function(Duration bookmarkRewindOffset);
+typedef GracePeriodStartedCallback = void Function(
+    Duration bookmarkRewindOffset);
 typedef TimerStoppedCallback = void Function();
 typedef TimerExtendedCallback = void Function(Duration newRemaining);
 
@@ -71,11 +72,11 @@ class SleepTimerStateMachine {
     _stopInternalTicker();
 
     final isImmediateFade = duration <= fadeOutDuration;
-    final initialStatus =
-        isImmediateFade ? SleepTimerStatus.fadingOut : SleepTimerStatus.counting;
-    final initialVolume = isImmediateFade
-        ? _calculateFadeVolume(duration)
-        : 1.0;
+    final initialStatus = isImmediateFade
+        ? SleepTimerStatus.fadingOut
+        : SleepTimerStatus.counting;
+    final initialVolume =
+        isImmediateFade ? _calculateFadeVolume(duration) : 1.0;
 
     _updateState(
       SleepTimerState(

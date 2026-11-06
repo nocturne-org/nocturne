@@ -33,18 +33,22 @@ class WhisperDynamicsConfig {
     this.highShelfGainDb = -6.0,
     this.sampleRate = 44100,
   })  : assert(compressionRatio >= 1.0, 'Ratio must be >= 1.0'),
-        assert(limiterThresholdDbfs <= 0.0, 'Limiter threshold must be <= 0 dBFS'),
-        assert(attackTimeMs > 0.0 && attackTimeMs < 10.0, 'Attack must be < 10 ms'),
+        assert(
+            limiterThresholdDbfs <= 0.0, 'Limiter threshold must be <= 0 dBFS'),
+        assert(attackTimeMs > 0.0 && attackTimeMs < 10.0,
+            'Attack must be < 10 ms'),
         assert(highShelfCutoffHz > 0.0, 'Cutoff must be > 0 Hz');
 
   /// Standardkonfiguration gemaess Nocturne-Architektur.
   static const WhisperDynamicsConfig bedtimeDefault = WhisperDynamicsConfig();
 
   /// Maximal zulaessige lineare Amplitude entsprechend dem Limiter-Schwellenwert.
-  double get maxLinearAmplitude => math.pow(10.0, limiterThresholdDbfs / 20.0).toDouble();
+  double get maxLinearAmplitude =>
+      math.pow(10.0, limiterThresholdDbfs / 20.0).toDouble();
 
   /// Lineare Absenkung des High-Shelf Filters.
-  double get highShelfLinearGain => math.pow(10.0, highShelfGainDb / 20.0).toDouble();
+  double get highShelfLinearGain =>
+      math.pow(10.0, highShelfGainDb / 20.0).toDouble();
 }
 
 /// DSP-Audio-Filter fuer Whisper-Dynamics gemaess Nocturne-Spezifikation (TICK-018):
@@ -75,7 +79,8 @@ class WhisperDynamicsDsp {
   void _calculateCoefficients() {
     // 1. High-Shelf Biquad Filter (Audio EQ Cookbook)
     final a = math.pow(10.0, config.highShelfGainDb / 40.0).toDouble();
-    final omega = 2.0 * math.pi * (config.highShelfCutoffHz / config.sampleRate);
+    final omega =
+        2.0 * math.pi * (config.highShelfCutoffHz / config.sampleRate);
     final cosOmega = math.cos(omega);
     final sinOmega = math.sin(omega);
     const q = 0.7071; // Butterworth-Glaette
@@ -105,7 +110,8 @@ class WhisperDynamicsDsp {
   /// Verarbeitet ein einzelnes Audiosample und gibt das gefilterte Sample zurueck.
   double processSample(double input) {
     // 1. High-Shelf Filter anwenden
-    final filtered = _b0 * input + _b1 * _x1 + _b2 * _x2 - _a1 * _y1 - _a2 * _y2;
+    final filtered =
+        _b0 * input + _b1 * _x1 + _b2 * _x2 - _a1 * _y1 - _a2 * _y2;
     _x2 = _x1;
     _x1 = input;
     _y2 = _y1;

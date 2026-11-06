@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nocturne/data/resolvers/circuit_breaker.dart';
 import 'package:nocturne/data/resolvers/media_stream_resolver.dart';
 import 'package:nocturne/data/resolvers/stream_models.dart';
 import 'package:nocturne/data/resolvers/stream_resolver_router.dart';
@@ -89,7 +88,8 @@ void main() {
       );
     });
 
-    test('Tier 1 loest bei Erfolg direkt auf und aktualisiert Metriken', () async {
+    test('Tier 1 loest bei Erfolg direkt auf und aktualisiert Metriken',
+        () async {
       final res = await router.resolveStream('media_abc');
 
       expect(res.resolvedByTier, ResolverTier.tier1InnerTube);
@@ -104,7 +104,8 @@ void main() {
       expect(metrics.circuitState, CircuitState.closed);
     });
 
-    test('Circuit-Breaker schaltet nach 2 Fehlversuchen auf Tier 2 um', () async {
+    test('Circuit-Breaker schaltet nach 2 Fehlversuchen auf Tier 2 um',
+        () async {
       tier1.shouldSucceed = false;
 
       // Erster Aufruf: Tier 1 schlaegt fehl -> Fallback auf Tier 2
@@ -112,13 +113,15 @@ void main() {
       expect(res1.resolvedByTier, ResolverTier.tier2Invidious);
       expect(tier1.callCount, 1);
       expect(tier2.callCount, 1);
-      expect(router.getCircuitBreaker('tier1_innertube')!.state, CircuitState.closed);
+      expect(router.getCircuitBreaker('tier1_innertube')!.state,
+          CircuitState.closed);
 
       // Zweiter Aufruf: Tier 1 schlaegt erneut fehl -> Circuit-Breaker loest aus (OPEN)
       final res2 = await router.resolveStream('media_2');
       expect(res2.resolvedByTier, ResolverTier.tier2Invidious);
       expect(tier1.callCount, 2);
-      expect(router.getCircuitBreaker('tier1_innertube')!.state, CircuitState.open);
+      expect(router.getCircuitBreaker('tier1_innertube')!.state,
+          CircuitState.open);
 
       // Dritter Aufruf: Tier 1 wird uebersprungen, Anfrage geht direkt an Tier 2
       final res3 = await router.resolveStream('media_3');
@@ -127,7 +130,9 @@ void main() {
       expect(tier2.callCount, 3);
     });
 
-    test('HTTP 403 (Bot-Check/Forbidden) loest Circuit-Breaker sofort auf OPEN aus', () async {
+    test(
+        'HTTP 403 (Bot-Check/Forbidden) loest Circuit-Breaker sofort auf OPEN aus',
+        () async {
       tier1.shouldSucceed = false;
       tier1.simulatedError = Exception('HTTP 403 Forbidden: Bot-Check aktiv');
 
@@ -144,7 +149,9 @@ void main() {
       expect(tier2.callCount, 2);
     });
 
-    test('Fallback-Kaskade schaltet bis Tier 3 durch, wenn Tier 1 und 2 fehlschlagen', () async {
+    test(
+        'Fallback-Kaskade schaltet bis Tier 3 durch, wenn Tier 1 und 2 fehlschlagen',
+        () async {
       tier1.shouldSucceed = false;
       tier2.shouldSucceed = false;
 
@@ -155,7 +162,8 @@ void main() {
       expect(tier3.callCount, 1);
     });
 
-    test('AllResolversFailedException wird geworfen, wenn alle Stufen versagen', () async {
+    test('AllResolversFailedException wird geworfen, wenn alle Stufen versagen',
+        () async {
       tier1.shouldSucceed = false;
       tier2.shouldSucceed = false;
       tier3.shouldSucceed = false;
@@ -166,7 +174,8 @@ void main() {
       );
     });
 
-    test('checkAllHealth fuehrt Diagnosetests ueber alle Endpunkte aus', () async {
+    test('checkAllHealth fuehrt Diagnosetests ueber alle Endpunkte aus',
+        () async {
       final health = await router.checkAllHealth();
       expect(health.length, 3);
       expect(health['tier1_innertube']!.isHealthy, isTrue);

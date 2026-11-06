@@ -6,7 +6,9 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('JustAudioPlayerAdapter Logic Tests (TICK-006)', () {
-    test('Ducking-Faktor modifiziert Lautstaerke bezogen auf Benutzer-Lautstaerke', () async {
+    test(
+        'Ducking-Faktor modifiziert Lautstaerke bezogen auf Benutzer-Lautstaerke',
+        () async {
       final adapter = JustAudioPlayerAdapter();
 
       // Setze Basis-Lautstaerke auf 80%

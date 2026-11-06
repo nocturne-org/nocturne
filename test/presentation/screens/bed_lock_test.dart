@@ -40,7 +40,8 @@ class MockAudioPlayerRepository implements AudioPlayerRepository {
   Stream<double> get volumeStream => Stream.value(1.0);
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     currentStatus = AudioPlaybackStatus.ready;
     _statusCtrl.add(currentStatus);
   }
@@ -130,7 +131,8 @@ void main() {
       expect(find.text('Bed-Lock aktiv'), findsOneWidget);
     });
 
-    testWidgets('While Bed-Lock is active, all normal touch gestures are blocked',
+    testWidgets(
+        'While Bed-Lock is active, all normal touch gestures are blocked',
         (tester) async {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -158,7 +160,8 @@ void main() {
       expect(mockAudio.isPlaying, isFalse);
     });
 
-    testWidgets('Short press does NOT unlock; full 2-second hold unlocks player',
+    testWidgets(
+        'Short press does NOT unlock; full 2-second hold unlocks player',
         (tester) async {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -168,10 +171,12 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsOneWidget);
 
-      final lockGestureArea = find.byKey(const Key('bed_lock_gesture_detector'));
+      final lockGestureArea =
+          find.byKey(const Key('bed_lock_gesture_detector'));
 
       // 1. Kurzer Touch von 500 ms (unbeabsichtigte Bettdeckenberuehrung)
-      final gesture = await tester.startGesture(tester.getCenter(lockGestureArea));
+      final gesture =
+          await tester.startGesture(tester.getCenter(lockGestureArea));
       await tester.pump(const Duration(milliseconds: 500));
       await gesture.up();
       await tester.pumpAndSettle();
@@ -180,7 +185,8 @@ void main() {
       expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsOneWidget);
 
       // 2. Bewusstes langes Druecken von 2 Sekunden
-      final longPressGesture = await tester.startGesture(tester.getCenter(lockGestureArea));
+      final longPressGesture =
+          await tester.startGesture(tester.getCenter(lockGestureArea));
       // 2100 ms vergehen lassen (ueberschreitet die 2000 ms Schwelle sicher)
       await tester.pump(const Duration(milliseconds: 2100));
       await longPressGesture.up();
@@ -190,8 +196,7 @@ void main() {
       expect(find.byKey(const Key('bed_lock_dimmed_scrim')), findsNothing);
     });
 
-    testWidgets('Swipe-up gesture unlocks player immediately',
-        (tester) async {
+    testWidgets('Swipe-up gesture unlocks player immediately', (tester) async {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
@@ -199,7 +204,8 @@ void main() {
       await tester.tap(find.byKey(const Key('bed_lock_activate_button')));
       await tester.pumpAndSettle();
 
-      final lockGestureArea = find.byKey(const Key('bed_lock_gesture_detector'));
+      final lockGestureArea =
+          find.byKey(const Key('bed_lock_gesture_detector'));
 
       // Wischgeste nach oben
       await tester.drag(lockGestureArea, const Offset(0.0, -200.0));

@@ -6,7 +6,6 @@ import 'package:nocturne/data/repositories/media_repository_impl.dart';
 import 'package:nocturne/domain/models/audio/audio_source_ref.dart';
 import 'package:nocturne/domain/models/media_item.dart';
 import 'package:nocturne/domain/repositories/audio_player_repository.dart';
-import 'package:nocturne/presentation/controllers/unified_queue_controller.dart';
 import 'package:nocturne/presentation/providers/audio_providers.dart';
 import 'package:nocturne/presentation/providers/database_provider.dart';
 import 'package:nocturne/presentation/providers/queue_providers.dart';
@@ -42,7 +41,8 @@ class MockAudioPlayerForQueue implements AudioPlayerRepository {
   Stream<double> get volumeStream => _volCtrl.stream;
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     currentSource = source;
     status = AudioPlaybackStatus.ready;
     _statusCtrl.add(status);
@@ -114,7 +114,8 @@ void main() {
       title: 'Einschlafen mit Wikipedia Folge 101',
       author: 'Wikipedia Podcast',
       duration: const Duration(milliseconds: 2700000),
-      source: AudioSourceRef.remoteStream(streamUrl: 'https://podcast.de/ep101.mp3'),
+      source: AudioSourceRef.remoteStream(
+          streamUrl: 'https://podcast.de/ep101.mp3'),
       extraMetadata: const {'podcast_title': 'Einschlafen mit Wikipedia'},
     );
 
@@ -124,7 +125,8 @@ void main() {
       title: 'Deep Sleep Binaural Beats 432Hz',
       author: 'Ambient Night',
       duration: const Duration(milliseconds: 28800000),
-      source: AudioSourceRef.remoteStream(streamUrl: 'https://rr1.googlevideo.com/audio_128k'),
+      source: AudioSourceRef.remoteStream(
+          streamUrl: 'https://rr1.googlevideo.com/audio_128k'),
     );
 
     setUp(() async {
@@ -151,8 +153,10 @@ void main() {
       await db.close();
     });
 
-    test('addItem fuegt Medientyp hinzu und startet Wiedergabe wenn leer', () async {
-      final controller = container.read(unifiedQueueControllerProvider.notifier);
+    test('addItem fuegt Medientyp hinzu und startet Wiedergabe wenn leer',
+        () async {
+      final controller =
+          container.read(unifiedQueueControllerProvider.notifier);
 
       await controller.addItem(audiobookItem);
 
@@ -164,8 +168,10 @@ void main() {
       expect(player.playCallCount, 1);
     });
 
-    test('addItems akzeptiert Kombination aus Audiobuch, Podcast und YouTube', () async {
-      final controller = container.read(unifiedQueueControllerProvider.notifier);
+    test('addItems akzeptiert Kombination aus Audiobuch, Podcast und YouTube',
+        () async {
+      final controller =
+          container.read(unifiedQueueControllerProvider.notifier);
 
       await controller.addItems([audiobookItem, podcastItem, youtubeItem]);
 
@@ -174,16 +180,22 @@ void main() {
       expect(state.items[0].id, audiobookItem.id);
       expect(state.items[1].id, podcastItem.id);
       expect(state.items[2].id, youtubeItem.id);
-      expect(state.totalDurationMs,
-          (audiobookItem.durationMs ?? 0) + (podcastItem.durationMs ?? 0) + (youtubeItem.durationMs ?? 0));
+      expect(
+          state.totalDurationMs,
+          (audiobookItem.durationMs ?? 0) +
+              (podcastItem.durationMs ?? 0) +
+              (youtubeItem.durationMs ?? 0));
 
       // Persistenz in Drift pruefen
       final persistedQueue = await mediaRepo.loadPlaybackQueue();
-      expect(persistedQueue, [audiobookItem.id, podcastItem.id, youtubeItem.id]);
+      expect(
+          persistedQueue, [audiobookItem.id, podcastItem.id, youtubeItem.id]);
     });
 
-    test('insertNext platziert Titel direkt hinter dem aktuellen Index', () async {
-      final controller = container.read(unifiedQueueControllerProvider.notifier);
+    test('insertNext platziert Titel direkt hinter dem aktuellen Index',
+        () async {
+      final controller =
+          container.read(unifiedQueueControllerProvider.notifier);
 
       await controller.addItems([audiobookItem, youtubeItem]);
       // Aktuell spielt audiobookItem an Index 0
@@ -197,8 +209,10 @@ void main() {
       expect(state.items[2].id, youtubeItem.id);
     });
 
-    test('reorder aendert Reihenfolge und passt currentIndex korrekt an', () async {
-      final controller = container.read(unifiedQueueControllerProvider.notifier);
+    test('reorder aendert Reihenfolge und passt currentIndex korrekt an',
+        () async {
+      final controller =
+          container.read(unifiedQueueControllerProvider.notifier);
 
       await controller.addItems([audiobookItem, podcastItem, youtubeItem]);
       expect(container.read(unifiedQueueControllerProvider).currentIndex, 0);
@@ -214,7 +228,8 @@ void main() {
     });
 
     test('removeItem entfernt Titel und passt Warteschlange an', () async {
-      final controller = container.read(unifiedQueueControllerProvider.notifier);
+      final controller =
+          container.read(unifiedQueueControllerProvider.notifier);
 
       await controller.addItems([audiobookItem, podcastItem, youtubeItem]);
 
@@ -230,8 +245,10 @@ void main() {
       expect(persistedQueue, [audiobookItem.id, youtubeItem.id]);
     });
 
-    test('Automatischer unterbrechungsfreier Uebergang zum naechsten Track', () async {
-      final controller = container.read(unifiedQueueControllerProvider.notifier);
+    test('Automatischer unterbrechungsfreier Uebergang zum naechsten Track',
+        () async {
+      final controller =
+          container.read(unifiedQueueControllerProvider.notifier);
 
       await controller.addItems([audiobookItem, podcastItem]);
       expect(container.read(unifiedQueueControllerProvider).currentIndex, 0);
@@ -246,8 +263,10 @@ void main() {
       expect(player.currentSource, podcastItem.source);
     });
 
-    test('QueueRepeatMode.single wiederholt denselben Track von vorn', () async {
-      final controller = container.read(unifiedQueueControllerProvider.notifier);
+    test('QueueRepeatMode.single wiederholt denselben Track von vorn',
+        () async {
+      final controller =
+          container.read(unifiedQueueControllerProvider.notifier);
 
       await controller.addItems([audiobookItem, podcastItem]);
       controller.setRepeatMode(QueueRepeatMode.single);
@@ -260,7 +279,9 @@ void main() {
       expect(player.seekCallCount, 1);
     });
 
-    test('loadPersistedQueue stellt gespeicherte Warteschlange nach Neustart wieder her', () async {
+    test(
+        'loadPersistedQueue stellt gespeicherte Warteschlange nach Neustart wieder her',
+        () async {
       // Manuell im Repo speichern
       await mediaRepo.savePlaybackQueue(
         [podcastItem.id, youtubeItem.id],
@@ -275,7 +296,8 @@ void main() {
         ],
       );
 
-      final freshController = freshContainer.read(unifiedQueueControllerProvider.notifier);
+      final freshController =
+          freshContainer.read(unifiedQueueControllerProvider.notifier);
       await freshController.loadPersistedQueue();
 
       final state = freshContainer.read(unifiedQueueControllerProvider);

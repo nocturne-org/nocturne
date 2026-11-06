@@ -90,7 +90,8 @@ class JustAudioPlayerAdapter implements AudioPlayerRepository {
   }
 
   @override
-  Stream<AudioPlaybackStatus> get playbackStatusStream => _statusController.stream;
+  Stream<AudioPlaybackStatus> get playbackStatusStream =>
+      _statusController.stream;
 
   @override
   Stream<Duration> get positionStream => _positionController.stream;
@@ -102,10 +103,12 @@ class JustAudioPlayerAdapter implements AudioPlayerRepository {
   Stream<double> get volumeStream => _volumeController.stream;
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
-    final startPos = (initialPosition != null && initialPosition < Duration.zero)
-        ? Duration.zero
-        : initialPosition;
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
+    final startPos =
+        (initialPosition != null && initialPosition < Duration.zero)
+            ? Duration.zero
+            : initialPosition;
 
     switch (source.type) {
       case AudioSourceType.file:

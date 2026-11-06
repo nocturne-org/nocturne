@@ -83,7 +83,8 @@ class SuiteMockAudioPlayer implements AudioPlayerRepository {
   }
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     currentStatus = AudioPlaybackStatus.ready;
     _statusCtrl.add(currentStatus);
   }
@@ -98,7 +99,9 @@ class SuiteMockAudioPlayer implements AudioPlayerRepository {
 
 void main() {
   group('TICK-035: Quadratische Drosselungskurve Mathematische Praezision', () {
-    test('Volume(t) = (t_rest / 60)^2 erzeugt absolut monotone Werte ohne Klick-Spruenge', () {
+    test(
+        'Volume(t) = (t_rest / 60)^2 erzeugt absolut monotone Werte ohne Klick-Spruenge',
+        () {
       const fadeDuration = Duration(seconds: 60);
 
       // Pruefe alle Sekunden von 60s bis 0s
@@ -123,15 +126,18 @@ void main() {
     test('calculateFactor Grenzwerte und Rundungssicherheit', () {
       // Millisekunden-Genauigkeit
       expect(
-        VolumeFadeController.calculateFactor(const Duration(milliseconds: 30000)),
+        VolumeFadeController.calculateFactor(
+            const Duration(milliseconds: 30000)),
         closeTo(0.25, 0.0001),
       );
       expect(
-        VolumeFadeController.calculateFactor(const Duration(milliseconds: 15000)),
+        VolumeFadeController.calculateFactor(
+            const Duration(milliseconds: 15000)),
         closeTo(0.0625, 0.0001),
       );
       expect(
-        VolumeFadeController.calculateFactor(const Duration(milliseconds: 45000)),
+        VolumeFadeController.calculateFactor(
+            const Duration(milliseconds: 45000)),
         closeTo(0.5625, 0.0001),
       );
 
@@ -158,7 +164,9 @@ void main() {
       sm.dispose();
     });
 
-    test('Kompletter Zustandszyklus: inactive -> counting -> fadingOut -> grace -> stopped', () async {
+    test(
+        'Kompletter Zustandszyklus: inactive -> counting -> fadingOut -> grace -> stopped',
+        () async {
       final statusHistory = <SleepTimerStatus>[];
       final sub = sm.stateStream.listen((s) => statusHistory.add(s.status));
 
@@ -194,7 +202,9 @@ void main() {
       ]);
     });
 
-    test('Schuetteln in jedem Zustand verhaelt sich strikt spezifikationsgemaess', () {
+    test(
+        'Schuetteln in jedem Zustand verhaelt sich strikt spezifikationsgemaess',
+        () {
       // Inaktiv: Shake wird ignoriert
       expect(sm.onShakeDetected(), isFalse);
 
@@ -209,7 +219,8 @@ void main() {
       expect(sm.onShakeDetected(), isTrue);
       expect(sm.state.status, SleepTimerStatus.counting);
       expect(sm.state.volumeFactor, 1.0);
-      expect(sm.state.remainingDuration, const Duration(minutes: 15, seconds: 40));
+      expect(
+          sm.state.remainingDuration, const Duration(minutes: 15, seconds: 40));
 
       // Grace-Period: Shake weckt das System auf und startet counting mit 15 Min
       sm.tick(const Duration(minutes: 16)); // laeuft in GracePeriod
@@ -269,7 +280,8 @@ void main() {
       await mockPlayer.dispose();
     });
 
-    test('Lesezeichen wird exakt 45 Sekunden vor Beginn des Fade-Outs gesetzt', () async {
+    test('Lesezeichen wird exakt 45 Sekunden vor Beginn des Fade-Outs gesetzt',
+        () async {
       await session.startSession(
         mediaItemId: 'audiobook-999',
         timerDuration: const Duration(seconds: 90),
@@ -306,7 +318,8 @@ void main() {
       expect(mockPlayer.isPaused, isTrue);
     });
 
-    test('Auto-Rewind bei frueher Position (< 45s) klammert fehlerfrei auf 0s', () async {
+    test('Auto-Rewind bei frueher Position (< 45s) klammert fehlerfrei auf 0s',
+        () async {
       await session.startSession(
         mediaItemId: 'intro-track',
         timerDuration: const Duration(seconds: 60),
@@ -328,7 +341,9 @@ void main() {
   });
 
   group('TICK-035: SleepTimerState Value Object Abdeckung', () {
-    test('SleepTimerState initial, copyWith, progressFraction und formatRemaining', () {
+    test(
+        'SleepTimerState initial, copyWith, progressFraction und formatRemaining',
+        () {
       const initial = SleepTimerState.initial;
       expect(initial.isActive, isFalse);
       expect(initial.progressFraction, 0.0);

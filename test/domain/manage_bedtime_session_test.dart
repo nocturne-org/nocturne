@@ -82,7 +82,8 @@ class MockAudioPlayerRepository implements AudioPlayerRepository {
   }
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     currentStatus = AudioPlaybackStatus.ready;
     _statusCtrl.add(currentStatus);
   }
@@ -136,7 +137,9 @@ void main() {
       expect(sensorEvents.last, isTrue);
     });
 
-    test('Entering GracePeriod sets bookmark at (fade_start - 45s) and pauses audio', () async {
+    test(
+        'Entering GracePeriod sets bookmark at (fade_start - 45s) and pauses audio',
+        () async {
       await session.startSession(
         mediaItemId: 'audiobook-42',
         timerDuration: const Duration(seconds: 90),
@@ -178,7 +181,9 @@ void main() {
       expect(sensorEvents.last, isTrue);
     });
 
-    test('Shake during GracePeriod reactivates playback and resumes counting with 15m', () async {
+    test(
+        'Shake during GracePeriod reactivates playback and resumes counting with 15m',
+        () async {
       await session.startSession(
         mediaItemId: 'audiobook-42',
         timerDuration: const Duration(seconds: 10),
@@ -205,7 +210,9 @@ void main() {
       expect(session.timerState.remainingDuration, const Duration(minutes: 15));
     });
 
-    test('GracePeriod expiration without shake stops audio and releases WakeLock and Sensor', () async {
+    test(
+        'GracePeriod expiration without shake stops audio and releases WakeLock and Sensor',
+        () async {
       await session.startSession(
         mediaItemId: 'audiobook-42',
         timerDuration: const Duration(seconds: 5),
@@ -230,7 +237,8 @@ void main() {
       expect(sensorEvents.last, isFalse);
     });
 
-    test('Shake during fadingOut restores 100% volume and extends session', () async {
+    test('Shake during fadingOut restores 100% volume and extends session',
+        () async {
       await session.startSession(
         mediaItemId: 'audiobook-42',
         timerDuration: const Duration(seconds: 40),

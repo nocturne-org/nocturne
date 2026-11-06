@@ -9,7 +9,12 @@ class MockUpdateHttpTransport implements UpdateHttpTransport {
   MockUpdateHttpTransport({
     required this.jsonResponse,
     required this.sha256Response,
-    this.simulatedApkBytes = const [0x50, 0x4B, 0x03, 0x04], // ZIP/APK Magic Bytes
+    this.simulatedApkBytes = const [
+      0x50,
+      0x4B,
+      0x03,
+      0x04
+    ], // ZIP/APK Magic Bytes
   });
 
   final String jsonResponse;
@@ -95,7 +100,9 @@ void main() {
       expect(AppUpdateInfo.compareVersions('1.0.0', '1.1.0'), isFalse);
     });
 
-    test('checkForUpdate parst GitHub Releases API und selektiert arm64-v8a APK', () async {
+    test(
+        'checkForUpdate parst GitHub Releases API und selektiert arm64-v8a APK',
+        () async {
       final sha256Content = '$correctHash  nocturne-arm64-v8a.apk\n';
       final transport = MockUpdateHttpTransport(
         jsonResponse: mockReleaseJson,
@@ -145,8 +152,11 @@ void main() {
       expect(await verifiedFile.readAsBytes(), simulatedBytes);
     });
 
-    test('downloadAndVerifyUpdate loescht Datei und wirft Fehler bei Hash-Mismatch', () async {
-      const wrongHash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+    test(
+        'downloadAndVerifyUpdate loescht Datei und wirft Fehler bei Hash-Mismatch',
+        () async {
+      const wrongHash =
+          'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
       final transport = MockUpdateHttpTransport(
         jsonResponse: mockReleaseJson,
         sha256Response: '',

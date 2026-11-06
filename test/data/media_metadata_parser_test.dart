@@ -3,8 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nocturne/data/parser/audio_metadata.dart';
-import 'package:nocturne/data/parser/id3_parser.dart';
-import 'package:nocturne/data/parser/m4b_parser.dart';
 import 'package:nocturne/data/parser/media_metadata_parser.dart';
 
 Uint8List _createId3v2Tag({
@@ -24,7 +22,12 @@ Uint8List _createId3v2Tag({
 
     // Frame Header: ID(4) + Size(4) + Flags(2)
     frames.addAll(ascii.encode(id));
-    frames.addAll([(size >> 24) & 0xFF, (size >> 16) & 0xFF, (size >> 8) & 0xFF, size & 0xFF]);
+    frames.addAll([
+      (size >> 24) & 0xFF,
+      (size >> 16) & 0xFF,
+      (size >> 8) & 0xFF,
+      size & 0xFF
+    ]);
     frames.addAll([0, 0]);
     frames.addAll(payload);
   }
@@ -46,7 +49,12 @@ Uint8List _createId3v2Tag({
     ];
     final size = apicPayload.length;
     frames.addAll(ascii.encode('APIC'));
-    frames.addAll([(size >> 24) & 0xFF, (size >> 16) & 0xFF, (size >> 8) & 0xFF, size & 0xFF]);
+    frames.addAll([
+      (size >> 24) & 0xFF,
+      (size >> 16) & 0xFF,
+      (size >> 8) & 0xFF,
+      size & 0xFF
+    ]);
     frames.addAll([0, 0]);
     frames.addAll(apicPayload);
   }
@@ -85,8 +93,14 @@ Uint8List _createM4bWithChpl({
     final low = units100ns & 0xFFFFFFFF;
 
     chplEntries.addAll([
-      (high >> 24) & 0xFF, (high >> 16) & 0xFF, (high >> 8) & 0xFF, high & 0xFF,
-      (low >> 24) & 0xFF, (low >> 16) & 0xFF, (low >> 8) & 0xFF, low & 0xFF,
+      (high >> 24) & 0xFF,
+      (high >> 16) & 0xFF,
+      (high >> 8) & 0xFF,
+      high & 0xFF,
+      (low >> 24) & 0xFF,
+      (low >> 16) & 0xFF,
+      (low >> 8) & 0xFF,
+      low & 0xFF,
       nameBytes.length,
       ...nameBytes,
     ]);
@@ -102,7 +116,10 @@ Uint8List _createM4bWithChpl({
   ];
   final chplSize = 8 + chplPayload.length;
   final chplAtom = [
-    (chplSize >> 24) & 0xFF, (chplSize >> 16) & 0xFF, (chplSize >> 8) & 0xFF, chplSize & 0xFF,
+    (chplSize >> 24) & 0xFF,
+    (chplSize >> 16) & 0xFF,
+    (chplSize >> 8) & 0xFF,
+    chplSize & 0xFF,
     ...ascii.encode('chpl'),
     ...chplPayload,
   ];
@@ -111,7 +128,8 @@ Uint8List _createM4bWithChpl({
     final tBytes = utf8.encode(text);
     final dataSize = 16 + tBytes.length;
     return [
-      (dataSize >> 24) & 0xFF, (dataSize >> 16) & 0xFF, (dataSize >> 8) & 0xFF, dataSize & 0xFF,
+      (dataSize >> 24) & 0xFF, (dataSize >> 16) & 0xFF, (dataSize >> 8) & 0xFF,
+      dataSize & 0xFF,
       ...ascii.encode('data'),
       0, 0, 0, 1, // Type string
       0, 0, 0, 0, // Locale
@@ -122,7 +140,10 @@ Uint8List _createM4bWithChpl({
   final titleData = makeDataAtom(title);
   final titleSize = 8 + titleData.length;
   final titleAtom = [
-    (titleSize >> 24) & 0xFF, (titleSize >> 16) & 0xFF, (titleSize >> 8) & 0xFF, titleSize & 0xFF,
+    (titleSize >> 24) & 0xFF,
+    (titleSize >> 16) & 0xFF,
+    (titleSize >> 8) & 0xFF,
+    titleSize & 0xFF,
     ...latin1.encode('©nam'),
     ...titleData,
   ];
@@ -130,7 +151,10 @@ Uint8List _createM4bWithChpl({
   final authorData = makeDataAtom(author);
   final authorSize = 8 + authorData.length;
   final authorAtom = [
-    (authorSize >> 24) & 0xFF, (authorSize >> 16) & 0xFF, (authorSize >> 8) & 0xFF, authorSize & 0xFF,
+    (authorSize >> 24) & 0xFF,
+    (authorSize >> 16) & 0xFF,
+    (authorSize >> 8) & 0xFF,
+    authorSize & 0xFF,
     ...latin1.encode('©ART'),
     ...authorData,
   ];
@@ -138,7 +162,10 @@ Uint8List _createM4bWithChpl({
   final ilstPayload = [...titleAtom, ...authorAtom];
   final ilstSize = 8 + ilstPayload.length;
   final ilstAtom = [
-    (ilstSize >> 24) & 0xFF, (ilstSize >> 16) & 0xFF, (ilstSize >> 8) & 0xFF, ilstSize & 0xFF,
+    (ilstSize >> 24) & 0xFF,
+    (ilstSize >> 16) & 0xFF,
+    (ilstSize >> 8) & 0xFF,
+    ilstSize & 0xFF,
     ...ascii.encode('ilst'),
     ...ilstPayload,
   ];
@@ -146,7 +173,10 @@ Uint8List _createM4bWithChpl({
   final metaPayload = [0, 0, 0, 0, ...ilstAtom]; // 4 bytes flags + ilst
   final metaSize = 8 + metaPayload.length;
   final metaAtom = [
-    (metaSize >> 24) & 0xFF, (metaSize >> 16) & 0xFF, (metaSize >> 8) & 0xFF, metaSize & 0xFF,
+    (metaSize >> 24) & 0xFF,
+    (metaSize >> 16) & 0xFF,
+    (metaSize >> 8) & 0xFF,
+    metaSize & 0xFF,
     ...ascii.encode('meta'),
     ...metaPayload,
   ];
@@ -154,7 +184,10 @@ Uint8List _createM4bWithChpl({
   final udtaPayload = [...metaAtom, ...chplAtom];
   final udtaSize = 8 + udtaPayload.length;
   final udtaAtom = [
-    (udtaSize >> 24) & 0xFF, (udtaSize >> 16) & 0xFF, (udtaSize >> 8) & 0xFF, udtaSize & 0xFF,
+    (udtaSize >> 24) & 0xFF,
+    (udtaSize >> 16) & 0xFF,
+    (udtaSize >> 8) & 0xFF,
+    udtaSize & 0xFF,
     ...ascii.encode('udta'),
     ...udtaPayload,
   ];
@@ -162,7 +195,10 @@ Uint8List _createM4bWithChpl({
   final moovPayload = udtaAtom;
   final moovSize = 8 + moovPayload.length;
   final moovAtom = [
-    (moovSize >> 24) & 0xFF, (moovSize >> 16) & 0xFF, (moovSize >> 8) & 0xFF, moovSize & 0xFF,
+    (moovSize >> 24) & 0xFF,
+    (moovSize >> 16) & 0xFF,
+    (moovSize >> 8) & 0xFF,
+    moovSize & 0xFF,
     ...ascii.encode('moov'),
     ...moovPayload,
   ];
@@ -196,7 +232,8 @@ void main() {
       expect(meta.rawFormat, contains('ID3v2'));
     });
 
-    test('M4B QuickTime Atome extrahieren Metadaten und Kapitelmarken (chpl)', () {
+    test('M4B QuickTime Atome extrahieren Metadaten und Kapitelmarken (chpl)',
+        () {
       final m4bBytes = _createM4bWithChpl(
         title: 'Der Herr der Ringe',
         author: 'J.R.R. Tolkien',
@@ -223,7 +260,9 @@ void main() {
       expect(meta.chapters[1].endMs, 180000);
     });
 
-    test('Dateinamen-Fallback funktioniert zuverlaessig bei fehlenden Metadaten', () {
+    test(
+        'Dateinamen-Fallback funktioniert zuverlaessig bei fehlenden Metadaten',
+        () {
       // 1. Muster: "01 - Titel.mp3"
       final meta1 = parser.parseBytes(Uint8List(0), '01 - Die Gefaehrten.mp3');
       expect(meta1.title, 'Die Gefaehrten');
@@ -231,7 +270,8 @@ void main() {
       expect(meta1.rawFormat, 'Filename-Fallback');
 
       // 2. Muster: "Autor - Titel.m4b"
-      final meta2 = parser.parseBytes(Uint8List(0), 'Hermann Hesse - Siddhartha.m4b');
+      final meta2 =
+          parser.parseBytes(Uint8List(0), 'Hermann Hesse - Siddhartha.m4b');
       expect(meta2.title, 'Siddhartha');
       expect(meta2.author, 'Hermann Hesse');
 
@@ -240,17 +280,29 @@ void main() {
       expect(meta3.title, 'bedtime story');
     });
 
-    test('extractAndSaveCover speichert Cover-Art sauber im Cache ab', () async {
-      final tempDir = await Directory.systemTemp.createTemp('nocturne_cover_test_');
+    test('extractAndSaveCover speichert Cover-Art sauber im Cache ab',
+        () async {
+      final tempDir =
+          await Directory.systemTemp.createTemp('nocturne_cover_test_');
 
       try {
         final meta = AudioMetadata(
           title: 'Cover Book',
-          coverArtBytes: Uint8List.fromList([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]), // PNG Signature
+          coverArtBytes: Uint8List.fromList([
+            0x89,
+            0x50,
+            0x4E,
+            0x47,
+            0x0D,
+            0x0A,
+            0x1A,
+            0x0A
+          ]), // PNG Signature
           coverMimeType: 'image/png',
         );
 
-        final saved = await parser.extractAndSaveCover(meta, tempDir, 'media-123');
+        final saved =
+            await parser.extractAndSaveCover(meta, tempDir, 'media-123');
 
         expect(saved, isNotNull);
         expect(await saved!.exists(), isTrue);

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/media_repository.dart';
-import '../../domain/models/chapter.dart';
 import '../../domain/models/media_item.dart';
 import '../../domain/models/playback_position.dart';
 import '../../domain/repositories/audio_player_repository.dart';
@@ -155,7 +154,8 @@ class AudiobookPlayerController extends Notifier<AudiobookPlaybackState> {
     final nextIndex = state.currentTrackIndex + 1;
     if (nextIndex < state.tracks.length) {
       await _saveCurrentPosition(isCompleted: true);
-      await loadMultiTrack(state.tracks, initialTrackIndex: nextIndex, autoResume: false);
+      await loadMultiTrack(state.tracks,
+          initialTrackIndex: nextIndex, autoResume: false);
     }
   }
 
@@ -165,7 +165,8 @@ class AudiobookPlayerController extends Notifier<AudiobookPlaybackState> {
     final prevIndex = state.currentTrackIndex - 1;
     if (prevIndex >= 0) {
       await _saveCurrentPosition();
-      await loadMultiTrack(state.tracks, initialTrackIndex: prevIndex, autoResume: false);
+      await loadMultiTrack(state.tracks,
+          initialTrackIndex: prevIndex, autoResume: false);
     }
   }
 
@@ -179,7 +180,8 @@ class AudiobookPlayerController extends Notifier<AudiobookPlaybackState> {
     );
 
     // Automatisches Lesezeichen alle 5 Sekunden (5000 ms)
-    final diffMs = (pos.inMilliseconds - state.lastSavedPosition.milliseconds).abs();
+    final diffMs =
+        (pos.inMilliseconds - state.lastSavedPosition.milliseconds).abs();
     if (diffMs >= 5000) {
       _saveCurrentPosition();
     }
@@ -187,7 +189,8 @@ class AudiobookPlayerController extends Notifier<AudiobookPlaybackState> {
 
   void _onTrackCompleted() {
     _saveCurrentPosition(isCompleted: true);
-    if (state.isMultiTrack && state.currentTrackIndex + 1 < state.tracks.length) {
+    if (state.isMultiTrack &&
+        state.currentTrackIndex + 1 < state.tracks.length) {
       nextTrack();
     }
   }

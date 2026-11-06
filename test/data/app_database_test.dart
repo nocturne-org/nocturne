@@ -3,7 +3,6 @@ import 'package:nocturne/data/datasources/database/app_database.dart';
 import 'package:nocturne/data/datasources/database/daos/media_dao.dart';
 import 'package:nocturne/domain/models/audio/audio_source_ref.dart';
 import 'package:nocturne/domain/models/bookmark.dart';
-import 'package:nocturne/domain/models/chapter.dart';
 import 'package:nocturne/domain/models/media_item.dart';
 import 'package:nocturne/domain/models/playback_position.dart';
 
@@ -35,7 +34,8 @@ void main() {
       expect(db.sleepPresetsTable, isNotNull);
     });
 
-    test('MediaItem CRUD-Operationen funktionieren asynchron und zuverlaessig', () async {
+    test('MediaItem CRUD-Operationen funktionieren asynchron und zuverlaessig',
+        () async {
       const item = MediaItem(
         id: 'book-1',
         title: 'Der Steppenwolf',
@@ -80,7 +80,9 @@ void main() {
       expect((await dao.getAllMediaItems()).length, 1);
     });
 
-    test('Millisekunden-genaue Speicherung und Abruf der letzten Abspielposition', () async {
+    test(
+        'Millisekunden-genaue Speicherung und Abruf der letzten Abspielposition',
+        () async {
       const item = MediaItem(
         id: 'audio-prec',
         title: 'Precision Track',
@@ -90,7 +92,8 @@ void main() {
       await dao.insertMediaItem(item);
 
       // Exakte Millisekunden setzen: z. B. 123456 ms (2m 3s 456ms)
-      const exactPos = PlaybackPosition(duration: Duration(milliseconds: 123456));
+      const exactPos =
+          PlaybackPosition(duration: Duration(milliseconds: 123456));
       final playTime = DateTime(2026, 11, 6, 23, 15, 0);
 
       await dao.updatePlaybackPosition(
@@ -107,7 +110,8 @@ void main() {
       expect(retrieved.isCompleted, isFalse);
     });
 
-    test('Reaktive Streams (watch) emittieren Zustandsaenderungen live', () async {
+    test('Reaktive Streams (watch) emittieren Zustandsaenderungen live',
+        () async {
       var emittedLists = <List<MediaItem>>[];
       final sub = dao.watchAllMediaItems().listen((list) {
         emittedLists.add(list);
@@ -133,7 +137,8 @@ void main() {
       await sub.cancel();
     });
 
-    test('Transaktionale Integritaet bei Batch-Updates (Batch-Upsert)', () async {
+    test('Transaktionale Integritaet bei Batch-Updates (Batch-Upsert)',
+        () async {
       final items = List.generate(
         10,
         (i) => MediaItem(
@@ -149,7 +154,8 @@ void main() {
 
       final all = await dao.getAllMediaItems();
       expect(all.length, 10);
-      expect(all.map((m) => m.id), containsAll(['batch-item-0', 'batch-item-9']));
+      expect(
+          all.map((m) => m.id), containsAll(['batch-item-0', 'batch-item-9']));
     });
 
     test('Transaktionaler Rollback bei Fehlschlag im Batch', () async {
@@ -181,7 +187,9 @@ void main() {
       );
     });
 
-    test('Kaskadierende Loeschung: Bookmarks & History werden mit MediaItem geloescht', () async {
+    test(
+        'Kaskadierende Loeschung: Bookmarks & History werden mit MediaItem geloescht',
+        () async {
       const media = MediaItem(
         id: 'parent-media',
         title: 'Hoerbuch mit Lesezeichen',
@@ -230,7 +238,8 @@ void main() {
       expect((await dao.getPlaybackHistory('parent-media')).isEmpty, isTrue);
     });
 
-    test('Fremdschluessel-Pruefung verhindert verwaiste Bookmarks und Historie', () async {
+    test('Fremdschluessel-Pruefung verhindert verwaiste Bookmarks und Historie',
+        () async {
       final invalidBm = Bookmark(
         id: 'bm-orphan',
         mediaItemId: 'non-existent-id',

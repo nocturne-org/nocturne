@@ -118,13 +118,16 @@ class SensorProfileConfig {
       orElse: () => SensorProfileType.nightstand,
     );
 
-    final defaultForType = type == SensorProfileType.mattress ? mattress : nightstand;
+    final defaultForType =
+        type == SensorProfileType.mattress ? mattress : nightstand;
 
     return SensorProfileConfig(
       type: type,
-      threshold: (map['threshold'] as num?)?.toDouble() ?? defaultForType.threshold,
-      reversalThresholdFactor: (map['reversalThresholdFactor'] as num?)?.toDouble() ??
-          defaultForType.reversalThresholdFactor,
+      threshold:
+          (map['threshold'] as num?)?.toDouble() ?? defaultForType.threshold,
+      reversalThresholdFactor:
+          (map['reversalThresholdFactor'] as num?)?.toDouble() ??
+              defaultForType.reversalThresholdFactor,
       windowDuration: map['windowDurationMs'] != null
           ? Duration(milliseconds: (map['windowDurationMs'] as num).toInt())
           : defaultForType.windowDuration,

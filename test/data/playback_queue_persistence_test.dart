@@ -22,7 +22,8 @@ void main() {
       title: 'Folge 42: Sternenhimmel',
       author: 'Astro Podcast',
       duration: const Duration(milliseconds: 3600000),
-      source: AudioSourceRef.remoteStream(streamUrl: 'https://example.com/ep42.mp3'),
+      source: AudioSourceRef.remoteStream(
+          streamUrl: 'https://example.com/ep42.mp3'),
       extraMetadata: const {'podcast_title': 'Astro Podcast'},
     );
 
@@ -31,7 +32,8 @@ void main() {
       title: 'Rain on Tent 10h',
       author: 'Relaxing Sleep Sounds',
       duration: const Duration(milliseconds: 36000000),
-      source: AudioSourceRef.remoteStream(streamUrl: 'https://rr2.googlevideo.com/audio'),
+      source: AudioSourceRef.remoteStream(
+          streamUrl: 'https://rr2.googlevideo.com/audio'),
     );
 
     setUp(() async {
@@ -47,7 +49,8 @@ void main() {
       await db.close();
     });
 
-    test('savePlaybackQueue speichert Queue-Reihenfolge und aktuellen Index', () async {
+    test('savePlaybackQueue speichert Queue-Reihenfolge und aktuellen Index',
+        () async {
       await repo.savePlaybackQueue(
         [item1.id, item2.id, item3.id],
         currentIndex: 1,
@@ -80,7 +83,8 @@ void main() {
       await expectation;
     });
 
-    test('deleteMedia loescht Medium kaskadierend auch aus der PlaybackQueue', () async {
+    test('deleteMedia loescht Medium kaskadierend auch aus der PlaybackQueue',
+        () async {
       await repo.savePlaybackQueue([item1.id, item2.id, item3.id]);
 
       // Loesche item2

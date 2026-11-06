@@ -22,7 +22,8 @@ class SmartLibraryOrganizer {
     if (!await sourceDirectory.exists()) return [];
 
     final plan = <OrganizePlanItem>[];
-    final entities = sourceDirectory.listSync(recursive: true, followLinks: false);
+    final entities =
+        sourceDirectory.listSync(recursive: true, followLinks: false);
 
     for (final entity in entities) {
       if (entity is File && AudioFormat.isSupported(entity.path)) {
@@ -52,7 +53,8 @@ class SmartLibraryOrganizer {
             '${targetLibraryDirectory.path}$separator$author$separator$book$separator$fileName';
 
         final isAlreadyOrganized = entity.path == targetPath;
-        final isDuplicate = !isAlreadyOrganized && File(targetPath).existsSync();
+        final isDuplicate =
+            !isAlreadyOrganized && File(targetPath).existsSync();
 
         plan.add(
           OrganizePlanItem(
@@ -97,7 +99,8 @@ class SmartLibraryOrganizer {
 
       try {
         if (!sourceFile.existsSync()) {
-          throw FileSystemException('Source file does not exist', item.sourcePath);
+          throw FileSystemException(
+              'Source file does not exist', item.sourcePath);
         }
 
         // Zielordner anlegen

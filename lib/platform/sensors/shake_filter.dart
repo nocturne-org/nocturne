@@ -133,7 +133,8 @@ class ShakeFilter {
     return hasXShake || hasYShake || hasZShake;
   }
 
-  bool _axisHasSignChangeAndPeak(double Function(AccelerometerSample s) axisSelector) {
+  bool _axisHasSignChangeAndPeak(
+      double Function(AccelerometerSample s) axisSelector) {
     var maxPositive = 0.0;
     var minNegative = 0.0;
     var hasPositivePeak = false;

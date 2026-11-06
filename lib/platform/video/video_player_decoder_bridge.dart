@@ -26,7 +26,8 @@ abstract class VideoDecoderBridge {
 
 /// Standard-Implementierung fuer Video-Decoder Lifecycle Management.
 class DefaultVideoDecoderBridge implements VideoDecoderBridge {
-  final StreamController<Duration> _posCtrl = StreamController<Duration>.broadcast();
+  final StreamController<Duration> _posCtrl =
+      StreamController<Duration>.broadcast();
   bool _allocated = false;
   Duration _currentPos = Duration.zero;
 

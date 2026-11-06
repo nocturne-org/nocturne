@@ -30,7 +30,8 @@ class Bookmark {
     required this.label,
     this.note,
   })  : assert(id.length > 0, 'Bookmark id must not be empty'),
-        assert(mediaItemId.length > 0, 'Bookmark mediaItemId must not be empty');
+        assert(
+            mediaItemId.length > 0, 'Bookmark mediaItemId must not be empty');
 
   /// Liefert die Position in Millisekunden fuer einfache Datenbank-Indizierung.
   int get positionMs => position.milliseconds;
@@ -94,7 +95,8 @@ class Bookmark {
           note == other.note;
 
   @override
-  int get hashCode => Object.hash(id, mediaItemId, position, createdAt, label, note);
+  int get hashCode =>
+      Object.hash(id, mediaItemId, position, createdAt, label, note);
 
   @override
   String toString() =>

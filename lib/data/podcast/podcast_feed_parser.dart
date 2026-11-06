@@ -13,11 +13,14 @@ class PodcastFeedParser {
     final cleanXml = _preprocessXml(xmlContent);
 
     // Channel-Block isolieren
-    final channelMatch = RegExp(r'<channel[^>]*>([\s\S]*?)<\/channel>', caseSensitive: false)
-        .firstMatch(cleanXml);
-    final channelContent = channelMatch != null ? channelMatch.group(1)! : cleanXml;
+    final channelMatch =
+        RegExp(r'<channel[^>]*>([\s\S]*?)<\/channel>', caseSensitive: false)
+            .firstMatch(cleanXml);
+    final channelContent =
+        channelMatch != null ? channelMatch.group(1)! : cleanXml;
 
-    final channelTitle = _extractTag(channelContent, 'title') ?? 'Unbekannter Podcast';
+    final channelTitle =
+        _extractTag(channelContent, 'title') ?? 'Unbekannter Podcast';
     final channelDescription = _extractTag(channelContent, 'description') ?? '';
     final channelLink = _extractTag(channelContent, 'link') ?? '';
     final channelAuthor = _extractTag(channelContent, 'itunes:author') ??
@@ -27,17 +30,20 @@ class PodcastFeedParser {
     final channelLanguage = _extractTag(channelContent, 'language') ?? 'de';
 
     // Channel-Coverbild
-    String? channelImage = _extractAttribute(channelContent, 'itunes:image', 'href');
+    String? channelImage =
+        _extractAttribute(channelContent, 'itunes:image', 'href');
     if (channelImage == null || channelImage.isEmpty) {
-      final imageBlock = RegExp(r'<image[^>]*>([\s\S]*?)<\/image>', caseSensitive: false)
-          .firstMatch(channelContent);
+      final imageBlock =
+          RegExp(r'<image[^>]*>([\s\S]*?)<\/image>', caseSensitive: false)
+              .firstMatch(channelContent);
       if (imageBlock != null) {
         channelImage = _extractTag(imageBlock.group(1)!, 'url');
       }
     }
 
     // Episoden-Items isolieren
-    final itemRegex = RegExp(r'<item[^>]*>([\s\S]*?)<\/item>', caseSensitive: false);
+    final itemRegex =
+        RegExp(r'<item[^>]*>([\s\S]*?)<\/item>', caseSensitive: false);
     final itemMatches = itemRegex.allMatches(channelContent);
     final episodes = <PodcastEpisode>[];
 
@@ -127,7 +133,8 @@ class PodcastFeedParser {
     var content = match.group(1)!.trim();
 
     // CDATA-Bloecke auspacken
-    final cdataRegex = RegExp(r'<!\[CDATA\[([\s\S]*?)\]\]>', caseSensitive: false);
+    final cdataRegex =
+        RegExp(r'<!\[CDATA\[([\s\S]*?)\]\]>', caseSensitive: false);
     content = content.replaceAllMapped(cdataRegex, (m) => m.group(1)!);
 
     return _unescapeHtml(content.trim());
@@ -199,8 +206,18 @@ class PodcastFeedParser {
   DateTime? _parseRfc822(String rfcDate) {
     // Bsp: "Tue, 15 Jan 2024 10:30:00 +0100" oder "15 Jan 2024 10:30:00 GMT"
     const months = {
-      'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
-      'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12,
+      'Jan': 1,
+      'Feb': 2,
+      'Mar': 3,
+      'Apr': 4,
+      'May': 5,
+      'Jun': 6,
+      'Jul': 7,
+      'Aug': 8,
+      'Sep': 9,
+      'Oct': 10,
+      'Nov': 11,
+      'Dec': 12,
     };
 
     final regex = RegExp(

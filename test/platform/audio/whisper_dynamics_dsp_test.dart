@@ -21,7 +21,8 @@ void main() {
       );
     });
 
-    test('Configuration parameters match Nocturne architecture specification', () {
+    test('Configuration parameters match Nocturne architecture specification',
+        () {
       expect(dsp.config.compressionRatio, 4.0);
       expect(dsp.config.limiterThresholdDbfs, -3.0);
       expect(dsp.config.attackTimeMs, lessThan(10.0));
@@ -33,7 +34,8 @@ void main() {
 
     test('Quiet signals below threshold (-14 dBFS) pass uncompressed', () {
       // 0.2 entspricht ca. -14 dBFS
-      const lowFreqTone = 500.0; // 500 Hz liegt weit unter dem High-Shelf Cutoff
+      const lowFreqTone =
+          500.0; // 500 Hz liegt weit unter dem High-Shelf Cutoff
       final samples = Float32List(100);
       for (var i = 0; i < samples.length; i++) {
         samples[i] = 0.2 * math.sin(2 * math.pi * lowFreqTone * i / 44100);
@@ -46,7 +48,8 @@ void main() {
       expect(maxOutput, closeTo(0.2, 0.02));
     });
 
-    test('Loud signal peaks (0 dBFS = 1.0) are strictly limited to -3 dBFS', () {
+    test('Loud signal peaks (0 dBFS = 1.0) are strictly limited to -3 dBFS',
+        () {
       // 1000 Samples mit voller Maximallautstaerke 1.0 (0 dBFS)
       final samples = Float32List(1000);
       for (var i = 0; i < samples.length; i++) {
@@ -61,7 +64,8 @@ void main() {
         expect(
           processed[i].abs(),
           lessThanOrEqualTo(maxLinear + 0.0001),
-          reason: 'Sample $i (${processed[i]}) exceeded -3 dBFS limit ($maxLinear)',
+          reason:
+              'Sample $i (${processed[i]}) exceeded -3 dBFS limit ($maxLinear)',
         );
       }
     });
@@ -74,7 +78,8 @@ void main() {
         lowTone[i] = 0.3 * math.sin(2 * math.pi * 500.0 * i / 44100);
       }
       final processedLow = dsp.processBuffer(lowTone);
-      final maxLow = processedLow.skip(200).map((s) => s.abs()).reduce(math.max);
+      final maxLow =
+          processedLow.skip(200).map((s) => s.abs()).reduce(math.max);
       expect(maxLow, closeTo(0.3, 0.03));
 
       // 2. Zischlaut / Hochton (10000 Hz): Muss um ca. -6 dB gedaempft werden
@@ -86,7 +91,8 @@ void main() {
         highTone[i] = 0.3 * math.sin(2 * math.pi * 10000.0 * i / 44100);
       }
       final processedHigh = dsp.processBuffer(highTone);
-      final maxHigh = processedHigh.skip(200).map((s) => s.abs()).reduce(math.max);
+      final maxHigh =
+          processedHigh.skip(200).map((s) => s.abs()).reduce(math.max);
 
       expect(maxHigh, closeTo(0.15, 0.03));
       expect(maxHigh, lessThan(maxLow * 0.6));

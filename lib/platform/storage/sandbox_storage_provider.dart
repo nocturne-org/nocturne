@@ -42,8 +42,7 @@ class StorageSpaceCheckResult {
   bool get canProceed => status != StorageSpaceStatus.insufficient;
 
   /// Zeigt an, ob eine Warnung wegen knapper Restkapazitaet vorliegt.
-  bool get hasLowSpaceWarning =>
-      status == StorageSpaceStatus.lowStorageWarning;
+  bool get hasLowSpaceWarning => status == StorageSpaceStatus.lowStorageWarning;
 
   @override
   String toString() {
@@ -98,8 +97,8 @@ class SandboxStorageProvider {
   SandboxStorageProvider({
     Directory? baseDirectory,
     this.spaceResolver = const DefaultStorageSpaceResolver(),
-  }) : _baseDir = baseDirectory ??
-            Directory(SandboxPaths.defaultAndroidFilesDir);
+  }) : _baseDir =
+            baseDirectory ?? Directory(SandboxPaths.defaultAndroidFilesDir);
 
   final Directory _baseDir;
 
@@ -143,7 +142,8 @@ class SandboxStorageProvider {
   /// Schreibt eine .nomedia-Datei, um Media-Indexierung und Drittanbieter-Clearing zu verhindern.
   Future<void> _protectDirectoryFromScanners(Directory dir) async {
     final separator = Platform.pathSeparator;
-    final noMediaFile = File('${dir.path}$separator${SandboxPaths.noMediaFileName}');
+    final noMediaFile =
+        File('${dir.path}$separator${SandboxPaths.noMediaFileName}');
     if (!await noMediaFile.exists()) {
       await noMediaFile.create();
     }
@@ -210,8 +210,8 @@ class SandboxStorageProvider {
     required int requiredBytes,
     int? customFreeBytes,
   }) async {
-    final freeBytes = customFreeBytes ??
-        await spaceResolver.getFreeDiskSpace(_baseDir.path);
+    final freeBytes =
+        customFreeBytes ?? await spaceResolver.getFreeDiskSpace(_baseDir.path);
 
     final remaining = freeBytes - requiredBytes;
 
@@ -291,7 +291,8 @@ class SandboxStorageProvider {
     var reclaimed = 0;
     if (includeCovers && await coverCacheDirectory.exists()) {
       for (final entity in coverCacheDirectory.listSync()) {
-        if (entity is File && !entity.path.endsWith(SandboxPaths.noMediaFileName)) {
+        if (entity is File &&
+            !entity.path.endsWith(SandboxPaths.noMediaFileName)) {
           reclaimed += entity.lengthSync();
           entity.deleteSync();
         }
@@ -299,7 +300,8 @@ class SandboxStorageProvider {
     }
     if (includePodcasts && await podcastCacheDirectory.exists()) {
       for (final entity in podcastCacheDirectory.listSync()) {
-        if (entity is File && !entity.path.endsWith(SandboxPaths.noMediaFileName)) {
+        if (entity is File &&
+            !entity.path.endsWith(SandboxPaths.noMediaFileName)) {
           reclaimed += entity.lengthSync();
           entity.deleteSync();
         }

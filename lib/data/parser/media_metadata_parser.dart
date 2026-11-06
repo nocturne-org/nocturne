@@ -25,7 +25,8 @@ class MediaMetadataParser {
       // Zunaechst die ersten 256 KB fuer Headers einlesen
       final length = await file.length();
       final headerSize = length > 262144 ? 262144 : length;
-      final bytes = await file.openRead(0, headerSize).expand((b) => b).toList();
+      final bytes =
+          await file.openRead(0, headerSize).expand((b) => b).toList();
       final byteData = Uint8List.fromList(bytes);
 
       return parseBytes(byteData, file.uri.pathSegments.last);
@@ -101,8 +102,10 @@ class MediaMetadataParser {
       await cacheDir.create(recursive: true);
     }
 
-    final ext = (metadata.coverMimeType?.contains('png') ?? false) ? 'png' : 'jpg';
-    final targetFile = File('${cacheDir.path}${Platform.pathSeparator}$mediaId.$ext');
+    final ext =
+        (metadata.coverMimeType?.contains('png') ?? false) ? 'png' : 'jpg';
+    final targetFile =
+        File('${cacheDir.path}${Platform.pathSeparator}$mediaId.$ext');
 
     await targetFile.writeAsBytes(metadata.coverArtBytes!);
     return targetFile;

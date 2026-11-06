@@ -4,7 +4,8 @@ import 'package:nocturne/main.dart';
 import 'package:nocturne/presentation/screens/bedtime_screen.dart';
 
 void main() {
-  testWidgets('NocturneApp startet mit leerem AMOLED-Container', (WidgetTester tester) async {
+  testWidgets('NocturneApp startet mit leerem AMOLED-Container',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       const ProviderScope(
         child: NocturneApp(),

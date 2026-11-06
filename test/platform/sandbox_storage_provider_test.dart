@@ -54,7 +54,8 @@ void main() {
       }
     });
 
-    test('initialize erzeugt alle Kernverzeichnisse und Schutzdateien', () async {
+    test('initialize erzeugt alle Kernverzeichnisse und Schutzdateien',
+        () async {
       expect(await provider.audioDownloadsDirectory.exists(), isTrue);
       expect(await provider.podcastCacheDirectory.exists(), isTrue);
       expect(await provider.coverCacheDirectory.exists(), isTrue);
@@ -73,7 +74,8 @@ void main() {
       expect(await coverNoMedia.exists(), isTrue);
     });
 
-    test('cleanupOrphanedPartFiles loescht nur .part-Dateien und meldet Bytes zurueck',
+    test(
+        'cleanupOrphanedPartFiles loescht nur .part-Dateien und meldet Bytes zurueck',
         () async {
       // 1. Gueltiges fertiges Audiofile erstellen
       final audioFile = provider.getAudioDownloadFile('fertiges_buch.m4b');
@@ -123,7 +125,8 @@ void main() {
       expect(res.remainingBytesAfterDownload, free - required);
     });
 
-    test('checkStorageSpace liefert lowStorageWarning bei Restkapazitaet < 500 MB',
+    test(
+        'checkStorageSpace liefert lowStorageWarning bei Restkapazitaet < 500 MB',
         () async {
       // 600 MB frei, 200 MB benoetigt -> Rest 400 MB (< 500 MB Schwellenwert)
       const free = 600 * 1024 * 1024;

@@ -77,12 +77,15 @@ class VolumeFadeController {
     double volumeStart = 1.0,
   }) {
     final startClamped = volumeStart.clamp(0.0, 1.0);
-    final totalSteps = (fadeDuration.inMilliseconds / stepInterval.inMilliseconds).round();
+    final totalSteps =
+        (fadeDuration.inMilliseconds / stepInterval.inMilliseconds).round();
     final steps = <double>[];
 
     for (var i = 0; i <= totalSteps; i++) {
-      final remainingMs = fadeDuration.inMilliseconds - (i * stepInterval.inMilliseconds);
-      final remaining = Duration(milliseconds: remainingMs.clamp(0, fadeDuration.inMilliseconds));
+      final remainingMs =
+          fadeDuration.inMilliseconds - (i * stepInterval.inMilliseconds);
+      final remaining = Duration(
+          milliseconds: remainingMs.clamp(0, fadeDuration.inMilliseconds));
       final factor = calculateFactor(remaining, fadeDuration: fadeDuration);
       steps.add((startClamped * factor).clamp(0.0, 1.0));
     }
@@ -152,7 +155,8 @@ class VolumeFadeController {
     final startFactor = _currentFactor;
     if (startFactor >= 1.0) return;
 
-    final stepsCount = (duration.inMilliseconds / stepInterval.inMilliseconds).round();
+    final stepsCount =
+        (duration.inMilliseconds / stepInterval.inMilliseconds).round();
     if (stepsCount <= 1) {
       await restoreVolumeInstant();
       return;

@@ -32,7 +32,8 @@ class MockAudioPlayerRepository implements AudioPlayerRepository {
   Stream<double> get volumeStream => Stream.value(currentVolume);
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     currentStatus = AudioPlaybackStatus.ready;
     if (initialPosition != null) currentPosition = initialPosition;
   }
@@ -101,12 +102,14 @@ void main() {
       expect(audio, mockAudioPlayer);
     });
 
-    test('MediaListNotifier behandelt asynchrone Zustaende (AsyncValue)', () async {
+    test('MediaListNotifier behandelt asynchrone Zustaende (AsyncValue)',
+        () async {
       final initialAsync = container.read(mediaListNotifierProvider);
       expect(initialAsync, isA<AsyncLoading<List<MediaItem>>>());
 
       // Warten bis der initiale Ladezustand fertig ist
-      final initialList = await container.read(mediaListNotifierProvider.future);
+      final initialList =
+          await container.read(mediaListNotifierProvider.future);
       expect(initialList, isEmpty);
 
       // Medium ueber Notifier importieren
@@ -116,19 +119,26 @@ void main() {
         type: MediaType.audiobook,
         source: AudioSourceRef.localFile(filePath: '/audio/douglas.m4b'),
       );
-      await container.read(mediaListNotifierProvider.notifier).batchImportMedia([testItem]);
+      await container
+          .read(mediaListNotifierProvider.notifier)
+          .batchImportMedia([testItem]);
 
-      final updatedList = await container.read(mediaListNotifierProvider.future);
+      final updatedList =
+          await container.read(mediaListNotifierProvider.future);
       expect(updatedList.length, 1);
       expect(updatedList.first.title, 'Per Anhalter durch die Galaxis');
 
       // Medium loeschen
-      await container.read(mediaListNotifierProvider.notifier).deleteMedia('book-42');
-      final afterDelete = await container.read(mediaListNotifierProvider.future);
+      await container
+          .read(mediaListNotifierProvider.notifier)
+          .deleteMedia('book-42');
+      final afterDelete =
+          await container.read(mediaListNotifierProvider.future);
       expect(afterDelete, isEmpty);
     });
 
-    test('ActiveMediaNotifier waehlt Medien aus und aktualisiert Position', () async {
+    test('ActiveMediaNotifier waehlt Medien aus und aktualisiert Position',
+        () async {
       final repo = container.read(mediaRepositoryProvider);
       const item = MediaItem(
         id: 'active-1',
@@ -153,7 +163,8 @@ void main() {
       expect(afterPosUpdate!.lastPosition.milliseconds, 98765);
     });
 
-    test('TimerController verwaltet Countdown, Fade-Out und Shake-Grace-Period', () {
+    test('TimerController verwaltet Countdown, Fade-Out und Shake-Grace-Period',
+        () {
       final timer = container.read(timerControllerProvider.notifier);
 
       // 1. Timer mit 30 Minuten starten

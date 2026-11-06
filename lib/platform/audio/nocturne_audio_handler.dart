@@ -211,7 +211,9 @@ class NocturneAudioHandler extends audio_service.BaseAudioHandler
   }
 
   @override
-  Future<void> click([audio_service.MediaButton button = audio_service.MediaButton.media]) async {
+  Future<void> click(
+      [audio_service.MediaButton button =
+          audio_service.MediaButton.media]) async {
     switch (button) {
       case audio_service.MediaButton.media:
         if (_isPlaying) {

@@ -11,7 +11,8 @@ class TestMockFederatedClient implements FederatedHttpClient {
   int callCount = 0;
 
   @override
-  Future<String> get(String url, {Duration timeout = const Duration(milliseconds: 3500)}) async {
+  Future<String> get(String url,
+      {Duration timeout = const Duration(milliseconds: 3500)}) async {
     callCount++;
     if (timeoutEndpoints.contains(url)) {
       throw TimeoutException('Zeitueberschreitung nach 3.5s');
@@ -45,14 +46,19 @@ void main() {
       resolver = InvidiousPipedResolver(httpClient: mockClient);
     });
 
-    test('Kuratierte Liste enthaelt gesunde Invidious- und Piped-Instanzen', () {
+    test('Kuratierte Liste enthaelt gesunde Invidious- und Piped-Instanzen',
+        () {
       final instances = InvidiousPipedResolver.defaultInstances;
       expect(instances.length, greaterThanOrEqualTo(4));
-      expect(instances.any((i) => i.type == FederatedInstanceType.invidious), isTrue);
-      expect(instances.any((i) => i.type == FederatedInstanceType.piped), isTrue);
+      expect(instances.any((i) => i.type == FederatedInstanceType.invidious),
+          isTrue);
+      expect(
+          instances.any((i) => i.type == FederatedInstanceType.piped), isTrue);
     });
 
-    test('Invidious JSON Antwort wird nahtlos in ResolvedStreamResult konvertiert', () async {
+    test(
+        'Invidious JSON Antwort wird nahtlos in ResolvedStreamResult konvertiert',
+        () async {
       final invidiousJson = jsonEncode({
         'title': 'Nocturne Bedtime Story',
         'author': 'Audio Creator',
@@ -70,7 +76,8 @@ void main() {
         ]
       });
 
-      mockClient.responses['https://inv.nadeko.net/api/v1/videos/dQw4w9WgXcQ'] = invidiousJson;
+      mockClient.responses['https://inv.nadeko.net/api/v1/videos/dQw4w9WgXcQ'] =
+          invidiousJson;
 
       final res = await resolver.resolveStream(
         'https://youtu.be/dQw4w9WgXcQ',
@@ -103,7 +110,8 @@ void main() {
         ]
       });
 
-      mockClient.responses['https://piped.test.org/streams/dQw4w9WgXcQ'] = pipedJson;
+      mockClient.responses['https://piped.test.org/streams/dQw4w9WgXcQ'] =
+          pipedJson;
 
       final pipedResolver = InvidiousPipedResolver(
         instances: testInstances,
@@ -116,7 +124,9 @@ void main() {
       expect(res.streamUrl, 'https://piped.stream/audio.opus');
     });
 
-    test('Timeout (3.5s) loest automatischen Failover zur naechsten Instanz aus', () async {
+    test(
+        'Timeout (3.5s) loest automatischen Failover zur naechsten Instanz aus',
+        () async {
       final testInstances = [
         FederatedInstance(
           baseUrl: 'https://inst1.fail.org',
@@ -129,10 +139,12 @@ void main() {
       ];
 
       // Instanz 1 laeuft in einen 3.5s Timeout
-      mockClient.timeoutEndpoints.add('https://inst1.fail.org/api/v1/videos/dQw4w9WgXcQ');
+      mockClient.timeoutEndpoints
+          .add('https://inst1.fail.org/api/v1/videos/dQw4w9WgXcQ');
 
       // Instanz 2 antwortet schnell
-      mockClient.responses['https://inst2.success.org/api/v1/videos/dQw4w9WgXcQ'] = jsonEncode({
+      mockClient.responses[
+          'https://inst2.success.org/api/v1/videos/dQw4w9WgXcQ'] = jsonEncode({
         'title': 'Failover Audio',
         'adaptiveFormats': [
           {
@@ -157,9 +169,12 @@ void main() {
       expect(testInstances[1].isHealthy, isTrue);
     });
 
-    test('healthCheck diagnostiziert Erreichbarkeit und Latenz aller Instanzen', () async {
-      mockClient.responses['https://inv.nadeko.net/api/v1/stats'] = '{"status":"ok"}';
-      mockClient.failingEndpoints.add('https://invidious.nerdvpn.de/api/v1/stats');
+    test('healthCheck diagnostiziert Erreichbarkeit und Latenz aller Instanzen',
+        () async {
+      mockClient.responses['https://inv.nadeko.net/api/v1/stats'] =
+          '{"status":"ok"}';
+      mockClient.failingEndpoints
+          .add('https://invidious.nerdvpn.de/api/v1/stats');
 
       final health = await resolver.healthCheck();
 

@@ -107,9 +107,8 @@ abstract class TagInjector {
       if (skipOffset > originalBytes.length) skipOffset = 0;
     }
 
-    final audioPayload = skipOffset > 0
-        ? originalBytes.sublist(skipOffset)
-        : originalBytes;
+    final audioPayload =
+        skipOffset > 0 ? originalBytes.sublist(skipOffset) : originalBytes;
 
     final output = Uint8List(tagBytes.length + audioPayload.length);
     output.setRange(0, tagBytes.length, tagBytes);

@@ -37,8 +37,7 @@ class InMemoryMediaRepository implements MediaRepository {
       Stream.value(items.values.toList());
 
   @override
-  Stream<MediaItem?> watchMediaById(String id) =>
-      Stream.value(items[id]);
+  Stream<MediaItem?> watchMediaById(String id) => Stream.value(items[id]);
 
   @override
   Future<void> deleteMedia(String id) async {
@@ -67,14 +66,14 @@ class InMemoryMediaRepository implements MediaRepository {
   Future<void> deleteBookmark(String id) async {}
 
   @override
-  Stream<List<Bookmark>> watchBookmarks(String mediaItemId) =>
-      Stream.value([]);
+  Stream<List<Bookmark>> watchBookmarks(String mediaItemId) => Stream.value([]);
 
   final List<String> _queue = [];
   int _queueIndex = 0;
 
   @override
-  Future<void> savePlaybackQueue(List<String> mediaItemIds, {int currentIndex = 0}) async {
+  Future<void> savePlaybackQueue(List<String> mediaItemIds,
+      {int currentIndex = 0}) async {
     _queue.clear();
     _queue.addAll(mediaItemIds);
     _queueIndex = currentIndex;
@@ -87,7 +86,8 @@ class InMemoryMediaRepository implements MediaRepository {
   Future<int> loadPlaybackQueueCurrentIndex() async => _queueIndex;
 
   @override
-  Stream<List<String>> watchPlaybackQueue() => Stream.value(List.unmodifiable(_queue));
+  Stream<List<String>> watchPlaybackQueue() =>
+      Stream.value(List.unmodifiable(_queue));
 
   @override
   Future<void> clearPlaybackQueue() async {
@@ -151,7 +151,8 @@ void main() {
 
     setUp(() async {
       tempDir = await Directory.systemTemp.createTemp('download_mgr_test_');
-      mockSpaceResolver = MockSpaceResolver(2 * 1024 * 1024 * 1024); // 2 GB frei
+      mockSpaceResolver =
+          MockSpaceResolver(2 * 1024 * 1024 * 1024); // 2 GB frei
       storageProvider = SandboxStorageProvider(
         baseDirectory: tempDir,
         spaceResolver: mockSpaceResolver,
@@ -172,7 +173,8 @@ void main() {
       }
     });
 
-    test('enqueueDownload startet und fuehrt Download vollstaendig aus', () async {
+    test('enqueueDownload startet und fuehrt Download vollstaendig aus',
+        () async {
       final task = await manager.enqueueDownload(
         mediaItem: testMediaItem,
         streamUrl: 'https://example.com/audio/test.m4a',
@@ -206,7 +208,8 @@ void main() {
       expect(savedItem.source.uri, completedTask.targetPath);
     });
 
-    test('enqueueDownload wirft Fehler bei unzureichendem Speicherplatz', () async {
+    test('enqueueDownload wirft Fehler bei unzureichendem Speicherplatz',
+        () async {
       mockSpaceResolver.freeSpace = 100 * 1024 * 1024; // nur 100 MB frei
 
       expect(

@@ -7,7 +7,8 @@ import 'package:nocturne/domain/models/playback_position.dart';
 
 void main() {
   group('PlaybackPosition Tests', () {
-    test('Standard-Konstruktor und fromMilliseconds initialisieren korrekt', () {
+    test('Standard-Konstruktor und fromMilliseconds initialisieren korrekt',
+        () {
       const pos1 = PlaybackPosition(duration: Duration(seconds: 75));
       expect(pos1.milliseconds, 75000);
       expect(pos1.duration.inSeconds, 75);
@@ -77,16 +78,20 @@ void main() {
     });
 
     test('formatProgress formatiert mm:ss und hh:mm:ss', () {
-      const shortPos = PlaybackPosition(duration: Duration(minutes: 3, seconds: 45));
+      const shortPos =
+          PlaybackPosition(duration: Duration(minutes: 3, seconds: 45));
       expect(shortPos.formatProgress(), '03:45');
 
-      const longPos = PlaybackPosition(duration: Duration(hours: 2, minutes: 5, seconds: 9));
+      const longPos = PlaybackPosition(
+          duration: Duration(hours: 2, minutes: 5, seconds: 9));
       expect(longPos.formatProgress(), '02:05:09');
 
       expect(PlaybackPosition.zero.formatProgress(), '00:00');
     });
 
-    test('formatRemaining formatiert verbleibende Zeit mit fuehrendem Minuszeichen', () {
+    test(
+        'formatRemaining formatiert verbleibende Zeit mit fuehrendem Minuszeichen',
+        () {
       const total = Duration(hours: 1, minutes: 30);
       const pos = PlaybackPosition(duration: Duration(hours: 1, minutes: 10));
 
@@ -120,7 +125,8 @@ void main() {
     });
 
     test('copyWith, toMap und fromMap sind vollstaendig und symmetrisch', () {
-      const original = PlaybackPosition(duration: Duration(milliseconds: 45230));
+      const original =
+          PlaybackPosition(duration: Duration(milliseconds: 45230));
       final copied = original.copyWith(duration: const Duration(seconds: 10));
       expect(copied.duration.inSeconds, 10);
 
@@ -155,7 +161,8 @@ void main() {
       expect(chapter.isValid, isTrue);
     });
 
-    test('Validierungs-Assertions und isValid greifen bei unzulaessigen Werten', () {
+    test('Validierungs-Assertions und isValid greifen bei unzulaessigen Werten',
+        () {
       expect(
         () => Chapter(
           id: '',
@@ -208,12 +215,27 @@ void main() {
         index: 0,
       );
 
-      expect(chapter.containsPosition(const PlaybackPosition(duration: Duration(seconds: 10))), isTrue);
-      expect(chapter.containsPosition(const PlaybackPosition(duration: Duration(seconds: 30))), isTrue);
-      expect(chapter.containsPosition(const PlaybackPosition(duration: Duration(seconds: 50))), isTrue);
+      expect(
+          chapter.containsPosition(
+              const PlaybackPosition(duration: Duration(seconds: 10))),
+          isTrue);
+      expect(
+          chapter.containsPosition(
+              const PlaybackPosition(duration: Duration(seconds: 30))),
+          isTrue);
+      expect(
+          chapter.containsPosition(
+              const PlaybackPosition(duration: Duration(seconds: 50))),
+          isTrue);
 
-      expect(chapter.containsPosition(const PlaybackPosition(duration: Duration(seconds: 9))), isFalse);
-      expect(chapter.containsPosition(const PlaybackPosition(duration: Duration(seconds: 51))), isFalse);
+      expect(
+          chapter.containsPosition(
+              const PlaybackPosition(duration: Duration(seconds: 9))),
+          isFalse);
+      expect(
+          chapter.containsPosition(
+              const PlaybackPosition(duration: Duration(seconds: 51))),
+          isFalse);
     });
 
     test('findActiveChapter loest hierarchische Unterkapitel rekursiv auf', () {
@@ -245,15 +267,18 @@ void main() {
       expect(root.hasSubChapters, isTrue);
 
       // Position bei 2 Min -> Sub-Kapitel 1.1
-      final activeSub1 = root.findActiveChapter(const PlaybackPosition(duration: Duration(minutes: 2)));
+      final activeSub1 = root.findActiveChapter(
+          const PlaybackPosition(duration: Duration(minutes: 2)));
       expect(activeSub1, sub1);
 
       // Position bei 7 Min -> Sub-Kapitel 1.2
-      final activeSub2 = root.findActiveChapter(const PlaybackPosition(duration: Duration(minutes: 7)));
+      final activeSub2 = root.findActiveChapter(
+          const PlaybackPosition(duration: Duration(minutes: 7)));
       expect(activeSub2, sub2);
 
       // Position ausserhalb -> null
-      final outside = root.findActiveChapter(const PlaybackPosition(duration: Duration(minutes: 15)));
+      final outside = root.findActiveChapter(
+          const PlaybackPosition(duration: Duration(minutes: 15)));
       expect(outside, isNull);
     });
 
@@ -296,7 +321,8 @@ void main() {
       final bookmark = Bookmark(
         id: 'bm-1',
         mediaItemId: 'media-1',
-        position: const PlaybackPosition(duration: Duration(minutes: 12, seconds: 30)),
+        position: const PlaybackPosition(
+            duration: Duration(minutes: 12, seconds: 30)),
         createdAt: now,
         label: 'Schlafunterbrechung',
         note: 'Hier war die Szene im Zug',
@@ -364,7 +390,8 @@ void main() {
     late AudioSourceRef testSource;
 
     setUp(() {
-      testSource = const AudioSourceRef.file('/storage/audiobook.m4b', title: 'Buch 1');
+      testSource =
+          const AudioSourceRef.file('/storage/audiobook.m4b', title: 'Buch 1');
     });
 
     test('Alle Medientypen werden unterstuetzt', () {
@@ -424,9 +451,18 @@ void main() {
       );
 
       expect(item.hasChapters, isTrue);
-      expect(item.getChapterAt(const PlaybackPosition(duration: Duration(seconds: 30))), c1);
-      expect(item.getChapterAt(const PlaybackPosition(duration: Duration(seconds: 90))), c2);
-      expect(item.getChapterAt(const PlaybackPosition(duration: Duration(seconds: 200))), isNull);
+      expect(
+          item.getChapterAt(
+              const PlaybackPosition(duration: Duration(seconds: 30))),
+          c1);
+      expect(
+          item.getChapterAt(
+              const PlaybackPosition(duration: Duration(seconds: 90))),
+          c2);
+      expect(
+          item.getChapterAt(
+              const PlaybackPosition(duration: Duration(seconds: 200))),
+          isNull);
     });
 
     test('progressFraction berechnet Fortschritt bezogen auf duration', () {

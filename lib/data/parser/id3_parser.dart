@@ -39,14 +39,22 @@ class Id3Parser {
           return _decodeUtf16(data).replaceAll('\x00', '').trim();
         case 2:
           // UTF-16BE ohne BOM
-          return _decodeUtf16(data, defaultBigEndian: true).replaceAll('\x00', '').trim();
+          return _decodeUtf16(data, defaultBigEndian: true)
+              .replaceAll('\x00', '')
+              .trim();
         case 3:
         default:
           // UTF-8
-          return utf8.decode(data, allowMalformed: true).replaceAll('\x00', '').trim();
+          return utf8
+              .decode(data, allowMalformed: true)
+              .replaceAll('\x00', '')
+              .trim();
       }
     } catch (_) {
-      return latin1.decode(data, allowInvalid: true).replaceAll('\x00', '').trim();
+      return latin1
+          .decode(data, allowInvalid: true)
+          .replaceAll('\x00', '')
+          .trim();
     }
   }
 
@@ -82,7 +90,8 @@ class Id3Parser {
     if (bytes.length >= 10 &&
         bytes[0] == 0x49 && // 'I'
         bytes[1] == 0x44 && // 'D'
-        bytes[2] == 0x33) { // '3'
+        bytes[2] == 0x33) {
+      // '3'
       final v2Meta = _parseId3v2(bytes, fallbackTitle);
       if (v2Meta != null) return v2Meta;
     }
@@ -92,7 +101,8 @@ class Id3Parser {
       final v1Offset = bytes.length - 128;
       if (bytes[v1Offset] == 0x54 && // 'T'
           bytes[v1Offset + 1] == 0x41 && // 'A'
-          bytes[v1Offset + 2] == 0x47) { // 'G'
+          bytes[v1Offset + 2] == 0x47) {
+        // 'G'
         return _parseId3v1(bytes, v1Offset, fallbackTitle);
       }
     }
@@ -105,7 +115,8 @@ class Id3Parser {
     final isV24 = majorVersion == 4;
     final tagSize = decodeSynchsafe(bytes, 6);
     final totalHeaderAndTag = 10 + tagSize;
-    final maxOffset = totalHeaderAndTag > bytes.length ? bytes.length : totalHeaderAndTag;
+    final maxOffset =
+        totalHeaderAndTag > bytes.length ? bytes.length : totalHeaderAndTag;
 
     String? title;
     String? author;
@@ -190,14 +201,16 @@ class Id3Parser {
             if (cp + 16 <= frameDataStart + frameSize) {
               final startMs = decodeUint32(bytes, cp);
               final endMs = decodeUint32(bytes, cp + 4);
-              cp += 16; // StartTime(4), EndTime(4), StartOffset(4), EndOffset(4)
+              cp +=
+                  16; // StartTime(4), EndTime(4), StartOffset(4), EndOffset(4)
 
               var chapterTitle = 'Kapitel ${chapterIndex + 1}';
               // Optionale Sub-Frames parsen (z. B. TIT2)
               if (cp + 10 < frameDataStart + frameSize) {
                 final subId = String.fromCharCodes(bytes.sublist(cp, cp + 4));
                 final subSize = decodeUint32(bytes, cp + 4);
-                if (subId == 'TIT2' && cp + 10 + subSize <= frameDataStart + frameSize) {
+                if (subId == 'TIT2' &&
+                    cp + 10 + subSize <= frameDataStart + frameSize) {
                   final subTitle = decodeText(bytes, cp + 10, subSize);
                   if (subTitle.isNotEmpty) chapterTitle = subTitle;
                 }
@@ -208,7 +221,8 @@ class Id3Parser {
                   id: elemId.isNotEmpty ? elemId : 'chap-$chapterIndex',
                   title: chapterTitle,
                   start: Duration(milliseconds: startMs),
-                  end: Duration(milliseconds: endMs >= startMs ? endMs : startMs),
+                  end: Duration(
+                      milliseconds: endMs >= startMs ? endMs : startMs),
                   index: chapterIndex++,
                 ),
               );
@@ -235,10 +249,22 @@ class Id3Parser {
 
   AudioMetadata _parseId3v1(Uint8List bytes, int offset, String fallbackTitle) {
     // ID3v1 Layout: 3 bytes TAG, 30 title, 30 artist, 30 album, 4 year, 28 comment, 1 zero, 1 track, 1 genre
-    final title = latin1.decode(bytes.sublist(offset + 3, offset + 33)).replaceAll('\x00', '').trim();
-    final artist = latin1.decode(bytes.sublist(offset + 33, offset + 63)).replaceAll('\x00', '').trim();
-    final album = latin1.decode(bytes.sublist(offset + 63, offset + 93)).replaceAll('\x00', '').trim();
-    final yearStr = latin1.decode(bytes.sublist(offset + 93, offset + 97)).replaceAll('\x00', '').trim();
+    final title = latin1
+        .decode(bytes.sublist(offset + 3, offset + 33))
+        .replaceAll('\x00', '')
+        .trim();
+    final artist = latin1
+        .decode(bytes.sublist(offset + 33, offset + 63))
+        .replaceAll('\x00', '')
+        .trim();
+    final album = latin1
+        .decode(bytes.sublist(offset + 63, offset + 93))
+        .replaceAll('\x00', '')
+        .trim();
+    final yearStr = latin1
+        .decode(bytes.sublist(offset + 93, offset + 97))
+        .replaceAll('\x00', '')
+        .trim();
 
     int? track;
     // ID3v1.1 Erkennung: Byte 125 ist 0x00 und Byte 126 ist Track-Nummer

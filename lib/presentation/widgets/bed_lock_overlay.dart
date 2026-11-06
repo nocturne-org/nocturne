@@ -131,8 +131,10 @@ class _BedLockOverlayState extends State<BedLockOverlay>
                                       child: CircularProgressIndicator(
                                         value: _unlockAnimationController.value,
                                         strokeWidth: 4.0,
-                                        backgroundColor: AmoledColors.surfaceElevated,
-                                        valueColor: const AlwaysStoppedAnimation<Color>(
+                                        backgroundColor:
+                                            AmoledColors.surfaceElevated,
+                                        valueColor:
+                                            const AlwaysStoppedAnimation<Color>(
                                           AmoledColors.amberAccent,
                                         ),
                                       ),

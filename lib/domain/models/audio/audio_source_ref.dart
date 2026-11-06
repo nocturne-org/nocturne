@@ -37,32 +37,42 @@ class AudioSourceRef {
   });
 
   /// Erzeugt eine Referenz fuer eine lokale Datei.
-  const factory AudioSourceRef.file(String path, {String? title, String? artist}) =
-      _AudioSourceRefFile;
+  const factory AudioSourceRef.file(String path,
+      {String? title, String? artist}) = _AudioSourceRefFile;
 
   /// Alias fuer lokale Datei mit benanntem Pfad-Parameter.
-  const factory AudioSourceRef.localFile({required String filePath, String? title, String? artist}) =
-      _AudioSourceRefFileNamed;
+  const factory AudioSourceRef.localFile(
+      {required String filePath,
+      String? title,
+      String? artist}) = _AudioSourceRefFileNamed;
 
   /// Erzeugt eine Referenz fuer ein Android SAF Uri (content://).
-  const factory AudioSourceRef.saf(String contentUri, {String? title, String? artist}) =
-      _AudioSourceRefSaf;
+  const factory AudioSourceRef.saf(String contentUri,
+      {String? title, String? artist}) = _AudioSourceRefSaf;
 
   /// Erzeugt eine Referenz fuer einen Netzwerk-Stream.
-  const factory AudioSourceRef.network(String streamUrl, {String? title, String? artist}) =
-      _AudioSourceRefNetwork;
+  const factory AudioSourceRef.network(String streamUrl,
+      {String? title, String? artist}) = _AudioSourceRefNetwork;
 
   /// Alias fuer Streaming-URL mit benanntem Parameter.
-  const factory AudioSourceRef.streamingUrl({required String streamUrl, String? title, String? artist}) =
-      _AudioSourceRefNetworkNamed;
+  const factory AudioSourceRef.streamingUrl(
+      {required String streamUrl,
+      String? title,
+      String? artist}) = _AudioSourceRefNetworkNamed;
 
   /// Alias fuer Remote-Stream mit benanntem Parameter.
-  const factory AudioSourceRef.remoteStream({required String streamUrl, String? title, String? artist, Map<String, String>? headers}) =
-      _AudioSourceRefNetworkNamed;
+  const factory AudioSourceRef.remoteStream(
+      {required String streamUrl,
+      String? title,
+      String? artist,
+      Map<String, String>? headers}) = _AudioSourceRefNetworkNamed;
 
   /// Alias fuer YouTube-Streams.
-  const factory AudioSourceRef.youTube({String? streamUrl, String? videoId, String? title, String? artist}) =
-      _AudioSourceRefYouTube;
+  const factory AudioSourceRef.youTube(
+      {String? streamUrl,
+      String? videoId,
+      String? title,
+      String? artist}) = _AudioSourceRefYouTube;
 
   /// Erzeugt eine modifizierte Kopie dieses [AudioSourceRef].
   AudioSourceRef copyWith({
@@ -80,7 +90,8 @@ class AudioSourceRef {
   }
 
   /// Ob es sich um eine lokale Datei oder ein lokales SAF-Medium handelt.
-  bool get isLocal => type == AudioSourceType.file || type == AudioSourceType.safContentUri;
+  bool get isLocal =>
+      type == AudioSourceType.file || type == AudioSourceType.safContentUri;
 
   /// Ob es sich um einen entfernten Netzwerk-Stream handelt.
   bool get isRemote => type == AudioSourceType.networkStream;
@@ -136,7 +147,8 @@ class _AudioSourceRefFile extends AudioSourceRef {
 }
 
 class _AudioSourceRefFileNamed extends AudioSourceRef {
-  const _AudioSourceRefFileNamed({required String filePath, super.title, super.artist})
+  const _AudioSourceRefFileNamed(
+      {required String filePath, super.title, super.artist})
       : super(uri: filePath, type: AudioSourceType.file);
 }
 
@@ -160,9 +172,11 @@ class _AudioSourceRefNetworkNamed extends AudioSourceRef {
 }
 
 class _AudioSourceRefYouTube extends AudioSourceRef {
-  const _AudioSourceRefYouTube({String? streamUrl, String? videoId, super.title, super.artist})
+  const _AudioSourceRefYouTube(
+      {String? streamUrl, String? videoId, super.title, super.artist})
       : super(
-          uri: streamUrl ?? (videoId != null ? 'https://youtube.com/watch?v=$videoId' : ''),
+          uri: streamUrl ??
+              (videoId != null ? 'https://youtube.com/watch?v=$videoId' : ''),
           type: AudioSourceType.networkStream,
         );
 }

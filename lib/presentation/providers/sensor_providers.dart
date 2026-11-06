@@ -4,7 +4,8 @@ import '../../domain/repositories/sensor_settings_repository.dart';
 import '../../platform/sensors/sensor_settings_storage.dart';
 
 /// Provider fuer das [SensorSettingsRepository].
-final sensorSettingsRepositoryProvider = Provider<SensorSettingsRepository>((ref) {
+final sensorSettingsRepositoryProvider =
+    Provider<SensorSettingsRepository>((ref) {
   final storage = SensorSettingsStorage();
   ref.onDispose(() => storage.dispose());
   return storage;

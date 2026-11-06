@@ -44,7 +44,8 @@ class BedtimeAudioNotifier extends Notifier<BedtimePlaybackState> {
     try {
       final player = ref.read(audioPlayerRepositoryProvider);
       player.playbackStatusStream.listen((status) {
-        state = state.copyWith(isPlaying: status == AudioPlaybackStatus.playing);
+        state =
+            state.copyWith(isPlaying: status == AudioPlaybackStatus.playing);
       });
       player.positionStream.listen((pos) {
         state = state.copyWith(position: pos);

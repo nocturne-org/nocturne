@@ -39,7 +39,8 @@ class M4bParser {
     final chapters = <Chapter>[];
 
     // Rekursive oder sequentielle Atom-Suche
-    _scanAtoms(bytes, 0, bytes.length, (type, offset, size, dataStart, dataSize) {
+    _scanAtoms(bytes, 0, bytes.length,
+        (type, offset, size, dataStart, dataSize) {
       if (type == 'chpl') {
         _parseChplAtom(bytes, dataStart, dataSize, chapters);
       } else if (type == '©nam' || type == 'titl') {
@@ -67,14 +68,19 @@ class M4bParser {
       }
     });
 
-    if (title == null && author == null && chapters.isEmpty && coverBytes == null) {
+    if (title == null &&
+        author == null &&
+        chapters.isEmpty &&
+        coverBytes == null) {
       // Keine M4B Atome erkannt
       return null;
     }
 
     final effectiveTitle = title;
     return AudioMetadata(
-      title: (effectiveTitle != null && effectiveTitle.isNotEmpty) ? effectiveTitle : fallbackTitle,
+      title: (effectiveTitle != null && effectiveTitle.isNotEmpty)
+          ? effectiveTitle
+          : fallbackTitle,
       author: author,
       album: album,
       trackNumber: trackNumber,
@@ -90,10 +96,21 @@ class M4bParser {
     Uint8List bytes,
     int startOffset,
     int endOffset,
-    void Function(String type, int offset, int size, int dataStart, int dataSize) onAtom,
+    void Function(
+            String type, int offset, int size, int dataStart, int dataSize)
+        onAtom,
   ) {
     var offset = startOffset;
-    final containerTypes = {'moov', 'trak', 'mdia', 'minf', 'stbl', 'udta', 'meta', 'ilst'};
+    final containerTypes = {
+      'moov',
+      'trak',
+      'mdia',
+      'minf',
+      'stbl',
+      'udta',
+      'meta',
+      'ilst'
+    };
 
     while (offset + 8 <= endOffset) {
       final size = _readUint32(bytes, offset);
@@ -108,7 +125,8 @@ class M4bParser {
 
       if (containerTypes.contains(type)) {
         // 'meta' Atom enthaelt haeufig 4 Bytes Flags vor den Kind-Atomen
-        final innerStart = (type == 'meta' && dataSize >= 4) ? dataStart + 4 : dataStart;
+        final innerStart =
+            (type == 'meta' && dataSize >= 4) ? dataStart + 4 : dataStart;
         _scanAtoms(bytes, innerStart, atomEnd, onAtom);
       }
 
@@ -131,8 +149,12 @@ class M4bParser {
         final payloadStart = p + 16;
         final payloadSize = subSize - 16;
         if (payloadSize > 0 && payloadStart + payloadSize <= end) {
-          final strBytes = bytes.sublist(payloadStart, payloadStart + payloadSize);
-          return utf8.decode(strBytes, allowMalformed: true).replaceAll('\x00', '').trim();
+          final strBytes =
+              bytes.sublist(payloadStart, payloadStart + payloadSize);
+          return utf8
+              .decode(strBytes, allowMalformed: true)
+              .replaceAll('\x00', '')
+              .trim();
         }
       }
       p += subSize;
@@ -151,7 +173,8 @@ class M4bParser {
         final payloadStart = p + 16;
         // In QuickTime trkn data: Bytes 18-19 (0-basiert ab data start) oder Bytes 2-3 des Payloads
         if (payloadStart + 4 <= end) {
-          final track = (bytes[payloadStart + 2] << 8) | bytes[payloadStart + 3];
+          final track =
+              (bytes[payloadStart + 2] << 8) | bytes[payloadStart + 3];
           if (track > 0) return track;
         }
       }
@@ -173,7 +196,8 @@ class M4bParser {
         final payloadStart = p + 16;
         final payloadSize = subSize - 16;
         if (payloadSize > 0 && payloadStart + payloadSize <= end) {
-          final coverData = bytes.sublist(payloadStart, payloadStart + payloadSize);
+          final coverData =
+              bytes.sublist(payloadStart, payloadStart + payloadSize);
           return (coverData, mime);
         }
       }
@@ -223,7 +247,8 @@ class M4bParser {
         final title = rawEntries[i].$2;
         final end = (i + 1 < rawEntries.length)
             ? rawEntries[i + 1].$1
-            : start + const Duration(minutes: 5); // Schaetzung fuer letztes Kapitel
+            : start +
+                const Duration(minutes: 5); // Schaetzung fuer letztes Kapitel
 
         chapters.add(
           Chapter(

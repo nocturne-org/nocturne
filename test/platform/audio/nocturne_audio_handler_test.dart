@@ -44,7 +44,8 @@ void main() {
       expect(state.androidCompactActionIndices, [0, 1, 2]);
     });
 
-    test('updateMediaItemFromDomain uebertraegt Metadaten vollstaendig', () async {
+    test('updateMediaItemFromDomain uebertraegt Metadaten vollstaendig',
+        () async {
       const domainItem = domain.MediaItem(
         id: 'item-1',
         title: 'Schlaf-Meditation Teil 1',
@@ -71,7 +72,8 @@ void main() {
       expect(state.updatePosition, const Duration(minutes: 5));
     });
 
-    test('play und pause aktualisieren State und loesen Callbacks aus', () async {
+    test('play und pause aktualisieren State und loesen Callbacks aus',
+        () async {
       await handler.play();
       expect(playCalled, isTrue);
 
@@ -120,11 +122,13 @@ void main() {
       // Next fuehrt FastForward aus
       await handler.seek(const Duration(seconds: 10));
       await handler.click(audio_service.MediaButton.next);
-      expect(handler.playbackState.value.updatePosition, const Duration(seconds: 25));
+      expect(handler.playbackState.value.updatePosition,
+          const Duration(seconds: 25));
 
       // Previous fuehrt Rewind aus
       await handler.click(audio_service.MediaButton.previous);
-      expect(handler.playbackState.value.updatePosition, const Duration(seconds: 10));
+      expect(handler.playbackState.value.updatePosition,
+          const Duration(seconds: 10));
     });
 
     test('stop setzt Position und Status sauber zurueck', () async {
@@ -140,7 +144,8 @@ void main() {
       expect(state.updatePosition, Duration.zero);
     });
 
-    test('MediaSessionServiceAdapter stellt korrekte Notification-Werte bereit', () {
+    test('MediaSessionServiceAdapter stellt korrekte Notification-Werte bereit',
+        () {
       expect(
         MediaSessionServiceAdapter.notificationChannelId,
         'com.nocturne.audio.channel',

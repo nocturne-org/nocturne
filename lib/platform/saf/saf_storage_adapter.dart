@@ -20,7 +20,8 @@ class SafStorageAdapter {
       }
 
       // Persistierung explizit bestaetigen
-      final persisted = await _platform.takePersistableUriPermission(payload.treeUri);
+      final persisted =
+          await _platform.takePersistableUriPermission(payload.treeUri);
 
       return SafDirectory(
         treeUri: payload.treeUri,
@@ -37,7 +38,8 @@ class SafStorageAdapter {
       throw _mapPlatformException(e);
     } catch (e) {
       if (e is SafStorageException) rethrow;
-      throw SafChannelException('Unerwarteter Fehler bei SAF-Auswahl: $e', cause: e);
+      throw SafChannelException('Unerwarteter Fehler bei SAF-Auswahl: $e',
+          cause: e);
     }
   }
 
@@ -75,7 +77,9 @@ class SafStorageAdapter {
       throw _mapPlatformException(e);
     } catch (e) {
       if (e is SafStorageException) rethrow;
-      throw SafChannelException('Fehler beim Abruf persistierter SAF-Rechte: $e', cause: e);
+      throw SafChannelException(
+          'Fehler beim Abruf persistierter SAF-Rechte: $e',
+          cause: e);
     }
   }
 
@@ -141,7 +145,8 @@ class SafStorageAdapter {
           extension: f.extension.toLowerCase(),
           sizeBytes: f.sizeBytes,
           mimeType: f.mimeType,
-          lastModified: DateTime.fromMillisecondsSinceEpoch(f.lastModifiedEpochMs),
+          lastModified:
+              DateTime.fromMillisecondsSinceEpoch(f.lastModifiedEpochMs),
         );
       }).toList();
     } on PlatformException catch (e) {
@@ -156,8 +161,10 @@ class SafStorageAdapter {
     }
   }
 
-  SafStorageException _mapPlatformException(PlatformException e, {String? treeUri}) {
-    final uri = treeUri ?? (e.details is Map ? (e.details as Map)['treeUri'] as String? : null);
+  SafStorageException _mapPlatformException(PlatformException e,
+      {String? treeUri}) {
+    final uri = treeUri ??
+        (e.details is Map ? (e.details as Map)['treeUri'] as String? : null);
     switch (e.code) {
       case 'PERMISSION_DENIED':
         return SafPermissionDeniedException(
@@ -173,19 +180,22 @@ class SafStorageAdapter {
         );
       case 'STORAGE_UNMOUNTED':
         return SafStorageUnavailableException(
-          e.message ?? 'Das Speichermedium (z. B. SD-Karte) ist nicht verfuegbar.',
+          e.message ??
+              'Das Speichermedium (z. B. SD-Karte) ist nicht verfuegbar.',
           treeUri: uri,
           cause: e,
         );
       case 'SECURITY_EXCEPTION':
         return SafSecurityException(
-          e.message ?? 'Sicherheitsverletzung: Zugriff auf URI widerrufen oder abgelaufen.',
+          e.message ??
+              'Sicherheitsverletzung: Zugriff auf URI widerrufen oder abgelaufen.',
           treeUri: uri,
           cause: e,
         );
       default:
         return SafChannelException(
-          e.message ?? 'Unbekannter Platformfehler im Storage Access Framework.',
+          e.message ??
+              'Unbekannter Platformfehler im Storage Access Framework.',
           treeUri: uri,
           cause: e,
         );

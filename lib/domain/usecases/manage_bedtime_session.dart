@@ -172,7 +172,8 @@ class ManageBedtimeSession {
 
     // Zustandsuebergaenge auswerten
     _stateSub = _stateMachine.stateStream.listen((state) async {
-      if (state.status == SleepTimerStatus.fadingOut && _positionAtFadeStart == null) {
+      if (state.status == SleepTimerStatus.fadingOut &&
+          _positionAtFadeStart == null) {
         _positionAtFadeStart = _lastKnownPlaybackPosition;
       } else if (state.status == SleepTimerStatus.gracePeriod) {
         await _handleGracePeriodEntered();
@@ -194,7 +195,8 @@ class ManageBedtimeSession {
     final mediaId = _activeMediaItemId;
     if (mediaId != null && mediaId.isNotEmpty) {
       final basePosition = _positionAtFadeStart ?? _lastKnownPlaybackPosition;
-      final rewindMs = (basePosition.inMilliseconds - rewindBeforeFadeDuration.inMilliseconds)
+      final rewindMs = (basePosition.inMilliseconds -
+              rewindBeforeFadeDuration.inMilliseconds)
           .clamp(0, double.maxFinite.toInt());
       final bookmarkPosition = Duration(milliseconds: rewindMs);
 

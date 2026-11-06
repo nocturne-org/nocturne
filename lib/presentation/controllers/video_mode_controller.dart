@@ -29,8 +29,7 @@ class VideoModeController extends Notifier<VideoPlaybackState> {
   late final VideoDecoderBridge _videoDecoder =
       _videoDecoderOverride ?? DefaultVideoDecoderBridge();
 
-  late final PipController _pip =
-      _pipControllerOverride ?? PipController();
+  late final PipController _pip = _pipControllerOverride ?? PipController();
 
   StreamSubscription<Duration>? _audioPosSub;
   StreamSubscription<Duration>? _videoPosSub;

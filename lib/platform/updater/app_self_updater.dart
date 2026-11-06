@@ -31,7 +31,8 @@ class DefaultUpdateHttpTransport implements UpdateHttpTransport {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return await response.transform(utf8.decoder).join();
       } else {
-        throw HttpException('HTTP-Fehler ${response.statusCode} beim Laden von $url');
+        throw HttpException(
+            'HTTP-Fehler ${response.statusCode} beim Laden von $url');
       }
     } finally {
       client.close();
@@ -61,7 +62,7 @@ class DefaultUpdateHttpTransport implements UpdateHttpTransport {
           if (onProgress != null) {
             onProgress(received, total);
           }
-        }).asFuture();
+        }).asFuture<void>();
 
         await sink.flush();
         await sink.close();
@@ -118,7 +119,8 @@ class AppSelfUpdater {
     final tagName = data['tag_name'] as String? ?? '';
     final body = data['body'] as String? ?? '';
     final publishedAtStr = data['published_at'] as String?;
-    final publishedAt = publishedAtStr != null ? DateTime.tryParse(publishedAtStr) : null;
+    final publishedAt =
+        publishedAtStr != null ? DateTime.tryParse(publishedAtStr) : null;
 
     final assets = (data['assets'] as List<dynamic>? ?? [])
         .map((a) => a as Map<String, dynamic>)
@@ -142,7 +144,8 @@ class AppSelfUpdater {
       (a) => (a['name'] as String? ?? '').toLowerCase().contains('sha256'),
       orElse: () => {},
     );
-    if (checksumAsset.isNotEmpty && checksumAsset.containsKey('browser_download_url')) {
+    if (checksumAsset.isNotEmpty &&
+        checksumAsset.containsKey('browser_download_url')) {
       try {
         final checksumUrl = checksumAsset['browser_download_url'] as String;
         final checksumContent = await _transport.fetchString(checksumUrl);
@@ -192,7 +195,8 @@ class AppSelfUpdater {
     // SHA-256 Pruefsummen-Verifikation vor der Installation
     if (update.expectedSha256 != null && update.expectedSha256!.isNotEmpty) {
       final fileBytes = await targetApkFile.readAsBytes();
-      final calculatedHash = Sha256Digest.computeBytesHash(fileBytes).toLowerCase();
+      final calculatedHash =
+          Sha256Digest.computeBytesHash(fileBytes).toLowerCase();
       final expectedHash = update.expectedSha256!.trim().toLowerCase();
 
       if (calculatedHash != expectedHash) {
@@ -226,7 +230,9 @@ class AppSelfUpdater {
       if (parts.length >= 2) {
         final hash = parts[0];
         final name = parts[1].replaceAll('*', '');
-        if (name == fileName || fileName.contains(name) || name.contains(fileName)) {
+        if (name == fileName ||
+            fileName.contains(name) ||
+            name.contains(fileName)) {
           return hash;
         }
       }

@@ -58,12 +58,13 @@ class RemoteAppConfig {
         if (sha256Hash != null) 'sha256Hash': sha256Hash,
       };
 
-  factory RemoteAppConfig.fromMap(Map<String, dynamic> map, {String? calculatedHash}) {
+  factory RemoteAppConfig.fromMap(Map<String, dynamic> map,
+      {String? calculatedHash}) {
     return RemoteAppConfig(
       version: (map['version'] as num?)?.toInt() ?? 1,
       userAgent: map['userAgent'] as String? ?? defaults.userAgent,
-      innertubeClientVersion:
-          map['innertubeClientVersion'] as String? ?? defaults.innertubeClientVersion,
+      innertubeClientVersion: map['innertubeClientVersion'] as String? ??
+          defaults.innertubeClientVersion,
       invidiousInstances: (map['invidiousInstances'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??

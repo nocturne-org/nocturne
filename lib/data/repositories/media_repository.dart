@@ -43,7 +43,8 @@ abstract class MediaRepository {
   Future<void> deleteBookmark(String id);
 
   /// Speichert die IDs der Wiedergabe-Warteschlange persistent ab.
-  Future<void> savePlaybackQueue(List<String> mediaItemIds, {int currentIndex = 0});
+  Future<void> savePlaybackQueue(List<String> mediaItemIds,
+      {int currentIndex = 0});
 
   /// Laedt die persistent gespeicherte Warteschlange.
   Future<List<String>> loadPlaybackQueue();

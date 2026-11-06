@@ -178,7 +178,8 @@ class _QueueItemTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: isPlaying ? AmoledColors.surfaceElevated : AmoledColors.surfaceCard,
+        color:
+            isPlaying ? AmoledColors.surfaceElevated : AmoledColors.surfaceCard,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: isPlaying ? AmoledColors.amberAccent : AmoledColors.divider,
@@ -213,7 +214,8 @@ class _QueueItemTile extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: AmoledTypography.bodyMedium.copyWith(
-            color: isPlaying ? AmoledColors.amberAccent : AmoledColors.textPrimary,
+            color:
+                isPlaying ? AmoledColors.amberAccent : AmoledColors.textPrimary,
             fontWeight: isPlaying ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
@@ -241,7 +243,7 @@ class _QueueItemTile extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                item.author,
+                (item.author ?? ''),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AmoledTypography.caption,

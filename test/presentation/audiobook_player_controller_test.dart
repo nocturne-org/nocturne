@@ -41,7 +41,8 @@ class TestMockAudioPlayer implements AudioPlayerRepository {
   Stream<double> get volumeStream => _volCtrl.stream;
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     lastInitialPosition = initialPosition;
     if (initialPosition != null) {
       position = initialPosition;
@@ -120,8 +121,10 @@ void main() {
       await memoryDb.close();
     });
 
-    test('Wiederaufnahme an exakt der gespeicherten Position (Auto-Resume)', () async {
-      const savedPos = PlaybackPosition(duration: Duration(milliseconds: 142500));
+    test('Wiederaufnahme an exakt der gespeicherten Position (Auto-Resume)',
+        () async {
+      const savedPos =
+          PlaybackPosition(duration: Duration(milliseconds: 142500));
       const media = MediaItem(
         id: 'book-resume',
         title: 'Auto-Resume Hoerbuch',
@@ -131,15 +134,18 @@ void main() {
       );
       await mediaRepo.saveMedia(media);
 
-      final controller = container.read(audiobookPlayerControllerProvider.notifier);
+      final controller =
+          container.read(audiobookPlayerControllerProvider.notifier);
       await controller.loadAndPlay(media, autoResume: true);
 
       expect(mockPlayer.lastInitialPosition, savedPos.duration);
       expect(mockPlayer.position, savedPos.duration);
-      expect(container.read(audiobookPlayerControllerProvider).position, savedPos);
+      expect(
+          container.read(audiobookPlayerControllerProvider).position, savedPos);
     });
 
-    test('Automatisches Setzen des Fortschrittslesezeichens alle 5 Sekunden', () async {
+    test('Automatisches Setzen des Fortschrittslesezeichens alle 5 Sekunden',
+        () async {
       const media = MediaItem(
         id: 'book-periodic',
         title: 'Periodischer Test',
@@ -148,7 +154,8 @@ void main() {
       );
       await mediaRepo.saveMedia(media);
 
-      final controller = container.read(audiobookPlayerControllerProvider.notifier);
+      final controller =
+          container.read(audiobookPlayerControllerProvider.notifier);
       await controller.loadAndPlay(media, autoResume: false);
 
       // Position um 5000 ms vorstellen
@@ -168,7 +175,8 @@ void main() {
       );
       await mediaRepo.saveMedia(media);
 
-      final controller = container.read(audiobookPlayerControllerProvider.notifier);
+      final controller =
+          container.read(audiobookPlayerControllerProvider.notifier);
       await controller.loadAndPlay(media, autoResume: false);
 
       // Auf 12 Sekunden springen
@@ -179,7 +187,8 @@ void main() {
       expect(updated!.lastPosition.duration.inSeconds, 12);
     });
 
-    test('Kapitelliste ermoeglicht direktes Anspringen einzelner Abschnitte', () async {
+    test('Kapitelliste ermoeglicht direktes Anspringen einzelner Abschnitte',
+        () async {
       const chapters = [
         Chapter(
           id: 'c1',
@@ -206,7 +215,8 @@ void main() {
       );
       await mediaRepo.saveMedia(media);
 
-      final controller = container.read(audiobookPlayerControllerProvider.notifier);
+      final controller =
+          container.read(audiobookPlayerControllerProvider.notifier);
       await controller.loadAndPlay(media, autoResume: false);
 
       // Zu Kapitel 2 springen
@@ -234,10 +244,12 @@ void main() {
       await mediaRepo.saveMedia(track1);
       await mediaRepo.saveMedia(track2);
 
-      final controller = container.read(audiobookPlayerControllerProvider.notifier);
+      final controller =
+          container.read(audiobookPlayerControllerProvider.notifier);
       await controller.loadMultiTrack([track1, track2], initialTrackIndex: 0);
 
-      expect(container.read(audiobookPlayerControllerProvider).currentMedia?.id, 'track-1');
+      expect(container.read(audiobookPlayerControllerProvider).currentMedia?.id,
+          'track-1');
 
       // Naechsten Track aufrufen
       await controller.nextTrack();

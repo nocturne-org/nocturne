@@ -16,7 +16,8 @@ class ContractVerifyingAudioPlayerRepository implements AudioPlayerRepository {
   final _volumeController = StreamController<double>.broadcast();
 
   @override
-  Stream<AudioPlaybackStatus> get playbackStatusStream => _statusController.stream;
+  Stream<AudioPlaybackStatus> get playbackStatusStream =>
+      _statusController.stream;
 
   @override
   Stream<Duration> get positionStream => _positionController.stream;
@@ -28,11 +29,13 @@ class ContractVerifyingAudioPlayerRepository implements AudioPlayerRepository {
   Stream<double> get volumeStream => _volumeController.stream;
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     _status = AudioPlaybackStatus.ready;
     _statusController.add(_status);
     if (initialPosition != null) {
-      _position = initialPosition < Duration.zero ? Duration.zero : initialPosition;
+      _position =
+          initialPosition < Duration.zero ? Duration.zero : initialPosition;
       _positionController.add(_position);
     }
   }
@@ -93,7 +96,8 @@ void main() {
     });
 
     test('Initialer Status und Lifecycle lassen sich steuern', () async {
-      const source = AudioSourceRef.file('/sandbox/chapter1.m4b', title: 'Kapitel 1');
+      const source =
+          AudioSourceRef.file('/sandbox/chapter1.m4b', title: 'Kapitel 1');
       expect(source.type, AudioSourceType.file);
       expect(source.title, 'Kapitel 1');
 
@@ -115,7 +119,8 @@ void main() {
       await repo.stop();
     });
 
-    test('Lautstaerke wird strikt auf den Bereich 0.0 bis 1.0 geklammert', () async {
+    test('Lautstaerke wird strikt auf den Bereich 0.0 bis 1.0 geklammert',
+        () async {
       unawaited(
         expectLater(
           repo.volumeStream,
@@ -154,7 +159,9 @@ void main() {
       sub2.cancel();
     });
 
-    test('Dispose ist idempotent und fuehrt bei Mehrfachaufruf zu keinem Fehler', () async {
+    test(
+        'Dispose ist idempotent und fuehrt bei Mehrfachaufruf zu keinem Fehler',
+        () async {
       await repo.dispose();
       await repo.dispose(); // Zweiter Aufruf darf keine Exception werfen
     });

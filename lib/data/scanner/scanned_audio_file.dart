@@ -45,8 +45,7 @@ class ScannedAudioFile {
         orElse: () => AudioFormat.mp3,
       ),
       sizeBytes: (map['sizeBytes'] as num?)?.toInt() ?? 0,
-      lastModifiedEpochMs:
-          (map['lastModifiedEpochMs'] as num?)?.toInt() ?? 0,
+      lastModifiedEpochMs: (map['lastModifiedEpochMs'] as num?)?.toInt() ?? 0,
     );
   }
 

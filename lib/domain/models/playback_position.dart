@@ -20,7 +20,8 @@ class PlaybackPosition implements Comparable<PlaybackPosition> {
   }
 
   /// Statische Nullposition.
-  static const PlaybackPosition zero = PlaybackPosition(duration: Duration.zero);
+  static const PlaybackPosition zero =
+      PlaybackPosition(duration: Duration.zero);
 
   /// Liefert die Position in Millisekunden.
   int get milliseconds => duration.inMilliseconds;
@@ -31,13 +32,15 @@ class PlaybackPosition implements Comparable<PlaybackPosition> {
   /// Addiert eine Zeitdauer und gibt eine neue [PlaybackPosition] zurueck.
   PlaybackPosition operator +(Duration other) {
     final next = duration + other;
-    return PlaybackPosition(duration: next < Duration.zero ? Duration.zero : next);
+    return PlaybackPosition(
+        duration: next < Duration.zero ? Duration.zero : next);
   }
 
   /// Subtrahiert eine Zeitdauer. Ergebnis wird bei negativen Werten auf Duration.zero geklammert.
   PlaybackPosition operator -(Duration other) {
     final prev = duration - other;
-    return PlaybackPosition(duration: prev < Duration.zero ? Duration.zero : prev);
+    return PlaybackPosition(
+        duration: prev < Duration.zero ? Duration.zero : prev);
   }
 
   /// Berechnet die Zeitdifferenz zu einer anderen [PlaybackPosition].
@@ -106,13 +109,16 @@ class PlaybackPosition implements Comparable<PlaybackPosition> {
 
   /// Deserialisiert eine [PlaybackPosition] aus einer Map.
   factory PlaybackPosition.fromMap(Map<String, dynamic> map) {
-    return PlaybackPosition.fromMilliseconds((map['milliseconds'] as num?)?.toInt() ?? 0);
+    return PlaybackPosition.fromMilliseconds(
+        (map['milliseconds'] as num?)?.toInt() ?? 0);
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PlaybackPosition && runtimeType == other.runtimeType && duration == other.duration;
+      other is PlaybackPosition &&
+          runtimeType == other.runtimeType &&
+          duration == other.duration;
 
   @override
   int get hashCode => duration.hashCode;

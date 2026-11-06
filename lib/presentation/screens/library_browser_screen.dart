@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/media_item.dart';
+import '../controllers/library_browser_controller.dart';
 import '../providers/library_providers.dart';
 import '../providers/queue_providers.dart';
 import '../state/library_browser_state.dart';
@@ -129,7 +130,9 @@ class LibraryBrowserScreen extends ConsumerWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
                 side: BorderSide(
-                  color: isSelected ? AmoledColors.amberAccent : AmoledColors.divider,
+                  color: isSelected
+                      ? AmoledColors.amberAccent
+                      : AmoledColors.divider,
                 ),
               ),
               onSelected: (_) => controller.setFilter(f.$1),
@@ -184,12 +187,14 @@ class LibraryBrowserScreen extends ConsumerWidget {
             dividerColor: Colors.transparent,
           ),
           child: ExpansionTile(
-            initiallyExpanded: state.searchQuery.isNotEmpty || state.groupedByAuthor.length == 1,
+            initiallyExpanded: state.searchQuery.isNotEmpty ||
+                state.groupedByAuthor.length == 1,
             collapsedIconColor: AmoledColors.textSecondary,
             iconColor: AmoledColors.amberAccent,
             leading: const CircleAvatar(
               backgroundColor: AmoledColors.surfaceElevated,
-              child: Icon(Icons.person_rounded, color: AmoledColors.amberAccent),
+              child:
+                  Icon(Icons.person_rounded, color: AmoledColors.amberAccent),
             ),
             title: Text(
               author.authorName,
@@ -267,12 +272,13 @@ class LibraryBrowserScreen extends ConsumerWidget {
         style: AmoledTypography.bodyMedium,
       ),
       subtitle: Text(
-        _formatDuration(item.durationMs),
+        _formatDuration(item.durationMs ?? 0),
         style: AmoledTypography.caption,
       ),
       trailing: PopupMenuButton<String>(
         color: AmoledColors.surfaceElevated,
-        icon: const Icon(Icons.more_vert_rounded, color: AmoledColors.textSecondary),
+        icon: const Icon(Icons.more_vert_rounded,
+            color: AmoledColors.textSecondary),
         onSelected: (action) {
           if (action == 'play_now') {
             queueController.addItem(item);
@@ -287,7 +293,8 @@ class LibraryBrowserScreen extends ConsumerWidget {
             value: 'play_now',
             child: Row(
               children: [
-                Icon(Icons.play_arrow_rounded, color: AmoledColors.amberAccent, size: 20),
+                Icon(Icons.play_arrow_rounded,
+                    color: AmoledColors.amberAccent, size: 20),
                 SizedBox(width: 8),
                 Text('Jetzt abspielen', style: TextStyle(color: Colors.white)),
               ],
@@ -297,9 +304,11 @@ class LibraryBrowserScreen extends ConsumerWidget {
             value: 'play_next',
             child: Row(
               children: [
-                Icon(Icons.playlist_play_rounded, color: AmoledColors.cyanAccent, size: 20),
+                Icon(Icons.playlist_play_rounded,
+                    color: AmoledColors.cyanAccent, size: 20),
                 SizedBox(width: 8),
-                Text('Als naechstes abspielen', style: TextStyle(color: Colors.white)),
+                Text('Als naechstes abspielen',
+                    style: TextStyle(color: Colors.white)),
               ],
             ),
           ),
@@ -307,9 +316,11 @@ class LibraryBrowserScreen extends ConsumerWidget {
             value: 'add_queue',
             child: Row(
               children: [
-                Icon(Icons.queue_rounded, color: AmoledColors.textPrimary, size: 20),
+                Icon(Icons.queue_rounded,
+                    color: AmoledColors.textPrimary, size: 20),
                 SizedBox(width: 8),
-                Text('Zur Warteschlange hinzufuegen', style: TextStyle(color: Colors.white)),
+                Text('Zur Warteschlange hinzufuegen',
+                    style: TextStyle(color: Colors.white)),
               ],
             ),
           ),

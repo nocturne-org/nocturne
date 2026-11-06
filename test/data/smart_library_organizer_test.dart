@@ -11,8 +11,10 @@ void main() {
     const organizer = SmartLibraryOrganizer();
 
     setUp(() async {
-      tempSourceDir = await Directory.systemTemp.createTemp('nocturne_organize_src_');
-      tempTargetDir = await Directory.systemTemp.createTemp('nocturne_organize_dst_');
+      tempSourceDir =
+          await Directory.systemTemp.createTemp('nocturne_organize_src_');
+      tempTargetDir =
+          await Directory.systemTemp.createTemp('nocturne_organize_dst_');
     });
 
     tearDown(() async {
@@ -32,7 +34,9 @@ void main() {
       expect(PathSanitizer.sanitize('A/B\\C|D*E"F'), 'A-B-C-D-E-F');
     });
 
-    test('planOrganization erstellt Dry-Run Vorschau ohne Dateien zu verschieben', () async {
+    test(
+        'planOrganization erstellt Dry-Run Vorschau ohne Dateien zu verschieben',
+        () async {
       // Unorganisierte Test-Dateien anlegen
       final f1 = File('${tempSourceDir.path}/01 - Die Gefaehrten.mp3');
       await f1.writeAsString('audio content 1');
@@ -52,7 +56,8 @@ void main() {
       expect(await f2.exists(), isTrue);
 
       final item1 = plan.firstWhere(
-        (p) => p.sourcePath.replaceAll('/', '\\') == f1.path.replaceAll('/', '\\'),
+        (p) =>
+            p.sourcePath.replaceAll('/', '\\') == f1.path.replaceAll('/', '\\'),
       );
       expect(item1.trackNumber, 1);
       expect(item1.title, 'Die Gefaehrten');
@@ -61,7 +66,8 @@ void main() {
       expect(item1.isDuplicate, isFalse);
 
       final item2 = plan.firstWhere(
-        (p) => p.sourcePath.replaceAll('/', '\\') == f2.path.replaceAll('/', '\\'),
+        (p) =>
+            p.sourcePath.replaceAll('/', '\\') == f2.path.replaceAll('/', '\\'),
       );
       expect(item2.author, 'Hesse');
       expect(item2.title, 'Siddhartha');
@@ -69,7 +75,8 @@ void main() {
       expect(item2.destinationPath, contains('Siddhartha.m4b'));
     });
 
-    test('executePlan verschiebt unorganisierte Dateien in die Ziel-Hierarchie', () async {
+    test('executePlan verschiebt unorganisierte Dateien in die Ziel-Hierarchie',
+        () async {
       final f = File('${tempSourceDir.path}/05 - Kapitel 5.mp3');
       await f.writeAsString('track 5 content');
 
@@ -94,7 +101,8 @@ void main() {
       expect(await destFile.readAsString(), 'track 5 content');
     });
 
-    test('executePlan fuehrt bei Fehlern automatischen Rollback durch', () async {
+    test('executePlan fuehrt bei Fehlern automatischen Rollback durch',
+        () async {
       final f1 = File('${tempSourceDir.path}/trackA.mp3');
       await f1.writeAsString('content A');
 

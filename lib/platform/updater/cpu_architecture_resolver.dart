@@ -35,7 +35,9 @@ class CpuArchitectureResolver {
 
     // 1. Spezifisches Split-APK fuer die Zielarchitektur suchen (z. B. Nocturne-v1.0.0-arm64-v8a.apk)
     final abiMatch = availableFileNames.firstWhere(
-      (name) => name.toLowerCase().contains(abi) && name.toLowerCase().endsWith('.apk'),
+      (name) =>
+          name.toLowerCase().contains(abi) &&
+          name.toLowerCase().endsWith('.apk'),
       orElse: () => '',
     );
     if (abiMatch.isNotEmpty) {
@@ -44,7 +46,9 @@ class CpuArchitectureResolver {
 
     // 2. Fallback auf Universal-APK
     final universalMatch = availableFileNames.firstWhere(
-      (name) => name.toLowerCase().contains('universal') && name.toLowerCase().endsWith('.apk'),
+      (name) =>
+          name.toLowerCase().contains('universal') &&
+          name.toLowerCase().endsWith('.apk'),
       orElse: () => '',
     );
     if (universalMatch.isNotEmpty) {

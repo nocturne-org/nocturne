@@ -57,8 +57,8 @@ class PlaybackHistoryEntry {
     return PlaybackHistoryEntry(
       id: map['id'] as String? ?? '',
       mediaItemId: map['mediaItemId'] as String? ?? '',
-      playedAt: DateTime.tryParse(map['playedAt'] as String? ?? '') ??
-          DateTime.now(),
+      playedAt:
+          DateTime.tryParse(map['playedAt'] as String? ?? '') ?? DateTime.now(),
       playbackDurationMs: (map['playbackDurationMs'] as num?)?.toInt() ?? 0,
       startPositionMs: (map['startPositionMs'] as num?)?.toInt() ?? 0,
       endPositionMs: (map['endPositionMs'] as num?)?.toInt() ?? 0,
@@ -77,7 +77,8 @@ class PlaybackHistoryEntry {
           endPositionMs == other.endPositionMs;
 
   @override
-  int get hashCode => Object.hash(id, mediaItemId, startPositionMs, endPositionMs);
+  int get hashCode =>
+      Object.hash(id, mediaItemId, startPositionMs, endPositionMs);
 }
 
 /// Daten-Entitaet fuer ein konfigurierbares Sleep-Timer Profil.
@@ -136,12 +137,10 @@ class SleepPresetEntry {
       id: map['id'] as String? ?? '',
       name: map['name'] as String? ?? '',
       durationMinutes: (map['durationMinutes'] as num?)?.toInt() ?? 30,
-      autoFadeOutSeconds:
-          (map['autoFadeOutSeconds'] as num?)?.toInt() ?? 60,
+      autoFadeOutSeconds: (map['autoFadeOutSeconds'] as num?)?.toInt() ?? 60,
       shakeGracePeriodSeconds:
           (map['shakeGracePeriodSeconds'] as num?)?.toInt() ?? 120,
-      autoRewindSeconds:
-          (map['autoRewindSeconds'] as num?)?.toInt() ?? 45,
+      autoRewindSeconds: (map['autoRewindSeconds'] as num?)?.toInt() ?? 45,
       isDefault: map['isDefault'] as bool? ?? false,
     );
   }
@@ -220,7 +219,8 @@ class MediaDao {
       StreamController<List<MediaItem>>.broadcast();
 
   final Map<String, StreamController<MediaItem?>> _singleMediaControllers = {};
-  final Map<String, StreamController<List<Bookmark>>> _mediaBookmarkControllers = {};
+  final Map<String, StreamController<List<Bookmark>>>
+      _mediaBookmarkControllers = {};
   final StreamController<List<String>> _queueController =
       StreamController<List<String>>.broadcast();
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../controllers/video_mode_controller.dart';
 import '../state/video_playback_state.dart';
 import '../theme/amoled_colors.dart';
@@ -27,7 +26,9 @@ class VideoAudioToggleButton extends StatelessWidget {
 
     return Semantics(
       button: true,
-      label: isVideo ? 'In reinen Audio-Modus wechseln' : 'In Video-Modus wechseln',
+      label: isVideo
+          ? 'In reinen Audio-Modus wechseln'
+          : 'In Video-Modus wechseln',
       child: InkWell(
         onTap: () => controller.toggleMode(),
         borderRadius: BorderRadius.circular(20),
@@ -38,7 +39,8 @@ class VideoAudioToggleButton extends StatelessWidget {
             color: AmoledColors.surfaceElevated,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isVideo ? AmoledColors.cyanAccent : AmoledColors.amberAccent,
+              color:
+                  isVideo ? AmoledColors.cyanAccent : AmoledColors.amberAccent,
               width: 1.2,
             ),
           ),
@@ -47,14 +49,18 @@ class VideoAudioToggleButton extends StatelessWidget {
             children: [
               Icon(
                 isVideo ? Icons.videocam_rounded : Icons.headphones_rounded,
-                color: isVideo ? AmoledColors.cyanAccent : AmoledColors.amberAccent,
+                color: isVideo
+                    ? AmoledColors.cyanAccent
+                    : AmoledColors.amberAccent,
                 size: 18,
               ),
               const SizedBox(width: 6),
               Text(
                 isVideo ? 'VIDEO' : 'AUDIO',
                 style: AmoledTypography.caption.copyWith(
-                  color: isVideo ? AmoledColors.cyanAccent : AmoledColors.amberAccent,
+                  color: isVideo
+                      ? AmoledColors.cyanAccent
+                      : AmoledColors.amberAccent,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.8,
                 ),

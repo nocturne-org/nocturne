@@ -26,7 +26,8 @@ class StreamResolverRouter {
     Map<String, CircuitBreaker>? circuitBreakers,
   }) : _resolvers = resolvers {
     // Sortierung nach Tier-Prioritaet
-    _resolvers.sort((a, b) => a.resolverTier.index.compareTo(b.resolverTier.index));
+    _resolvers
+        .sort((a, b) => a.resolverTier.index.compareTo(b.resolverTier.index));
 
     for (final r in _resolvers) {
       _circuitBreakers[r.resolverId] =
@@ -71,7 +72,8 @@ class StreamResolverRouter {
       final stopwatch = Stopwatch()..start();
 
       try {
-        final result = await resolver.resolveStream(mediaIdOrUrl, quality: quality);
+        final result =
+            await resolver.resolveStream(mediaIdOrUrl, quality: quality);
         stopwatch.stop();
 
         final latency = stopwatch.elapsedMilliseconds;

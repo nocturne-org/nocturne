@@ -15,7 +15,8 @@ void main() {
       expect(config.displayName, contains('Nachttisch'));
     });
 
-    test('mattress profile is configured with sensitive 7.5 m/s^2 threshold', () {
+    test('mattress profile is configured with sensitive 7.5 m/s^2 threshold',
+        () {
       const config = SensorProfileConfig.mattress;
       expect(config.type, SensorProfileType.mattress);
       expect(config.threshold, 7.5);
@@ -85,7 +86,8 @@ void main() {
 
     test('watchActiveProfile emits updates reactively', () async {
       final profiles = <SensorProfileType>[];
-      final sub = storage.watchActiveProfile().listen((p) => profiles.add(p.type));
+      final sub =
+          storage.watchActiveProfile().listen((p) => profiles.add(p.type));
 
       await storage.saveActiveProfile(SensorProfileConfig.mattress);
       await storage.saveActiveProfile(SensorProfileConfig.nightstand);

@@ -38,7 +38,8 @@ class MockAudioPlayerForVideoTest implements AudioPlayerRepository {
   Stream<double> get volumeStream => _volCtrl.stream;
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     this.source = source;
     lastInitialPos = initialPosition;
     status = AudioPlaybackStatus.ready;
@@ -138,8 +139,7 @@ class MockVideoDecoderBridge implements VideoDecoderBridge {
 class MockPipBridgeForVideoTest implements PipPlatformBridge {
   bool supported = true;
   int enterPipCount = 0;
-  final StreamController<bool> _screenCtrl =
-      StreamController<bool>.broadcast();
+  final StreamController<bool> _screenCtrl = StreamController<bool>.broadcast();
 
   @override
   Future<bool> isPipSupported() async => supported;
@@ -207,7 +207,9 @@ void main() {
       expect(mockVideoDecoder.isAllocated, isFalse);
     });
 
-    test('toggleMode wechselt ohne Abspielunterbrechung zwischen Video und Reinaudio', () async {
+    test(
+        'toggleMode wechselt ohne Abspielunterbrechung zwischen Video und Reinaudio',
+        () async {
       final controller = VideoModeController(
         playerOverride: mockAudioPlayer,
         videoDecoderOverride: mockVideoDecoder,
@@ -265,7 +267,9 @@ void main() {
       expect(mockPipBridge.enterPipCount, 1);
     });
 
-    test('Beim Ausschalten des Bildschirms wird sofort in den Reinaudio-Modus gewechselt', () async {
+    test(
+        'Beim Ausschalten des Bildschirms wird sofort in den Reinaudio-Modus gewechselt',
+        () async {
       final controller = VideoModeController(
         playerOverride: mockAudioPlayer,
         videoDecoderOverride: mockVideoDecoder,

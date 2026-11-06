@@ -48,7 +48,8 @@ class SimulationAudioPlayer implements AudioPlayerRepository {
   }
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     status = AudioPlaybackStatus.ready;
     if (initialPosition != null) position = initialPosition;
     _statusCtrl.add(status);
@@ -153,7 +154,8 @@ void main() {
       await audioPlayer.dispose();
     });
 
-    test('Kompletter 30-Minuten-Einschlafzyklus, Fade-Out, Matratzen-Schuetteln und Bluetooth-Auto-Disconnect',
+    test(
+        'Kompletter 30-Minuten-Einschlafzyklus, Fade-Out, Matratzen-Schuetteln und Bluetooth-Auto-Disconnect',
         () async {
       final baseTime = DateTime(2026, 11, 6, 23, 0, 0);
 
@@ -164,7 +166,8 @@ void main() {
         const AudioSourceRef.file('/storage/bedtime_audiobook.m4b'),
       );
       await audioPlayer.play();
-      audioPlayer.emitPosition(const Duration(minutes: 10)); // Track bei Minute 10
+      audioPlayer
+          .emitPosition(const Duration(minutes: 10)); // Track bei Minute 10
 
       await bedtimeSession.startSession(
         mediaItemId: 'audiobook-bedtime-1',
@@ -175,7 +178,8 @@ void main() {
       );
 
       expect(bedtimeSession.timerState.status, SleepTimerStatus.counting);
-      expect(bedtimeSession.timerState.remainingDuration, const Duration(minutes: 30));
+      expect(bedtimeSession.timerState.remainingDuration,
+          const Duration(minutes: 30));
       expect(audioPlayer.isPlaying, isTrue);
       // WakeLock und Sensor muessen aktiv sein
       expect(wakeLockStates.last, isTrue);
@@ -192,7 +196,8 @@ void main() {
 
       // Exakt 60 Sekunden Restzeit -> Fade-Out hat begonnen
       expect(bedtimeSession.timerState.status, SleepTimerStatus.fadingOut);
-      expect(bedtimeSession.timerState.remainingDuration, const Duration(seconds: 60));
+      expect(bedtimeSession.timerState.remainingDuration,
+          const Duration(seconds: 60));
 
       // 30 Sekunden verstreichen im Fade-Out -> Restzeit 30s
       audioPlayer.emitPosition(const Duration(minutes: 39, seconds: 30));
@@ -293,7 +298,8 @@ void main() {
       expect(shakeDetector.isListening, isFalse);
     });
 
-    test('Profil A (Nachttisch) ignoriert sanfte Matratzenbewegung (8.5 m/s²)', () async {
+    test('Profil A (Nachttisch) ignoriert sanfte Matratzenbewegung (8.5 m/s²)',
+        () async {
       // Profil A konfigurieren
       shakeDetector.applyProfile(SensorProfileConfig.nightstand);
       expect(shakeDetector.currentProfile.threshold, 12.0);

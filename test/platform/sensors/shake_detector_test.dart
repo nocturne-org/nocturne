@@ -14,7 +14,9 @@ void main() {
       filter = ShakeFilter(threshold: 12.0);
     });
 
-    test('Continuous gravity vector (~9.81 m/s^2) is filtered out without shake', () {
+    test(
+        'Continuous gravity vector (~9.81 m/s^2) is filtered out without shake',
+        () {
       // 50 Messwerte mit reiner Erdanziehungskraft auf Z-Achse
       for (var i = 0; i < 50; i++) {
         final sample = AccelerometerSample(
@@ -31,7 +33,9 @@ void main() {
       expect(filter.gravityZ, closeTo(9.81, 0.2));
     });
 
-    test('Breathing movements (low-frequency slow sinusoidal sway) are filtered out', () {
+    test(
+        'Breathing movements (low-frequency slow sinusoidal sway) are filtered out',
+        () {
       // Simulation von 10 Sekunden Atembewegung: 0.25 Hz Sinus mit kleiner Amplitude (0.3 m/s^2)
       for (var i = 0; i < 200; i++) {
         final timeMs = i * 50; // 20 Hz Abtastrate
@@ -44,11 +48,14 @@ void main() {
         );
 
         final detected = filter.processSample(sample);
-        expect(detected, isFalse, reason: 'Breathing triggered false positive at step $i');
+        expect(detected, isFalse,
+            reason: 'Breathing triggered false positive at step $i');
       }
     });
 
-    test('Unidirectional bump (e.g. rolling over in bed without reversal) does not trigger shake', () {
+    test(
+        'Unidirectional bump (e.g. rolling over in bed without reversal) does not trigger shake',
+        () {
       // Einschwingen auf Ruhelage
       for (var i = 0; i < 10; i++) {
         filter.processSample(
@@ -69,10 +76,13 @@ void main() {
         timestamp: baseTime.add(const Duration(milliseconds: 300)),
       );
       final detected = filter.processSample(bumpSample);
-      expect(detected, isFalse, reason: 'Unidirectional bump should not trigger shake');
+      expect(detected, isFalse,
+          reason: 'Unidirectional bump should not trigger shake');
     });
 
-    test('Valid shake with peak and sign reversal within 600 ms triggers detection', () {
+    test(
+        'Valid shake with peak and sign reversal within 600 ms triggers detection',
+        () {
       // Einschwingen auf Ruhelage
       for (var i = 0; i < 10; i++) {
         filter.processSample(
@@ -115,7 +125,8 @@ void main() {
         ),
       );
 
-      expect(detected, isTrue, reason: 'Rapid back-and-forth shake should trigger');
+      expect(detected, isTrue,
+          reason: 'Rapid back-and-forth shake should trigger');
     });
 
     test('Sign reversal exceeding 600 ms window does not trigger shake', () {
@@ -139,7 +150,8 @@ void main() {
         ),
       );
 
-      expect(detected, isFalse, reason: 'Reversal outside 600ms window must be ignored');
+      expect(detected, isFalse,
+          reason: 'Reversal outside 600ms window must be ignored');
     });
 
     test('Debounce cooldown prevents duplicate triggers within 1000 ms', () {
@@ -179,7 +191,8 @@ void main() {
           timestamp: baseTime.add(const Duration(milliseconds: 700)),
         ),
       );
-      expect(duplicateShake, isFalse, reason: 'Debounce cooldown must suppress duplicates');
+      expect(duplicateShake, isFalse,
+          reason: 'Debounce cooldown must suppress duplicates');
     });
   });
 
@@ -200,7 +213,8 @@ void main() {
       await detector.dispose();
     });
 
-    test('Confirmed shake triggers gentle haptic feedback and emits event', () async {
+    test('Confirmed shake triggers gentle haptic feedback and emits event',
+        () async {
       var callbackInvoked = false;
       detector.onShake = () => callbackInvoked = true;
 
@@ -237,7 +251,8 @@ void main() {
       expect(fakeHaptic.triggerCount, 1);
     });
 
-    test('startListeningWithCustomStream streams samples continuously', () async {
+    test('startListeningWithCustomStream streams samples continuously',
+        () async {
       final sampleController = StreamController<AccelerometerSample>();
       detector.startListeningWithCustomStream(sampleController.stream);
 

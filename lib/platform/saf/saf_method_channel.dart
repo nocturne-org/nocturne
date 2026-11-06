@@ -11,7 +11,8 @@ class SafMethodChannel implements SafPlatformInterface {
   @override
   Future<SafNativeDirectoryPayload?> openDocumentTree() async {
     try {
-      final result = await _channel.invokeMapMethod<String, dynamic>('openDocumentTree');
+      final result =
+          await _channel.invokeMapMethod<String, dynamic>('openDocumentTree');
       if (result == null) {
         return null;
       }

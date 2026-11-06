@@ -13,7 +13,9 @@ abstract class PathSanitizer {
     cleaned = cleaned.replaceAll(RegExp(r'-+'), '-');
 
     // Punkte und Leerzeichen am Ende entfernen (Windows/FAT-Konformitaet)
-    while (cleaned.endsWith('.') || cleaned.endsWith(' ') || cleaned.endsWith('-')) {
+    while (cleaned.endsWith('.') ||
+        cleaned.endsWith(' ') ||
+        cleaned.endsWith('-')) {
       cleaned = cleaned.substring(0, cleaned.length - 1);
     }
 

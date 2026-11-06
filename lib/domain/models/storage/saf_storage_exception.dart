@@ -21,17 +21,20 @@ abstract class SafStorageException implements Exception {
 
 /// Wird ausgeloest, wenn der Nutzer die Ordner-Auswahl abbricht oder Rechte verweigert.
 class SafPermissionDeniedException extends SafStorageException {
-  const SafPermissionDeniedException(super.message, {super.treeUri, super.cause});
+  const SafPermissionDeniedException(super.message,
+      {super.treeUri, super.cause});
 }
 
 /// Wird ausgeloest, wenn ein zuvor persistierter Ordner nicht mehr existiert.
 class SafDirectoryNotFoundException extends SafStorageException {
-  const SafDirectoryNotFoundException(super.message, {super.treeUri, super.cause});
+  const SafDirectoryNotFoundException(super.message,
+      {super.treeUri, super.cause});
 }
 
 /// Wird ausgeloest, wenn das Speichermedium (z. B. SD-Karte) entfernt oder nicht eingehaengt ist.
 class SafStorageUnavailableException extends SafStorageException {
-  const SafStorageUnavailableException(super.message, {super.treeUri, super.cause});
+  const SafStorageUnavailableException(super.message,
+      {super.treeUri, super.cause});
 }
 
 /// Wird ausgeloest, wenn Android die Sicherheitsberechtigung fuer den URI verworfen hat.

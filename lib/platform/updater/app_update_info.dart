@@ -45,8 +45,10 @@ class AppUpdateInfo {
     final cleanRemote = remoteVersion.replaceAll(RegExp(r'^[vV]'), '').trim();
     final cleanCurrent = currentVersion.replaceAll(RegExp(r'^[vV]'), '').trim();
 
-    final rParts = cleanRemote.split('.').map((p) => int.tryParse(p) ?? 0).toList();
-    final cParts = cleanCurrent.split('.').map((p) => int.tryParse(p) ?? 0).toList();
+    final rParts =
+        cleanRemote.split('.').map((p) => int.tryParse(p) ?? 0).toList();
+    final cParts =
+        cleanCurrent.split('.').map((p) => int.tryParse(p) ?? 0).toList();
 
     while (rParts.length < 3) {
       rParts.add(0);

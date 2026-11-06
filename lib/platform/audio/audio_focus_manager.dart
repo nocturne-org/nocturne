@@ -49,8 +49,10 @@ class AudioFocusManager {
       androidWillPauseWhenDucked: false,
     ));
 
-    _interruptionSub = session.interruptionEventStream.listen(handleInterruption);
-    _becomingNoisySub = session.becomingNoisyEventStream.listen((_) => handleBecomingNoisy());
+    _interruptionSub =
+        session.interruptionEventStream.listen(handleInterruption);
+    _becomingNoisySub =
+        session.becomingNoisyEventStream.listen((_) => handleBecomingNoisy());
   }
 
   /// Fordert den Audiofokus aktiv an.

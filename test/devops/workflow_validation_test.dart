@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('GitHub Actions CI/CD Pipeline & Split APK Signing Tests (TICK-032)', () {
+  group('GitHub Actions CI/CD Pipeline & Split APK Signing Tests (TICK-032)',
+      () {
     test('release.yml erfuellt alle Akzeptanzkriterien', () {
       final file = File('.github/workflows/release.yml');
       expect(file.existsSync(), isTrue, reason: 'release.yml muss existieren');
@@ -10,8 +11,10 @@ void main() {
       final content = file.readAsStringSync();
 
       // 1. Tag-Push Trigger
-      expect(content, contains("tags:"), reason: 'Workflow muss auf Tags triggern');
-      expect(content, contains("- 'v*'"), reason: 'Tags muessen v* entsprechen');
+      expect(content, contains("tags:"),
+          reason: 'Workflow muss auf Tags triggern');
+      expect(content, contains("- 'v*'"),
+          reason: 'Tags muessen v* entsprechen');
 
       // 2. Production Keystore Signing
       expect(content, contains('secrets.ANDROID_KEYSTORE_BASE64'),
@@ -56,9 +59,12 @@ void main() {
       expect(file.existsSync(), isTrue);
 
       final content = file.readAsStringSync();
-      expect(content, contains('dart format'), reason: 'Muss Dart-Format pruefen');
-      expect(content, contains('flutter analyze'), reason: 'Muss Linter ausfuehren');
-      expect(content, contains('flutter test'), reason: 'Muss Tests ausfuehren');
+      expect(content, contains('dart format'),
+          reason: 'Muss Dart-Format pruefen');
+      expect(content, contains('flutter analyze'),
+          reason: 'Muss Linter ausfuehren');
+      expect(content, contains('flutter test'),
+          reason: 'Muss Tests ausfuehren');
     });
   });
 }

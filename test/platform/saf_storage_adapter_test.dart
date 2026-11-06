@@ -64,9 +64,11 @@ void main() {
       adapter = SafStorageAdapter(platformInterface: mockPlatform);
     });
 
-    test('pickDirectory liefert SafDirectory bei erfolgreicher Auswahl', () async {
+    test('pickDirectory liefert SafDirectory bei erfolgreicher Auswahl',
+        () async {
       mockPlatform.mockPickResult = const SafNativeDirectoryPayload(
-        treeUri: 'content://com.android.externalstorage.documents/tree/primary%3AAudiobooks',
+        treeUri:
+            'content://com.android.externalstorage.documents/tree/primary%3AAudiobooks',
         displayName: 'Audiobooks',
         isPersisted: true,
         isExternalStorage: false,
@@ -92,7 +94,9 @@ void main() {
       expect(result, isNull);
     });
 
-    test('pickDirectory wirft SafPermissionDeniedException bei Berechtigungsverweigerung', () async {
+    test(
+        'pickDirectory wirft SafPermissionDeniedException bei Berechtigungsverweigerung',
+        () async {
       mockPlatform.errorToThrow = PlatformException(
         code: 'PERMISSION_DENIED',
         message: 'Berechtigung verweigert',
@@ -107,7 +111,8 @@ void main() {
     test('getPersistedDirectories erkennt getrennte SD-Karten', () async {
       mockPlatform.mockPersistedList = [
         const SafNativeDirectoryPayload(
-          treeUri: 'content://com.android.externalstorage.documents/tree/0000-0000%3ABooks',
+          treeUri:
+              'content://com.android.externalstorage.documents/tree/0000-0000%3ABooks',
           displayName: 'SD-Karte Hoerbuecher',
           isPersisted: true,
           isExternalStorage: true,
@@ -127,7 +132,8 @@ void main() {
     test('getPersistedDirectories erkennt geloeschte interne Ordner', () async {
       mockPlatform.mockPersistedList = [
         const SafNativeDirectoryPayload(
-          treeUri: 'content://com.android.externalstorage.documents/tree/primary%3AGeloescht',
+          treeUri:
+              'content://com.android.externalstorage.documents/tree/primary%3AGeloescht',
           displayName: 'Geloeschter Ordner',
           isPersisted: true,
           isExternalStorage: false,
@@ -156,7 +162,8 @@ void main() {
       expect(status, SafDirectoryStatus.accessible);
     });
 
-    test('listAudioFiles filtert Dateien und konvertiert Typen korrekt', () async {
+    test('listAudioFiles filtert Dateien und konvertiert Typen korrekt',
+        () async {
       mockPlatform.mockFileList = [
         const SafNativeFilePayload(
           uri: 'content://file1',

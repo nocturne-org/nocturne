@@ -65,7 +65,8 @@ class LibraryBrowserController extends Notifier<LibraryBrowserState> {
       // Suchfilter (Titel, Autor, Album)
       if (query.isNotEmpty) {
         final matchesTitle = item.title.toLowerCase().contains(query);
-        final matchesAuthor = item.author?.toLowerCase().contains(query) ?? false;
+        final matchesAuthor =
+            item.author?.toLowerCase().contains(query) ?? false;
         final matchesAlbum = item.album?.toLowerCase().contains(query) ?? false;
         if (!matchesTitle && !matchesAuthor && !matchesAlbum) {
           return false;
@@ -93,18 +94,24 @@ class LibraryBrowserController extends Notifier<LibraryBrowserState> {
     switch (state.sortOrder) {
       case LibrarySortOrder.authorAsc:
         filtered.sort((a, b) {
-          final authorComp = (a.author ?? '').toLowerCase().compareTo((b.author ?? '').toLowerCase());
+          final authorComp = (a.author ?? '')
+              .toLowerCase()
+              .compareTo((b.author ?? '').toLowerCase());
           if (authorComp != 0) return authorComp;
-          final albumComp = (a.album ?? '').toLowerCase().compareTo((b.album ?? '').toLowerCase());
+          final albumComp = (a.album ?? '')
+              .toLowerCase()
+              .compareTo((b.album ?? '').toLowerCase());
           if (albumComp != 0) return albumComp;
           return a.title.toLowerCase().compareTo(b.title.toLowerCase());
         });
         break;
       case LibrarySortOrder.titleAsc:
-        filtered.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
+        filtered.sort(
+            (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
         break;
       case LibrarySortOrder.durationDesc:
-        filtered.sort((a, b) => (b.durationMs ?? 0).compareTo(a.durationMs ?? 0));
+        filtered
+            .sort((a, b) => (b.durationMs ?? 0).compareTo(a.durationMs ?? 0));
         break;
       case LibrarySortOrder.recent:
         // Nach ID sortieren
@@ -128,10 +135,12 @@ class LibraryBrowserController extends Notifier<LibraryBrowserState> {
 
     for (final item in items) {
       final author = item.author?.trim();
-      final authorKey = (author != null && author.isNotEmpty) ? author : 'Unbekannter Autor';
+      final authorKey =
+          (author != null && author.isNotEmpty) ? author : 'Unbekannter Autor';
 
       final album = item.album?.trim();
-      final albumKey = (album != null && album.isNotEmpty) ? album : 'Einzelne Titel';
+      final albumKey =
+          (album != null && album.isNotEmpty) ? album : 'Einzelne Titel';
 
       map.putIfAbsent(authorKey, () => {});
       map[authorKey]!.putIfAbsent(albumKey, () => []);

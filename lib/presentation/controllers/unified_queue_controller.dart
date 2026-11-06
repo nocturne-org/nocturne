@@ -184,9 +184,11 @@ class UnifiedQueueController extends Notifier<UnifiedQueueState> {
     var updatedCurrentIndex = state.currentIndex;
     if (state.currentIndex == oldIndex) {
       updatedCurrentIndex = targetIndex;
-    } else if (oldIndex < state.currentIndex && targetIndex >= state.currentIndex) {
+    } else if (oldIndex < state.currentIndex &&
+        targetIndex >= state.currentIndex) {
       updatedCurrentIndex -= 1;
-    } else if (oldIndex > state.currentIndex && targetIndex <= state.currentIndex) {
+    } else if (oldIndex > state.currentIndex &&
+        targetIndex <= state.currentIndex) {
       updatedCurrentIndex += 1;
     }
 

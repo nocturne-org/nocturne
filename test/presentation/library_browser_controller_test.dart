@@ -4,7 +4,6 @@ import 'package:nocturne/data/datasources/database/app_database.dart';
 import 'package:nocturne/data/repositories/media_repository_impl.dart';
 import 'package:nocturne/domain/models/audio/audio_source_ref.dart';
 import 'package:nocturne/domain/models/media_item.dart';
-import 'package:nocturne/presentation/controllers/library_browser_controller.dart';
 import 'package:nocturne/presentation/providers/database_provider.dart';
 import 'package:nocturne/presentation/providers/library_providers.dart';
 import 'package:nocturne/presentation/providers/repository_providers.dart';
@@ -43,7 +42,8 @@ void main() {
       author: 'Dr. Somnus',
       album: 'Schlaf gut Podcast',
       duration: const Duration(milliseconds: 1800000),
-      source: AudioSourceRef.remoteStream(streamUrl: 'https://podcast.de/ep50.mp3'),
+      source:
+          AudioSourceRef.remoteStream(streamUrl: 'https://podcast.de/ep50.mp3'),
       extraMetadata: const {'podcast_title': 'Schlaf gut Podcast'},
     );
 
@@ -54,7 +54,8 @@ void main() {
       author: 'Sleep Laboratory',
       album: 'Sleep Sounds',
       duration: const Duration(milliseconds: 28800000),
-      source: AudioSourceRef.remoteStream(streamUrl: 'https://youtube.com/stream'),
+      source:
+          AudioSourceRef.remoteStream(streamUrl: 'https://youtube.com/stream'),
     );
 
     setUp(() async {
@@ -86,15 +87,18 @@ void main() {
       expect(state.filteredItems.length, 4);
     });
 
-    test('setSearchQuery filtert nach Volltext ueber Titel, Autor und Album', () async {
-      final controller = container.read(libraryBrowserControllerProvider.notifier);
+    test('setSearchQuery filtert nach Volltext ueber Titel, Autor und Album',
+        () async {
+      final controller =
+          container.read(libraryBrowserControllerProvider.notifier);
       await Future<void>.delayed(const Duration(milliseconds: 50));
 
       // Suche nach Autor 'Thomas Mann'
       controller.setSearchQuery('Thomas');
       var state = container.read(libraryBrowserControllerProvider);
       expect(state.filteredItems.length, 2);
-      expect(state.filteredItems.every((i) => i.author == 'Thomas Mann'), isTrue);
+      expect(
+          state.filteredItems.every((i) => i.author == 'Thomas Mann'), isTrue);
 
       // Suche nach Album 'Schlaf gut'
       controller.setSearchQuery('schlaf gut');
@@ -108,8 +112,10 @@ void main() {
       expect(state.filteredItems.length, 4);
     });
 
-    test('Filterchips filtern praezise nach Medientyp und Offline-Status', () async {
-      final controller = container.read(libraryBrowserControllerProvider.notifier);
+    test('Filterchips filtern praezise nach Medientyp und Offline-Status',
+        () async {
+      final controller =
+          container.read(libraryBrowserControllerProvider.notifier);
       await Future<void>.delayed(const Duration(milliseconds: 50));
 
       // 1. Nur Hoerbuecher
@@ -136,8 +142,10 @@ void main() {
       expect(state.filteredItems.length, 2);
     });
 
-    test('setSortOrder sortiert nach Dauer absteigend und Titel aufsteigend', () async {
-      final controller = container.read(libraryBrowserControllerProvider.notifier);
+    test('setSortOrder sortiert nach Dauer absteigend und Titel aufsteigend',
+        () async {
+      final controller =
+          container.read(libraryBrowserControllerProvider.notifier);
       await Future<void>.delayed(const Duration(milliseconds: 50));
 
       // Sortierung nach Dauer absteigend

@@ -36,17 +36,20 @@ class TestMockInnerTubeClient implements InnerTubeClientContract {
               {
                 'mimeType': 'audio/mp4; codecs="mp4a.40.2"',
                 'bitrate': 160000,
-                'url': 'https://rr.googlevideo.com/videoplayback?id=$videoId&n=NToken1234',
+                'url':
+                    'https://rr.googlevideo.com/videoplayback?id=$videoId&n=NToken1234',
               },
               {
                 'mimeType': 'audio/webm; codecs="opus"',
                 'bitrate': 128000,
-                'url': 'https://rr.googlevideo.com/videoplayback?id=$videoId&n=NToken5678',
+                'url':
+                    'https://rr.googlevideo.com/videoplayback?id=$videoId&n=NToken5678',
               },
               {
                 'mimeType': 'video/mp4; codecs="avc1.4d401f"',
                 'bitrate': 1500000,
-                'url': 'https://rr.googlevideo.com/videoplayback?id=$videoId&video=true',
+                'url':
+                    'https://rr.googlevideo.com/videoplayback?id=$videoId&video=true',
               }
             ]
           }
@@ -64,9 +67,11 @@ void main() {
       resolver = InnerTubeResolver(client: mockClient);
     });
 
-    test('extractVideoId extrahiert IDs aus allen URL-Varianten und Kurz-Links', () {
+    test('extractVideoId extrahiert IDs aus allen URL-Varianten und Kurz-Links',
+        () {
       expect(
-        InnerTubeResolver.extractVideoId('https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
+        InnerTubeResolver.extractVideoId(
+            'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
         'dQw4w9WgXcQ',
       );
       expect(
@@ -74,7 +79,8 @@ void main() {
         'dQw4w9WgXcQ',
       );
       expect(
-        InnerTubeResolver.extractVideoId('https://www.youtube.com/embed/dQw4w9WgXcQ'),
+        InnerTubeResolver.extractVideoId(
+            'https://www.youtube.com/embed/dQw4w9WgXcQ'),
         'dQw4w9WgXcQ',
       );
       expect(
@@ -95,7 +101,9 @@ void main() {
       expect(transformed, isNot(original));
     });
 
-    test('resolveStream waehlt bevorzugte Audio-Bitrate und transformiert n-Parameter', () async {
+    test(
+        'resolveStream waehlt bevorzugte Audio-Bitrate und transformiert n-Parameter',
+        () async {
       final res = await resolver.resolveStream(
         'https://youtu.be/dQw4w9WgXcQ',
         quality: AudioQualityPreference.high,
@@ -120,7 +128,9 @@ void main() {
       expect(meta.thumbnailUrl, contains('maxres.jpg'));
     });
 
-    test('Bot-Check / Login-Required wirft HTTP 403 zur Circuit-Breaker Ausloesung', () async {
+    test(
+        'Bot-Check / Login-Required wirft HTTP 403 zur Circuit-Breaker Ausloesung',
+        () async {
       mockClient.shouldThrowBotCheck = true;
 
       expect(

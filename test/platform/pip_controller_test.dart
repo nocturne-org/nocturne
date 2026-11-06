@@ -59,7 +59,9 @@ void main() {
       expect(await controller.isPipSupported(), isFalse);
     });
 
-    test('enterPip ruft Plattform-Bridge mit 16:9 Format auf und aktualisiert Zustand', () async {
+    test(
+        'enterPip ruft Plattform-Bridge mit 16:9 Format auf und aktualisiert Zustand',
+        () async {
       expect(controller.isInPipMode, isFalse);
 
       final success = await controller.enterPip();
@@ -79,7 +81,8 @@ void main() {
       expect(controller.isInPipMode, isFalse);
     });
 
-    test('screenStateStream leitet Display-Ereignisse korrekt weiter', () async {
+    test('screenStateStream leitet Display-Ereignisse korrekt weiter',
+        () async {
       final expectation = expectLater(
         controller.screenStateStream,
         emitsInOrder([true, false, true]),

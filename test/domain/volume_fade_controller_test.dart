@@ -44,7 +44,8 @@ class FakeAudioPlayerRepository implements AudioPlayerRepository {
   }
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     _status = AudioPlaybackStatus.ready;
     _statusCtrl.add(_status);
   }
@@ -81,7 +82,8 @@ class FakeAudioPlayerRepository implements AudioPlayerRepository {
 
 void main() {
   group('VolumeFadeController Math & Curve Tests (TICK-014)', () {
-    test('calculateFactor returns exact quadratic values at key milestones', () {
+    test('calculateFactor returns exact quadratic values at key milestones',
+        () {
       // 60s rest = 100%
       expect(
         VolumeFadeController.calculateFactor(const Duration(seconds: 60)),
@@ -142,7 +144,8 @@ void main() {
         final next = steps[i + 1];
 
         // Monoton fallend
-        expect(current >= next, isTrue, reason: 'Step $i ($current) < next ($next)');
+        expect(current >= next, isTrue,
+            reason: 'Step $i ($current) < next ($next)');
 
         // Keine akustischen Spruenge (max delta < 0.02 pro 100ms)
         final delta = current - next;
@@ -172,7 +175,8 @@ void main() {
       await fakeRepo.dispose();
     });
 
-    test('updateForRemaining scales volume based on initial user volume', () async {
+    test('updateForRemaining scales volume based on initial user volume',
+        () async {
       // 30s remaining -> factor = 0.25 -> 0.8 * 0.25 = 0.2
       await fader.updateForRemaining(const Duration(seconds: 30));
 
@@ -181,7 +185,9 @@ void main() {
       expect(fakeRepo.volume, closeTo(0.2, 0.001));
     });
 
-    test('restoreVolumeInstant resets volume immediately to 100% of volumeStart', () async {
+    test(
+        'restoreVolumeInstant resets volume immediately to 100% of volumeStart',
+        () async {
       await fader.updateForRemaining(const Duration(seconds: 15));
       expect(fakeRepo.volume, closeTo(0.8 * 0.0625, 0.001));
 
@@ -200,7 +206,9 @@ void main() {
       expect(fakeRepo.volume, 0.0);
     });
 
-    test('attachStateMachine coordinates automatic fade-out and shake restoration', () async {
+    test(
+        'attachStateMachine coordinates automatic fade-out and shake restoration',
+        () async {
       final stateMachine = SleepTimerStateMachine();
       fader.attachStateMachine(stateMachine);
 
@@ -236,7 +244,8 @@ void main() {
       stateMachine.dispose();
     });
 
-    test('attachStateMachine mutes upon gracePeriod and stopped states', () async {
+    test('attachStateMachine mutes upon gracePeriod and stopped states',
+        () async {
       final stateMachine = SleepTimerStateMachine();
       fader.attachStateMachine(stateMachine);
 

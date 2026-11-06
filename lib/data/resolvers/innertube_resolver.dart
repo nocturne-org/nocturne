@@ -54,7 +54,8 @@ class InnerTubeResolver implements MediaStreamResolver {
   }) async {
     final videoId = extractVideoId(mediaIdOrUrl);
     if (videoId == null) {
-      throw FormatException('Ungueltige YouTube Video-ID oder URL: $mediaIdOrUrl');
+      throw FormatException(
+          'Ungueltige YouTube Video-ID oder URL: $mediaIdOrUrl');
     }
 
     final data = await _client.fetchPlayerResponse(videoId);
@@ -63,9 +64,12 @@ class InnerTubeResolver implements MediaStreamResolver {
     final playability = data['playabilityStatus'] as Map<String, dynamic>?;
     final status = playability?['status'] as String?;
     if (status != null && status != 'OK') {
-      final reason = playability?['reason'] as String? ?? 'Video nicht verfuegbar ($status)';
-      if (status.contains('LOGIN_REQUIRED') || reason.toLowerCase().contains('bot')) {
-        throw Exception('HTTP 403 Forbidden: YouTube Bot-Check aktiv ($reason)');
+      final reason = playability?['reason'] as String? ??
+          'Video nicht verfuegbar ($status)';
+      if (status.contains('LOGIN_REQUIRED') ||
+          reason.toLowerCase().contains('bot')) {
+        throw Exception(
+            'HTTP 403 Forbidden: YouTube Bot-Check aktiv ($reason)');
       }
       throw Exception('InnerTube Fehler: $reason');
     }
@@ -113,7 +117,8 @@ class InnerTubeResolver implements MediaStreamResolver {
       }
     }
 
-    final bitrateKbps = ((selected['bitrate'] as num?)?.toInt() ?? 128000) ~/ 1000;
+    final bitrateKbps =
+        ((selected['bitrate'] as num?)?.toInt() ?? 128000) ~/ 1000;
     final mimeType = selected['mimeType'] as String? ?? 'audio/mp4';
 
     return ResolvedStreamResult(
@@ -141,10 +146,12 @@ class InnerTubeResolver implements MediaStreamResolver {
 
     final title = videoDetails['title'] as String? ?? 'Unbekannter Titel';
     final author = videoDetails['author'] as String? ?? 'Unbekannter Kanal';
-    final durationSec = int.tryParse(videoDetails['lengthSeconds'] as String? ?? '0') ?? 0;
+    final durationSec =
+        int.tryParse(videoDetails['lengthSeconds'] as String? ?? '0') ?? 0;
 
     String? thumbnail;
-    final thumbs = (videoDetails['thumbnail'] as Map<String, dynamic>?)?['thumbnails'] as List<dynamic>?;
+    final thumbs = (videoDetails['thumbnail']
+        as Map<String, dynamic>?)?['thumbnails'] as List<dynamic>?;
     if (thumbs != null && thumbs.isNotEmpty) {
       thumbnail = (thumbs.last as Map<String, dynamic>)['url'] as String?;
     }
@@ -206,12 +213,14 @@ class DefaultInnerTubeClient implements InnerTubeClientContract {
           {
             'mimeType': 'audio/mp4; codecs="mp4a.40.2"',
             'bitrate': 160000,
-            'url': 'https://rr1---sn-audio.googlevideo.com/videoplayback?id=$videoId&n=abc123xyz',
+            'url':
+                'https://rr1---sn-audio.googlevideo.com/videoplayback?id=$videoId&n=abc123xyz',
           },
           {
             'mimeType': 'audio/webm; codecs="opus"',
             'bitrate': 128000,
-            'url': 'https://rr1---sn-audio.googlevideo.com/videoplayback?id=$videoId&n=test456',
+            'url':
+                'https://rr1---sn-audio.googlevideo.com/videoplayback?id=$videoId&n=test456',
           }
         ]
       }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nocturne/data/config/remote_app_config.dart';
 import 'package:nocturne/data/config/remote_config_engine.dart';
 import 'package:nocturne/data/config/sha256_digest.dart';
 
@@ -55,7 +54,9 @@ void main() {
       expect(engine.activeConfig.invidiousInstances.length, 2);
     });
 
-    test('fetchAndApplyConfig aktualisiert Parameter und schreibt persistenten Cache', () async {
+    test(
+        'fetchAndApplyConfig aktualisiert Parameter und schreibt persistenten Cache',
+        () async {
       final config = await engine.fetchAndApplyConfig();
 
       expect(config.version, 2);
@@ -77,7 +78,8 @@ void main() {
       expect(offlineEngine.activeConfig.userAgent, 'Custom-User-Agent/2.0');
     });
 
-    test('SHA-256 Hash-Validierung erkennt manipulierte Payloads zuverlaessig', () async {
+    test('SHA-256 Hash-Validierung erkennt manipulierte Payloads zuverlaessig',
+        () async {
       final validJson = jsonEncode({
         'version': 3,
         'userAgent': 'Verified-Agent/3.0',
@@ -96,7 +98,8 @@ void main() {
       expect(config.userAgent, 'Verified-Agent/3.0');
 
       // 2. Manipulierter Hash oder manipulierter Inhalt -> FormatException
-      const tamperedHash = '0000000000000000000000000000000000000000000000000000000000000000';
+      const tamperedHash =
+          '0000000000000000000000000000000000000000000000000000000000000000';
       expect(
         () => engine.fetchAndApplyConfig(
           rawJsonOverride: validJson,

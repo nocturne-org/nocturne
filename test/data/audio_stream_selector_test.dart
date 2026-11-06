@@ -33,7 +33,9 @@ void main() {
       expect(candidate.container, 'm4a');
     });
 
-    test('Waehlt den qualitativ besten Audio-Container (Opus 160k oder M4A 128k)', () {
+    test(
+        'Waehlt den qualitativ besten Audio-Container (Opus 160k oder M4A 128k)',
+        () {
       final formats = [
         {
           'mimeType': 'audio/webm; codecs="opus"',
@@ -59,27 +61,33 @@ void main() {
       expect(best.bitrateKbps, 160);
 
       // Falls Opus nicht praeferiert wird, gewinnt M4A 128k
-      final bestM4a = selector.selectBestAudioStream(formats, preferOpus: false);
+      final bestM4a =
+          selector.selectBestAudioStream(formats, preferOpus: false);
       expect(bestM4a, isNotNull);
       expect(bestM4a!.container, 'm4a');
       expect(bestM4a.bitrateKbps, 128);
     });
 
-    test('Reduziert Netzwerkdatenverbrauch um mindestens 85% gegenueber 1080p Video', () {
+    test(
+        'Reduziert Netzwerkdatenverbrauch um mindestens 85% gegenueber 1080p Video',
+        () {
       // 160 kbps Audio vs. 3500 kbps (1080p Video)
-      final savings160 = selector.calculateSavings(160, referenceVideoBitrateKbps: 3500);
+      final savings160 =
+          selector.calculateSavings(160, referenceVideoBitrateKbps: 3500);
       expect(savings160.meets85PercentTarget, isTrue);
       expect(savings160.savingsPercentage, greaterThanOrEqualTo(95.0));
       expect(savings160.megabytesPerHourAudio, closeTo(70.3, 1.0));
       expect(savings160.megabytesPerHourVideo, closeTo(1536.8, 5.0));
 
       // 128 kbps Audio vs. 2500 kbps (720p Video)
-      final savings128 = selector.calculateSavings(128, referenceVideoBitrateKbps: 2500);
+      final savings128 =
+          selector.calculateSavings(128, referenceVideoBitrateKbps: 2500);
       expect(savings128.meets85PercentTarget, isTrue);
       expect(savings128.savingsPercentage, greaterThanOrEqualTo(94.0));
     });
 
-    test('Puffer-Optimierung konfiguriert schnellen Start innerhalb von 800 ms', () {
+    test('Puffer-Optimierung konfiguriert schnellen Start innerhalb von 800 ms',
+        () {
       final config = selector.getOptimalBufferConfig();
 
       expect(config.initialBufferDurationMs, lessThanOrEqualTo(800));

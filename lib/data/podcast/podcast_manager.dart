@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import '../../domain/models/media_item.dart';
 import '../../domain/models/playback_position.dart';
 import '../download/download_manager.dart';
 import '../download/download_task.dart';
@@ -30,7 +29,8 @@ class DefaultPodcastHttpFetcher implements PodcastHttpFetcher {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return await response.transform(utf8.decoder).join();
       } else {
-        throw HttpException('HTTP-Fehler ${response.statusCode} beim Laden des RSS-Feeds.');
+        throw HttpException(
+            'HTTP-Fehler ${response.statusCode} beim Laden des RSS-Feeds.');
       }
     } finally {
       client.close();
@@ -127,9 +127,8 @@ class PodcastManager {
     return await dm.enqueueDownload(
       mediaItem: mediaItem,
       streamUrl: episode.audioUrl,
-      estimatedSizeBytes: episode.audioLengthBytes > 0
-          ? episode.audioLengthBytes
-          : 30000000,
+      estimatedSizeBytes:
+          episode.audioLengthBytes > 0 ? episode.audioLengthBytes : 30000000,
     );
   }
 

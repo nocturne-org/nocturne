@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 /// Schnittstelle fuer Android Picture-in-Picture (PiP) Plattformaufrufe.
 abstract class PipPlatformBridge {
   Future<bool> isPipSupported();
-  Future<bool> enterPipMode({int aspectRatioNumerator = 16, int aspectRatioDenominator = 9});
+  Future<bool> enterPipMode(
+      {int aspectRatioNumerator = 16, int aspectRatioDenominator = 9});
   Stream<bool> get screenStateStream; // true = an, false = aus
 }
 
@@ -12,7 +13,8 @@ abstract class PipPlatformBridge {
 class MethodChannelPipBridge implements PipPlatformBridge {
   const MethodChannelPipBridge({
     MethodChannel channel = const MethodChannel('com.nocturne.audio/pip'),
-    EventChannel screenChannel = const EventChannel('com.nocturne.audio/screen_state'),
+    EventChannel screenChannel =
+        const EventChannel('com.nocturne.audio/screen_state'),
   })  : _channel = channel,
         _screenChannel = screenChannel;
 
@@ -84,7 +86,8 @@ class PipController {
   Future<bool> isPipSupported() => _bridge.isPipSupported();
 
   /// Wechselt in den Android Picture-in-Picture Modus.
-  Future<bool> enterPip({int aspectNumerator = 16, int aspectDenominator = 9}) async {
+  Future<bool> enterPip(
+      {int aspectNumerator = 16, int aspectDenominator = 9}) async {
     final success = await _bridge.enterPipMode(
       aspectRatioNumerator: aspectNumerator,
       aspectRatioDenominator: aspectDenominator,

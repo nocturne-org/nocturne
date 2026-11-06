@@ -87,7 +87,7 @@ class PodcastEpisode {
       type: MediaType.podcastEpisode,
       author: feedAuthor ?? podcastTitle,
       album: podcastTitle,
-      duration: durationMs != null ? Duration(milliseconds: durationMs) : null,
+      duration: Duration(milliseconds: durationMs),
       source: effectiveSource,
       coverArtUri: imageUrl,
       extraMetadata: {

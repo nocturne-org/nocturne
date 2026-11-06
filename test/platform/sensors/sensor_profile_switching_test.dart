@@ -14,7 +14,9 @@ void main() {
       filter = ShakeFilter(profile: SensorProfileConfig.nightstand);
     });
 
-    test('Nightstand Profile A (>12 m/s^2) rejects soft bed vibration (8.5 m/s^2)', () {
+    test(
+        'Nightstand Profile A (>12 m/s^2) rejects soft bed vibration (8.5 m/s^2)',
+        () {
       // 1. Positiver Peak bei 8.5 m/s² (typische Bewegung auf Matratze)
       filter.processSample(
         AccelerometerSample(
@@ -39,7 +41,9 @@ void main() {
       expect(detected, isFalse);
     });
 
-    test('Mattress Profile B (>7.5 m/s^2) detects soft bed vibration (8.5 m/s^2)', () {
+    test(
+        'Mattress Profile B (>7.5 m/s^2) detects soft bed vibration (8.5 m/s^2)',
+        () {
       filter.applyProfile(SensorProfileConfig.mattress);
 
       expect(filter.threshold, 7.5);

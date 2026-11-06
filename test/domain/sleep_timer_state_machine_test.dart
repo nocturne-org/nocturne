@@ -36,7 +36,8 @@ void main() {
       expect(stateMachine.state.isCounting, isTrue);
     });
 
-    test('start() with duration <= 60s transitions immediately to fadingOut', () {
+    test('start() with duration <= 60s transitions immediately to fadingOut',
+        () {
       stateMachine.start(
         duration: const Duration(seconds: 30),
         enableAutoTick: false,
@@ -97,7 +98,8 @@ void main() {
       expect(stateMachine.state.volumeFactor, closeTo(0.25, 0.001));
     });
 
-    test('Transitions to gracePeriod when fade-out expires (remaining <= 0s)', () {
+    test('Transitions to gracePeriod when fade-out expires (remaining <= 0s)',
+        () {
       Duration? reportedOffset;
       stateMachine.onGracePeriodStarted = (offset) {
         reportedOffset = offset;
@@ -113,7 +115,8 @@ void main() {
       expect(stateMachine.state.status, SleepTimerStatus.gracePeriod);
       expect(stateMachine.state.isGracePeriod, isTrue);
       expect(stateMachine.state.volumeFactor, 0.0);
-      expect(stateMachine.state.remainingDuration, const Duration(seconds: 120));
+      expect(
+          stateMachine.state.remainingDuration, const Duration(seconds: 120));
       expect(reportedOffset, const Duration(seconds: 105));
     });
 
@@ -161,7 +164,9 @@ void main() {
       expect(stateMachine.state.totalDuration, const Duration(minutes: 25));
     });
 
-    test('Shake detected in fadingOut resets volume to 1.0 and resumes counting', () {
+    test(
+        'Shake detected in fadingOut resets volume to 1.0 and resumes counting',
+        () {
       double? updatedVolume;
       stateMachine.onVolumeChanged = (vol) {
         updatedVolume = vol;
@@ -187,7 +192,9 @@ void main() {
       );
     });
 
-    test('Shake detected in gracePeriod wakes engine, resets volume and restarts counting', () {
+    test(
+        'Shake detected in gracePeriod wakes engine, resets volume and restarts counting',
+        () {
       double? updatedVolume;
       Duration? extendedRemaining;
       stateMachine.onVolumeChanged = (vol) => updatedVolume = vol;

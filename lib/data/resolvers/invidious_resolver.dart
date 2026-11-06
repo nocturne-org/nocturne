@@ -24,7 +24,8 @@ class FederatedInstance {
 
 /// HTTP-Vertrag zur Entkopplung von Invidious/Piped Netzwerkaufrufen.
 abstract class FederatedHttpClient {
-  Future<String> get(String url, {Duration timeout = const Duration(milliseconds: 3500)});
+  Future<String> get(String url,
+      {Duration timeout = const Duration(milliseconds: 3500)});
 }
 
 /// Tier 2 Resolver: Foederierter Failover-Adapter ueber Invidious und Piped Instanzen.
@@ -91,7 +92,8 @@ class InvidiousPipedResolver implements MediaStreamResolver {
             ? '${instance.baseUrl}/api/v1/videos/$videoId'
             : '${instance.baseUrl}/streams/$videoId';
 
-        final responseBody = await _client.get(endpoint, timeout: requestTimeout);
+        final responseBody =
+            await _client.get(endpoint, timeout: requestTimeout);
         final json = jsonDecode(responseBody) as Map<String, dynamic>;
 
         final result = instance.type == FederatedInstanceType.invidious
@@ -117,7 +119,8 @@ class InvidiousPipedResolver implements MediaStreamResolver {
     Map<String, dynamic> json,
     AudioQualityPreference quality,
   ) {
-    final adaptiveFormats = json['adaptiveFormats'] as List<dynamic>? ?? const [];
+    final adaptiveFormats =
+        json['adaptiveFormats'] as List<dynamic>? ?? const [];
     final audioFormats = <Map<String, dynamic>>[];
 
     for (final f in adaptiveFormats) {
@@ -141,7 +144,8 @@ class InvidiousPipedResolver implements MediaStreamResolver {
 
     final selected = audioFormats.first;
     final url = selected['url'] as String? ?? '';
-    final bitrateKbps = ((selected['bitrate'] as num?)?.toInt() ?? 128000) ~/ 1000;
+    final bitrateKbps =
+        ((selected['bitrate'] as num?)?.toInt() ?? 128000) ~/ 1000;
     final mimeType = selected['type'] as String? ?? 'audio/mp4';
 
     return ResolvedStreamResult(
@@ -171,7 +175,8 @@ class InvidiousPipedResolver implements MediaStreamResolver {
 
     final selected = formats.first;
     final url = selected['url'] as String? ?? '';
-    final bitrateKbps = ((selected['bitrate'] as num?)?.toInt() ?? 128000) ~/ 1000;
+    final bitrateKbps =
+        ((selected['bitrate'] as num?)?.toInt() ?? 128000) ~/ 1000;
     final mimeType = selected['mimeType'] as String? ?? 'audio/webm';
 
     return ResolvedStreamResult(
@@ -202,8 +207,10 @@ class InvidiousPipedResolver implements MediaStreamResolver {
         final json = jsonDecode(body) as Map<String, dynamic>;
 
         final title = json['title'] as String? ?? 'Unbekannter Titel';
-        final author = (json['author'] ?? json['uploaderName']) as String? ?? 'Unbekannter Autor';
-        final durationSec = (json['lengthSeconds'] ?? json['duration']) as num? ?? 0;
+        final author = (json['author'] ?? json['uploaderName']) as String? ??
+            'Unbekannter Autor';
+        final durationSec =
+            (json['lengthSeconds'] ?? json['duration']) as num? ?? 0;
 
         return MediaStreamMetadata(
           id: videoId,
@@ -247,7 +254,8 @@ class InvidiousPipedResolver implements MediaStreamResolver {
     return ResolverHealthStatus(
       isHealthy: healthyCount > 0,
       latencyMs: avgLatency,
-      message: '$healthyCount/${_instances.length} foederierte Instanzen online (Avg Latency: ${avgLatency}ms).',
+      message:
+          '$healthyCount/${_instances.length} foederierte Instanzen online (Avg Latency: ${avgLatency}ms).',
     );
   }
 }
@@ -257,7 +265,8 @@ class DefaultFederatedHttpClient implements FederatedHttpClient {
   const DefaultFederatedHttpClient();
 
   @override
-  Future<String> get(String url, {Duration timeout = const Duration(milliseconds: 3500)}) async {
+  Future<String> get(String url,
+      {Duration timeout = const Duration(milliseconds: 3500)}) async {
     // Liefert strukturiertes Mock-Payload bei Offline/Test-Aufrufen
     return jsonEncode({
       'title': 'Federated Audio',

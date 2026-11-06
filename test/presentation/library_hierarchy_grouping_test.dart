@@ -39,7 +39,8 @@ void main() {
       author: 'Franz Kafka',
       album: 'Die Verwandlung',
       duration: const Duration(milliseconds: 5400000),
-      source: AudioSourceRef.localFile(filePath: '/audio/kafka_verwandlung.m4b'),
+      source:
+          AudioSourceRef.localFile(filePath: '/audio/kafka_verwandlung.m4b'),
     );
 
     // Autor 2, Album C, 1 Track
@@ -71,7 +72,8 @@ void main() {
       await db.close();
     });
 
-    test('groupMediaHierarchically erzeugt vollstaendige 3-Ebenen-Hierarchie', () async {
+    test('groupMediaHierarchically erzeugt vollstaendige 3-Ebenen-Hierarchie',
+        () async {
       container.read(libraryBrowserControllerProvider);
       await pumpEventQueue();
 
@@ -82,24 +84,28 @@ void main() {
       expect(hierarchy.length, 2);
 
       // Autor 1: Arthur Conan Doyle (alphabetisch sortiert)
-      final authorDoyle = hierarchy.firstWhere((a) => a.authorName == 'Arthur Conan Doyle');
+      final authorDoyle =
+          hierarchy.firstWhere((a) => a.authorName == 'Arthur Conan Doyle');
       expect(authorDoyle.albums.length, 1);
       expect(authorDoyle.albums.first.albumTitle, 'Sherlock Holmes');
       expect(authorDoyle.albums.first.items.length, 1);
       expect(authorDoyle.totalTracks, 1);
 
       // Autor 2: Franz Kafka mit 2 Alben
-      final authorKafka = hierarchy.firstWhere((a) => a.authorName == 'Franz Kafka');
+      final authorKafka =
+          hierarchy.firstWhere((a) => a.authorName == 'Franz Kafka');
       expect(authorKafka.albums.length, 2);
       expect(authorKafka.totalTracks, 3);
 
-      final schlossAlbum = authorKafka.albums.firstWhere((a) => a.albumTitle == 'Das Schloss');
+      final schlossAlbum =
+          authorKafka.albums.firstWhere((a) => a.albumTitle == 'Das Schloss');
       expect(schlossAlbum.items.length, 2);
       expect(schlossAlbum.items[0].title, 'Kapitel 1');
       expect(schlossAlbum.items[1].title, 'Kapitel 2');
       expect(schlossAlbum.totalDurationMs, 1200000 + 1400000);
 
-      final verwandlungAlbum = authorKafka.albums.firstWhere((a) => a.albumTitle == 'Die Verwandlung');
+      final verwandlungAlbum = authorKafka.albums
+          .firstWhere((a) => a.albumTitle == 'Die Verwandlung');
       expect(verwandlungAlbum.items.length, 1);
     });
   });

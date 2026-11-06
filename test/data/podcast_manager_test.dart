@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nocturne/data/download/download_manager.dart';
 import 'package:nocturne/data/download/download_task.dart';
 import 'package:nocturne/data/podcast/podcast_manager.dart';
-import 'package:nocturne/data/podcast/podcast_models.dart';
 import 'package:nocturne/data/repositories/media_repository.dart';
 import 'package:nocturne/domain/models/bookmark.dart';
 import 'package:nocturne/domain/models/media_item.dart';
@@ -47,8 +46,7 @@ class FakeMediaRepository implements MediaRepository {
       Stream.value(items.values.toList());
 
   @override
-  Stream<MediaItem?> watchMediaById(String id) =>
-      Stream.value(items[id]);
+  Stream<MediaItem?> watchMediaById(String id) => Stream.value(items[id]);
 
   @override
   Future<void> deleteMedia(String id) async {
@@ -82,14 +80,14 @@ class FakeMediaRepository implements MediaRepository {
   Future<void> deleteBookmark(String id) async {}
 
   @override
-  Stream<List<Bookmark>> watchBookmarks(String mediaItemId) =>
-      Stream.value([]);
+  Stream<List<Bookmark>> watchBookmarks(String mediaItemId) => Stream.value([]);
 
   final List<String> _queue = [];
   int _queueIndex = 0;
 
   @override
-  Future<void> savePlaybackQueue(List<String> mediaItemIds, {int currentIndex = 0}) async {
+  Future<void> savePlaybackQueue(List<String> mediaItemIds,
+      {int currentIndex = 0}) async {
     _queue.clear();
     _queue.addAll(mediaItemIds);
     _queueIndex = currentIndex;
@@ -102,7 +100,8 @@ class FakeMediaRepository implements MediaRepository {
   Future<int> loadPlaybackQueueCurrentIndex() async => _queueIndex;
 
   @override
-  Stream<List<String>> watchPlaybackQueue() => Stream.value(List.unmodifiable(_queue));
+  Stream<List<String>> watchPlaybackQueue() =>
+      Stream.value(List.unmodifiable(_queue));
 
   @override
   Future<void> clearPlaybackQueue() async {
@@ -184,8 +183,9 @@ void main() {
       expect(feed.episodes.first.title, 'Episode 10: Traumreise');
     });
 
-    test('subscribe speichert Episoden als MediaItems in die Drift-Bibliothek', () async {
-      final feed = await manager.subscribe('https://example.com/feed.xml');
+    test('subscribe speichert Episoden als MediaItems in die Drift-Bibliothek',
+        () async {
+      await manager.subscribe('https://example.com/feed.xml');
       expect(manager.subscribedFeeds.length, 1);
 
       // Pruefen, ob MediaRepository die Episode enthaelt
@@ -203,7 +203,9 @@ void main() {
       expect(manager.subscribedFeeds.isEmpty, isTrue);
     });
 
-    test('downloadEpisode queued und laedt Episode in die Offline-Sandbox herunter', () async {
+    test(
+        'downloadEpisode queued und laedt Episode in die Offline-Sandbox herunter',
+        () async {
       final feed = await manager.subscribe('https://example.com/feed.xml');
       final episode = feed.episodes.first;
 
@@ -227,7 +229,8 @@ void main() {
       expect(await file.exists(), isTrue);
     });
 
-    test('markEpisodePlayed aktualisiert Wiedergabestatus in MediaRepository', () async {
+    test('markEpisodePlayed aktualisiert Wiedergabestatus in MediaRepository',
+        () async {
       await manager.markEpisodePlayed('test_ep_001');
       expect(mediaRepo.completionStatus['test_ep_001'], isTrue);
     });

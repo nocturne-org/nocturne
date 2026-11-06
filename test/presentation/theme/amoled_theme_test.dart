@@ -18,7 +18,8 @@ void main() {
       expect(theme.bottomSheetTheme.backgroundColor?.toARGB32(), 0xFF000000);
     });
 
-    test('Gedaempfte Akzentfarben (Bernstein #F59E0B und Nacht-Cyan #06B6D4)', () {
+    test('Gedaempfte Akzentfarben (Bernstein #F59E0B und Nacht-Cyan #06B6D4)',
+        () {
       expect(AmoledColors.amberAccent.toARGB32(), 0xFFF59E0B);
       expect(AmoledColors.cyanAccent.toARGB32(), 0xFF06B6D4);
 
@@ -27,7 +28,8 @@ void main() {
       expect(theme.colorScheme.secondary.toARGB32(), 0xFF06B6D4);
     });
 
-    test('Typografie verwendet blendfreie Off-White-Toene statt grelles Weiss', () {
+    test('Typografie verwendet blendfreie Off-White-Toene statt grelles Weiss',
+        () {
       expect(AmoledColors.textPrimary.toARGB32(), 0xFFE2E8F0);
       expect(AmoledColors.textSecondary.toARGB32(), 0xFF94A3B8);
 
@@ -57,11 +59,13 @@ void main() {
       final theme = AmoledTheme.themeData;
       expect(theme.materialTapTargetSize, MaterialTapTargetSize.padded);
 
-      final elevatedMin = theme.elevatedButtonTheme.style?.minimumSize?.resolve({});
+      final elevatedMin =
+          theme.elevatedButtonTheme.style?.minimumSize?.resolve({});
       expect(elevatedMin?.width, greaterThanOrEqualTo(48.0));
       expect(elevatedMin?.height, greaterThanOrEqualTo(48.0));
 
-      final outlinedMin = theme.outlinedButtonTheme.style?.minimumSize?.resolve({});
+      final outlinedMin =
+          theme.outlinedButtonTheme.style?.minimumSize?.resolve({});
       expect(outlinedMin?.width, greaterThanOrEqualTo(48.0));
       expect(outlinedMin?.height, greaterThanOrEqualTo(48.0));
 
@@ -70,7 +74,8 @@ void main() {
       expect(iconBtnMin?.height, greaterThanOrEqualTo(48.0));
     });
 
-    testWidgets('BedtimeTouchTarget erzwingt mindestens 48x48 dp Abmessung', (tester) async {
+    testWidgets('BedtimeTouchTarget erzwingt mindestens 48x48 dp Abmessung',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           theme: AmoledTheme.themeData,
@@ -93,7 +98,9 @@ void main() {
       expect(size.height, greaterThanOrEqualTo(48.0));
     });
 
-    testWidgets('BedtimeIconButton bietet barrierefreie 48x48 dp Mindestgroesse', (tester) async {
+    testWidgets(
+        'BedtimeIconButton bietet barrierefreie 48x48 dp Mindestgroesse',
+        (tester) async {
       var tapped = false;
       await tester.pumpWidget(
         MaterialApp(

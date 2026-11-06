@@ -40,7 +40,8 @@ class MockAudioPlayerRepository implements AudioPlayerRepository {
   Stream<double> get volumeStream => Stream.value(1.0);
 
   @override
-  Future<void> setSource(AudioSourceRef source, {Duration? initialPosition}) async {
+  Future<void> setSource(AudioSourceRef source,
+      {Duration? initialPosition}) async {
     currentStatus = AudioPlaybackStatus.ready;
     _statusCtrl.add(currentStatus);
   }
@@ -149,7 +150,8 @@ void main() {
       expect(find.text('30:00'), findsOneWidget);
     });
 
-    testWidgets('Shake profile badge displays and toggles between Nightstand and Mattress',
+    testWidgets(
+        'Shake profile badge displays and toggles between Nightstand and Mattress',
         (tester) async {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -173,7 +175,8 @@ void main() {
       expect(find.text('Nachttisch / Hand'), findsOneWidget);
     });
 
-    testWidgets('Large transport buttons are rendered for blind night navigation',
+    testWidgets(
+        'Large transport buttons are rendered for blind night navigation',
         (tester) async {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();

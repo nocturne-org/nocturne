@@ -138,7 +138,8 @@ void main() {
       expect(mediaItem.durationMs, ep1.durationMs);
       expect(mediaItem.source.isStream, isTrue);
       expect(mediaItem.source.uri, ep1.audioUrl);
-      expect(mediaItem.extraMetadata['podcast_title'], 'Nocturne Gute-Nacht-Geschichten');
+      expect(mediaItem.extraMetadata['podcast_title'],
+          'Nocturne Gute-Nacht-Geschichten');
     });
   });
 }

@@ -62,7 +62,8 @@ class RemoteConfigEngine {
     String? rawJsonOverride,
     String? expectedSha256,
   }) async {
-    final rawJson = rawJsonOverride ?? await _httpClient.fetchRawConfig(rawConfigUrl);
+    final rawJson =
+        rawJsonOverride ?? await _httpClient.fetchRawConfig(rawConfigUrl);
 
     // Kryptografische Integritaetspruefung (SHA-256)
     final calculatedHash = Sha256Digest.computeHash(rawJson);
@@ -77,7 +78,8 @@ class RemoteConfigEngine {
 
     try {
       final map = jsonDecode(rawJson) as Map<String, dynamic>;
-      final newConfig = RemoteAppConfig.fromMap(map, calculatedHash: calculatedHash);
+      final newConfig =
+          RemoteAppConfig.fromMap(map, calculatedHash: calculatedHash);
 
       // In persistentem Offline-Cache sichern
       if (_cacheFile != null) {

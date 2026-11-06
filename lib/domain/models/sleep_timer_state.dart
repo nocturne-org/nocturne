@@ -120,7 +120,8 @@ class SleepTimerState {
   /// Berechnet den linearen Fortschritt von 0.0 bis 1.0.
   double get progressFraction {
     if (totalDuration.inMilliseconds <= 0) return 0.0;
-    final elapsed = totalDuration.inMilliseconds - remainingDuration.inMilliseconds;
+    final elapsed =
+        totalDuration.inMilliseconds - remainingDuration.inMilliseconds;
     final fraction = elapsed / totalDuration.inMilliseconds;
     return fraction.clamp(0.0, 1.0);
   }

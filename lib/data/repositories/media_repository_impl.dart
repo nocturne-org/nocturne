@@ -61,7 +61,8 @@ class MediaRepositoryImpl implements MediaRepository {
   Future<void> deleteBookmark(String id) => _db.mediaDao.deleteBookmark(id);
 
   @override
-  Future<void> savePlaybackQueue(List<String> mediaItemIds, {int currentIndex = 0}) =>
+  Future<void> savePlaybackQueue(List<String> mediaItemIds,
+          {int currentIndex = 0}) =>
       _db.mediaDao.savePlaybackQueue(mediaItemIds, currentIndex: currentIndex);
 
   @override
@@ -72,7 +73,8 @@ class MediaRepositoryImpl implements MediaRepository {
       _db.mediaDao.getPlaybackQueueCurrentIndex();
 
   @override
-  Stream<List<String>> watchPlaybackQueue() => _db.mediaDao.watchPlaybackQueue();
+  Stream<List<String>> watchPlaybackQueue() =>
+      _db.mediaDao.watchPlaybackQueue();
 
   @override
   Future<void> clearPlaybackQueue() => _db.mediaDao.clearPlaybackQueue();
