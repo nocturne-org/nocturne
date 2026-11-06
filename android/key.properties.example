@@ -1,0 +1,6 @@
+# Vorlage fuer Android Production Keystore Konfiguration
+# Kopiere diese Datei nach android/key.properties fuer lokale signierte Builds
+storePassword=dein_keystore_passwort
+keyPassword=dein_schluessel_passwort
+keyAlias=upload
+storeFile=upload-keystore.jks

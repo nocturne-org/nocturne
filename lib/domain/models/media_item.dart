@@ -63,7 +63,7 @@ class MediaItem {
   const MediaItem({
     required this.id,
     required this.title,
-    required this.type,
+    this.type = MediaType.audiobook,
     required this.source,
     this.author,
     this.album,
@@ -73,9 +73,17 @@ class MediaItem {
     this.lastPosition = PlaybackPosition.zero,
     this.isCompleted = false,
     this.lastPlayedAt,
-    this.metadata = const {},
-  })  : assert(id.length > 0, 'MediaItem id must not be empty'),
+    Map<String, dynamic>? metadata,
+    Map<String, dynamic>? extraMetadata,
+  })  : metadata = metadata ?? extraMetadata ?? const {},
+        assert(id.length > 0, 'MediaItem id must not be empty'),
         assert(title.length > 0, 'MediaItem title must not be empty');
+
+  /// Gesamtdauer in Millisekunden (Convenience-Getter).
+  int? get durationMs => duration?.inMilliseconds;
+
+  /// Zusaetzliche Metadaten (Alias fuer metadata).
+  Map<String, dynamic> get extraMetadata => metadata;
 
   /// Ob es sich um ein Hoerbuch handelt.
   bool get isAudiobook => type == MediaType.audiobook;

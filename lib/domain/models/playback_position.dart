@@ -5,13 +5,17 @@ class PlaybackPosition implements Comparable<PlaybackPosition> {
   /// Die gekapselte Zeitdauer ab Beginn des Mediums.
   final Duration duration;
 
+  /// Optionale ID des zugehoerigen Mediums.
+  final String? mediaItemId;
+
   /// Erstellt eine unveraenderliche [PlaybackPosition].
-  const PlaybackPosition({required this.duration});
+  const PlaybackPosition({required this.duration, this.mediaItemId});
 
   /// Erstellt eine [PlaybackPosition] aus Millisekunden. Negative Werte werden auf 0 geklammert.
-  factory PlaybackPosition.fromMilliseconds(int ms) {
+  factory PlaybackPosition.fromMilliseconds(int ms, {String? mediaItemId}) {
     return PlaybackPosition(
       duration: Duration(milliseconds: ms < 0 ? 0 : ms),
+      mediaItemId: mediaItemId,
     );
   }
 

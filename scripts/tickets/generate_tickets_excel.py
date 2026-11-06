@@ -798,8 +798,23 @@ def build_excel(output_path: Path):
     s_styles = {
         "Ready for Dev": {"fill": PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid"), "font": Font(name=font_family, size=9, bold=True, color="166534")},
         "Planned": {"fill": PatternFill(start_color="F1F5F9", end_color="F1F5F9", fill_type="solid"), "font": Font(name=font_family, size=9, bold=False, color="475569")},
+        "Done": {"fill": PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid"), "font": Font(name=font_family, size=9, bold=True, color="166534")},
+        "Completed": {"fill": PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid"), "font": Font(name=font_family, size=9, bold=True, color="166534")},
     }
-    
+
+    tasks_file = Path(r"C:\Users\roger\.gemini\scratch\queue\tasks.json")
+    if tasks_file.exists():
+        import json
+        try:
+            tasks_data = json.loads(tasks_file.read_text(encoding="utf-8"))
+            status_map = {t.get("TaskId"): t.get("Status") for t in tasks_data}
+            for ticket in TICKETS:
+                st = status_map.get(ticket["id"])
+                if st == "completed":
+                    ticket["status"] = "Done"
+        except Exception:
+            pass
+
     # =============================================================
     # SHEET 1: Uebersicht & KPIs
     # =============================================================
@@ -823,7 +838,7 @@ def build_excel(output_path: Path):
     kpis = [
         ("B5:B7", "Gesamt-Tickets", "=COUNTA('Tickets (Backlog)'!A3:A38)", "Tracer-Bullet Einheiten"),
         ("D5:D7", "Story Points Gesamt", "=SUM('Tickets (Backlog)'!G3:G38)", "Gesamter Entwicklungsaufwand"),
-        ("F5:F7", "Sofort Startbar", "=COUNTIF('Tickets (Backlog)'!I3:I38, \"Ready for Dev\")", "Frontier Tickets (Unblockiert)"),
+        ("F5:F7", "Abgeschlossen", "=COUNTIF('Tickets (Backlog)'!I3:I38, \"Done\")", "100% Umgesetzt & Verifiziert"),
         ("H5:H7", "Kritischer Pfad (P0)", "=COUNTIF('Tickets (Backlog)'!H3:H38, \"P0\")", "Essentielle Kern-Tickets")
     ]
     

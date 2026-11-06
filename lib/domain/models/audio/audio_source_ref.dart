@@ -25,20 +25,24 @@ class AudioSourceRef {
   /// Optionaler Name des Autors oder Sprechers.
   final String? artist;
 
+  /// Optionale HTTP-Header fuer Remote-Streams.
+  final Map<String, String>? headers;
+
   const AudioSourceRef({
     required this.uri,
     required this.type,
     this.title,
     this.artist,
+    this.headers,
   });
 
   /// Erzeugt eine Referenz fuer eine lokale Datei.
   const factory AudioSourceRef.file(String path, {String? title, String? artist}) =
       _AudioSourceRefFile;
 
-  /// Alias fuer lokale Datei.
-  const factory AudioSourceRef.localFile(String path, {String? title, String? artist}) =
-      _AudioSourceRefFile;
+  /// Alias fuer lokale Datei mit benanntem Pfad-Parameter.
+  const factory AudioSourceRef.localFile({required String filePath, String? title, String? artist}) =
+      _AudioSourceRefFileNamed;
 
   /// Erzeugt eine Referenz fuer ein Android SAF Uri (content://).
   const factory AudioSourceRef.saf(String contentUri, {String? title, String? artist}) =
@@ -48,13 +52,17 @@ class AudioSourceRef {
   const factory AudioSourceRef.network(String streamUrl, {String? title, String? artist}) =
       _AudioSourceRefNetwork;
 
-  /// Alias fuer Streaming-URL.
-  const factory AudioSourceRef.streamingUrl(String streamUrl, {String? title, String? artist}) =
-      _AudioSourceRefNetwork;
+  /// Alias fuer Streaming-URL mit benanntem Parameter.
+  const factory AudioSourceRef.streamingUrl({required String streamUrl, String? title, String? artist}) =
+      _AudioSourceRefNetworkNamed;
+
+  /// Alias fuer Remote-Stream mit benanntem Parameter.
+  const factory AudioSourceRef.remoteStream({required String streamUrl, String? title, String? artist, Map<String, String>? headers}) =
+      _AudioSourceRefNetworkNamed;
 
   /// Alias fuer YouTube-Streams.
-  const factory AudioSourceRef.youTube(String streamUrl, {String? title, String? artist}) =
-      _AudioSourceRefNetwork;
+  const factory AudioSourceRef.youTube({String? streamUrl, String? videoId, String? title, String? artist}) =
+      _AudioSourceRefYouTube;
 
   /// Erzeugt eine modifizierte Kopie dieses [AudioSourceRef].
   AudioSourceRef copyWith({
@@ -70,6 +78,15 @@ class AudioSourceRef {
       artist: artist ?? this.artist,
     );
   }
+
+  /// Ob es sich um eine lokale Datei oder ein lokales SAF-Medium handelt.
+  bool get isLocal => type == AudioSourceType.file || type == AudioSourceType.safContentUri;
+
+  /// Ob es sich um einen entfernten Netzwerk-Stream handelt.
+  bool get isRemote => type == AudioSourceType.networkStream;
+
+  /// Alias fuer isRemote (Stream-Pruefung).
+  bool get isStream => isRemote;
 
   /// Serialisiert die Audio-Referenz in eine Map.
   Map<String, dynamic> toMap() {
@@ -118,6 +135,11 @@ class _AudioSourceRefFile extends AudioSourceRef {
       : super(uri: path, type: AudioSourceType.file);
 }
 
+class _AudioSourceRefFileNamed extends AudioSourceRef {
+  const _AudioSourceRefFileNamed({required String filePath, super.title, super.artist})
+      : super(uri: filePath, type: AudioSourceType.file);
+}
+
 class _AudioSourceRefSaf extends AudioSourceRef {
   const _AudioSourceRefSaf(String contentUri, {super.title, super.artist})
       : super(uri: contentUri, type: AudioSourceType.safContentUri);
@@ -126,4 +148,21 @@ class _AudioSourceRefSaf extends AudioSourceRef {
 class _AudioSourceRefNetwork extends AudioSourceRef {
   const _AudioSourceRefNetwork(String streamUrl, {super.title, super.artist})
       : super(uri: streamUrl, type: AudioSourceType.networkStream);
+}
+
+class _AudioSourceRefNetworkNamed extends AudioSourceRef {
+  const _AudioSourceRefNetworkNamed({
+    required String streamUrl,
+    super.title,
+    super.artist,
+    super.headers,
+  }) : super(uri: streamUrl, type: AudioSourceType.networkStream);
+}
+
+class _AudioSourceRefYouTube extends AudioSourceRef {
+  const _AudioSourceRefYouTube({String? streamUrl, String? videoId, super.title, super.artist})
+      : super(
+          uri: streamUrl ?? (videoId != null ? 'https://youtube.com/watch?v=$videoId' : ''),
+          type: AudioSourceType.networkStream,
+        );
 }
