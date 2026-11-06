@@ -1271,15 +1271,22 @@ def generate_markdown_tickets(base_dir: Path, tickets_md_path: Path):
     issues_dir = base_dir / ".scratch" / "nocturne" / "issues"
     issues_dir.mkdir(parents=True, exist_ok=True)
     
+    # Clean up any potential corrupted ADS files first
+    for bad_f in ["020-tier-1", "021-tier-2", "022-tier-3"]:
+        p = issues_dir / bad_f
+        if p.exists():
+            p.unlink()
+
     # 1. Per-ticket files under .scratch/nocturne/issues/<NN>-<slug>.md
     for t in TICKETS:
         num = t["id"].replace("TICK-", "")
-        slug = t["title"].lower()
-        for ch in [" ", "/", "(", ")", "&", ",", ".", "_"]:
+        clean_title = t["title"].replace(":", "-").replace("(", "").replace(")", "").replace("/", "-")
+        slug = clean_title.lower()
+        for ch in [" ", "&", ",", ".", "_", "'", '"', "+"]:
             slug = slug.replace(ch, "-")
         while "--" in slug:
             slug = slug.replace("--", "-")
-        slug = slug.strip("-")[:40]
+        slug = slug.strip("-")[:45].strip("-")
         
         file_name = f"{num}-{slug}.md"
         file_path = issues_dir / file_name
