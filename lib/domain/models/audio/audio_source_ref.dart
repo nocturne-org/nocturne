@@ -62,6 +62,47 @@ class AudioSourceRef {
     );
   }
 
+  /// Erzeugt eine modifizierte Kopie dieses [AudioSourceRef].
+  AudioSourceRef copyWith({
+    String? uri,
+    AudioSourceType? type,
+    String? title,
+    String? artist,
+  }) {
+    return AudioSourceRef(
+      uri: uri ?? this.uri,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+    );
+  }
+
+  /// Serialisiert die Audio-Referenz in eine Map.
+  Map<String, dynamic> toMap() {
+    return {
+      'uri': uri,
+      'type': type.name,
+      'title': title,
+      'artist': artist,
+    };
+  }
+
+  /// Deserialisiert ein [AudioSourceRef] aus einer Map.
+  factory AudioSourceRef.fromMap(Map<String, dynamic> map) {
+    final typeName = map['type'] as String? ?? AudioSourceType.file.name;
+    final type = AudioSourceType.values.firstWhere(
+      (e) => e.name == typeName,
+      orElse: () => AudioSourceType.file,
+    );
+
+    return AudioSourceRef(
+      uri: map['uri'] as String? ?? '',
+      type: type,
+      title: map['title'] as String?,
+      artist: map['artist'] as String?,
+    );
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
