@@ -37,7 +37,8 @@ $allowedRootItems = @(
     "templates",
     "android",
     "web",
-    "assets"
+    "assets",
+    ".scratch"
 )
 
 # 2. Root-Verzeichnis pruefen
