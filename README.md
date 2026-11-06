@@ -75,6 +75,8 @@ Dieses Projekt ist unter der **GNU General Public License v3 (GPLv3)** lizenzier
 
 ## 6. Weiterführende Dokumentation
 
+- [Entwicklungs-Backlog & 36 Tracer-Bullet Tickets (Markdown)](docs/tickets/TICKETS.md)
+- [Projekt-Backlog & KPI-Dashboard (Excel .xlsx)](docs/tickets/nocturne_tickets.xlsx)
 - [Architektur-Spezifikation & Schichtenmodell](docs/architecture/ARCHITECTURE.md)
 - [Rechtliche Einordnung (§ 53 dUrhG / § 42 öUrhG) & Distributions-Pipeline](docs/compliance/LEGAL_AND_DISTRIBUTION.md)
 - [7-Dimensionen Loop-Controller Prüfbericht (10/10 Maximierung)](docs/reports/EVALUATION_REPORT.md)
