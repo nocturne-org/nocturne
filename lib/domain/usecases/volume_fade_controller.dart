@@ -108,6 +108,11 @@ class VolumeFadeController {
   void attachStateMachine(SleepTimerStateMachine stateMachine) {
     _stateMachineSub?.cancel();
     _stateMachineSub = stateMachine.stateStream.listen((state) {
+      // Veraltete Stream-Ereignisse verwerfen, falls sich der Status bereits weiterbewegt hat
+      if (stateMachine.state.status != state.status) {
+        return;
+      }
+
       switch (state.status) {
         case SleepTimerStatus.counting:
           if (_currentFactor < 1.0) {
