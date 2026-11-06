@@ -8,6 +8,7 @@ environment:
   flutter: ">=3.10.0"
 
 dependencies:
+  audio_service: ^0.18.19
   drift: ^2.35.3
   flutter:
     sdk: flutter

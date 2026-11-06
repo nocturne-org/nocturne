@@ -33,34 +33,28 @@ class AudioSourceRef {
   });
 
   /// Erzeugt eine Referenz fuer eine lokale Datei.
-  factory AudioSourceRef.file(String path, {String? title, String? artist}) {
-    return AudioSourceRef(
-      uri: path,
-      type: AudioSourceType.file,
-      title: title,
-      artist: artist,
-    );
-  }
+  const factory AudioSourceRef.file(String path, {String? title, String? artist}) =
+      _AudioSourceRefFile;
+
+  /// Alias fuer lokale Datei.
+  const factory AudioSourceRef.localFile(String path, {String? title, String? artist}) =
+      _AudioSourceRefFile;
 
   /// Erzeugt eine Referenz fuer ein Android SAF Uri (content://).
-  factory AudioSourceRef.saf(String contentUri, {String? title, String? artist}) {
-    return AudioSourceRef(
-      uri: contentUri,
-      type: AudioSourceType.safContentUri,
-      title: title,
-      artist: artist,
-    );
-  }
+  const factory AudioSourceRef.saf(String contentUri, {String? title, String? artist}) =
+      _AudioSourceRefSaf;
 
   /// Erzeugt eine Referenz fuer einen Netzwerk-Stream.
-  factory AudioSourceRef.network(String streamUrl, {String? title, String? artist}) {
-    return AudioSourceRef(
-      uri: streamUrl,
-      type: AudioSourceType.networkStream,
-      title: title,
-      artist: artist,
-    );
-  }
+  const factory AudioSourceRef.network(String streamUrl, {String? title, String? artist}) =
+      _AudioSourceRefNetwork;
+
+  /// Alias fuer Streaming-URL.
+  const factory AudioSourceRef.streamingUrl(String streamUrl, {String? title, String? artist}) =
+      _AudioSourceRefNetwork;
+
+  /// Alias fuer YouTube-Streams.
+  const factory AudioSourceRef.youTube(String streamUrl, {String? title, String? artist}) =
+      _AudioSourceRefNetwork;
 
   /// Erzeugt eine modifizierte Kopie dieses [AudioSourceRef].
   AudioSourceRef copyWith({
@@ -107,7 +101,6 @@ class AudioSourceRef {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AudioSourceRef &&
-          runtimeType == other.runtimeType &&
           uri == other.uri &&
           type == other.type &&
           title == other.title &&
@@ -118,4 +111,19 @@ class AudioSourceRef {
 
   @override
   String toString() => 'AudioSourceRef(uri: $uri, type: $type, title: $title)';
+}
+
+class _AudioSourceRefFile extends AudioSourceRef {
+  const _AudioSourceRefFile(String path, {super.title, super.artist})
+      : super(uri: path, type: AudioSourceType.file);
+}
+
+class _AudioSourceRefSaf extends AudioSourceRef {
+  const _AudioSourceRefSaf(String contentUri, {super.title, super.artist})
+      : super(uri: contentUri, type: AudioSourceType.safContentUri);
+}
+
+class _AudioSourceRefNetwork extends AudioSourceRef {
+  const _AudioSourceRefNetwork(String streamUrl, {super.title, super.artist})
+      : super(uri: streamUrl, type: AudioSourceType.networkStream);
 }
