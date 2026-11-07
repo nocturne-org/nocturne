@@ -196,6 +196,6 @@ class AppDatabase {
   /// Closes the database and disposes underlying resources.
   Future<void> close() async {
     await _mediaDao.close();
-    _db.dispose();
+    _db.close();
   }
 }
