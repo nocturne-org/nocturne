@@ -19,7 +19,7 @@ param(
     [int]$AutoCloseMinutes = 10,
 
     [Parameter(Mandatory = $false)]
-    [string]$WorkspaceRoot = "C:\Users\roger\Desktop\ai-impv",
+    [string]$WorkspaceRoot = "",
 
     [Parameter(Mandatory = $false)]
     [switch]$SkipPreflight,
@@ -29,6 +29,10 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+if ([string]::IsNullOrWhiteSpace($WorkspaceRoot)) {
+    $WorkspaceRoot = (Get-Location).Path
+}
 
 # 1. Verzeichnisse & Scratch initialisieren
 $ScratchDir = "C:\Users\roger\.gemini\scratch\agent-grid"
