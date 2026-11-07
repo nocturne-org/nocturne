@@ -32,6 +32,32 @@ enum AudioFormat {
     return null;
   }
 
+  /// Determines the audio format from a raw extension (with or without leading dot).
+  static AudioFormat? fromExtension(String ext) {
+    final clean = ext.startsWith('.') ? ext.substring(1) : ext;
+    final lower = clean.toLowerCase();
+    for (final format in AudioFormat.values) {
+      if (format.extension == lower) {
+        return format;
+      }
+    }
+    return null;
+  }
+
   /// Checks whether a given file path is a supported audio format.
   static bool isSupported(String path) => fromPath(path) != null;
+
+  /// The 6 core audio formats supported by the scanner.
+  static const List<AudioFormat> coreSixFormats = [
+    AudioFormat.mp3,
+    AudioFormat.m4b,
+    AudioFormat.m4a,
+    AudioFormat.aac,
+    AudioFormat.ogg,
+    AudioFormat.wav,
+  ];
+
+  /// List of all supported lowercase extensions (without leading dot).
+  static List<String> get supportedExtensions =>
+      AudioFormat.values.map((f) => f.extension).toList();
 }

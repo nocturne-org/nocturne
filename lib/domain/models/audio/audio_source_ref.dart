@@ -93,6 +93,9 @@ class AudioSourceRef {
   bool get isLocal =>
       type == AudioSourceType.file || type == AudioSourceType.safContentUri;
 
+  /// Convenience getter for local file path or URI.
+  String get filePath => uri;
+
   /// Ob es sich um einen entfernten Netzwerk-Stream handelt.
   bool get isRemote => type == AudioSourceType.networkStream;
 
